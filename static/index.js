@@ -80,19 +80,32 @@ window.onload = ()=>{
                 let img = document.createElement("img")
                 img.src = "https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914Y"
                 img.alt = "Image"
-                if (obj.data.length > 0) {
-                    img.src = obj.data[0].image
-                } else {
-                    let overlay = document.createElement("div");
-                    overlay.className = "overlay";
-                    overlay.innerHTML = obj.commanderstring;
-                    new_box.appendChild(overlay)
-                }
-                new_box.appendChild(img)
                 let info_box = document.createElement("div");
                 info_box.className = "info"
                 info_box.innerHTML = "In " + obj.count + " decks"
-                new_box.appendChild(info_box)
+
+                if (obj.commanders.length == 1) {
+                    img.alt = obj.partner1[0].name
+                    img.src = obj.partner1[0].image
+                    new_box.appendChild(img)
+                    new_box.appendChild(info_box)
+                } else {
+                    let partners = document.createElement("div")
+                    partners.className = "partners"
+                    img.className = "partner1"
+                    img.src = obj.partner1[0].image
+                    img.alt = obj.partner1[0].name
+                    let img2 = document.createElement("img")
+                    img2.className = "partner2"
+                    img2.src = obj.partner2[0].image
+                    img2.alt = obj.partner2[0].name
+
+                    partners.appendChild(img)
+                    partners.appendChild(img2)
+                    new_box.appendChild(partners)
+                    partners.appendChild(info_box)
+
+                }
                 gallery.appendChild(new_box)
             }
 

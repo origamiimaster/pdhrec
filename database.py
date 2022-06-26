@@ -187,16 +187,35 @@ def get_decks_with_commanders(commanders):
 def new_get_all_commander_counts():
     col = db['scores']
     results = col.aggregate(pipeline=[
+        # {
+        #     "$lookup":
+        #     {
+        #         "from": "cards",
+        #         "localField": "commanderstring",
+        #         "foreignField": "normalized",
+        #         "as": "data"
+        #     }
+        # },
         {
             "$lookup":
             {
                 "from": "cards",
-                "localField": "commanderstring",
-                "foreignField": "normalized",
-                "as": "data"
+                "localField": "commanders.0",
+                "foreignField": "name",
+                "as": "partner1"
             }
+         },
+        {
+            "$lookup":
+                {
+                    "from": "cards",
+                    "localField": "commanders.1",
+                    "foreignField": "name",
+                    "as": "partner2"
+                }
         },
-        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "data": 1}},
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "partner1": 1,
+                      "partner2": 1}},
     ])
     return [x for x in results]
 
@@ -233,6 +252,9 @@ def save_card_data(card_name):
     to_write["image"] = data['image_uris']['large'] if 'large' in data['image_uris'] else \
         data['image_uris'][list(data['image_uris'].keys())[0]]
     to_write["colors"] = data['color_identity']
+
+    if to_write['name'] == "Mr. Orfeo, the Boulder":
+        to_write['name'] = "Mr Orfeo, the Boulder"
 
     col.insert_one(to_write)
 
