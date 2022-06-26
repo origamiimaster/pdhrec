@@ -4,6 +4,8 @@ Access moxfield and query decks for inclusion in the database.
 """
 
 import requests
+
+
 # from database import Database, get_new_decks
 
 def get_deck_data(public_id):
@@ -13,13 +15,12 @@ def get_deck_data(public_id):
         return False
     return r.json()
 
+
 def get_new_decks(page=1):
     url = f"""https://api.moxfield.com/v2/decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
     r = requests.get(url)
     values = r.json()['data']
     return values
-
-
 
 
 def check_deck_legal(deck):
@@ -50,9 +51,8 @@ def check_deck_legal(deck):
     # every card in the deck is checked, everything validated
     return True
 
+
 if __name__ == "__main__":
-
-
     deck = get_deck_data("LXiuz3D1DkO8m4mxBKVNGg")
 
     # new_decks = get_new_decks()

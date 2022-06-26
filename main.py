@@ -2,7 +2,8 @@ import time
 
 from dateutil import parser
 
-from database import save_metadata, load_metadata, save_cards, get_ids_need_update, get_all_metadata, get_newest_metadata
+from database import save_metadata, load_metadata, save_cards, get_ids_need_update, get_all_metadata, \
+    get_newest_metadata, get_commander_aggregate, get_synergy_scores, add_to_scores, get_new_synergy_scores
 from moxfield import get_deck_data, get_new_decks
 
 def smart_update():
@@ -27,7 +28,8 @@ def smart_update():
                     "publicId": deck['publicId'],
                     "hasPrimer": deck['hasPrimer'],
                     "name": deck['name'],
-                    "lastUpdatedAtUtc": deck['lastUpdatedAtUtc'],
+                    "needsUpdate": True,
+                    "lastUpdatedAtUtc": parser.parse(deck['lastUpdatedAtUtc']).timestamp(),
                 })
                 last_deck_time = parser.parse(deck['lastUpdatedAtUtc']).timestamp()
                 if time_to_reach >= last_deck_time:
@@ -39,16 +41,21 @@ def smart_update():
         print("No new decks")
 
 
+
+
+
 if __name__ == "__main__":
     # Check if there's anything in the database.  If not, add one so we can smart update.
     if len([x for x in get_all_metadata()]) == 0:
-        deck = get_new_decks(20)[-1]
+        # deck = get_new_decks(60)[-1]
+        deck = get_new_decks(40)[-1]
         save_metadata({
             "id": deck['id'],
             "publicId": deck['publicId'],
             "hasPrimer": deck['hasPrimer'],
             "name": deck['name'],
-            "lastUpdatedAtUtc": deck['lastUpdatedAtUtc'],
+            "needsUpdate": True,
+            "lastUpdatedAtUtc": parser.parse(deck['lastUpdatedAtUtc']).timestamp(),
         })
     smart_update()
     for public_id in get_ids_need_update():
