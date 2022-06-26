@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Check if there's anything in the database.  If not, add one so we can smart update.
     if len([x for x in get_all_metadata()]) == 0:
         # deck = get_new_decks(60)[-1]
-        deck = get_new_decks(40)[-1]
+        deck = get_new_decks(5)[-1]
         save_metadata({
             "id": deck['id'],
             "publicId": deck['publicId'],

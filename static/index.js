@@ -44,7 +44,6 @@ function init() {
 
 function doSearch() {
     let input = document.getElementById("search").value
-//    window.location = "/static/commander/" + input
     input = input.toLowerCase().replaceAll(" ", "_").replace(/\W/g, '').replaceAll("_", "-")
     $.get("/commander/" + input, (data)=>{
         console.log(data)
@@ -72,9 +71,6 @@ window.onload = ()=>{
         let gallery = document.createElement("div")
         gallery.className = "gallery"
         document.getElementById("main").appendChild(gallery)
-//        <figure class=”gallery__item gallery__item--1">
-//    <img src="img/image-1.jpg" class="gallery__img" alt="Image 1">
-//  </figure>
         let count = 0;
         commanders.forEach(obj => {
             count += 1
@@ -89,7 +85,7 @@ window.onload = ()=>{
                 } else {
                     let overlay = document.createElement("div");
                     overlay.className = "overlay";
-                    overlay.innerHTML = obj.commanders;
+                    overlay.innerHTML = obj.commanderstring;
                     new_box.appendChild(overlay)
                 }
                 new_box.appendChild(img)

@@ -68,7 +68,7 @@ def save_cards(data):
                 card2 = "Mr Orfeo, the Boulder"
                 info['commanders'][card2] = info['commanders'][card]
                 info['commanders'].pop(card)
-
+        info['commanderstring'] = "-".join(normalize_text([x for x in info['commanders']]))
         mainboard = 0
         for card in info['cards']:
             mainboard += info['cards'][card]
@@ -110,13 +110,13 @@ def get_synergy_scores(commanders):
     return scores
 
 
-def get_new_synergy_scores(commanders):
+def get_new_synergy_scores(commanderstring):
     tik = time.time()
     # Figure this out later...
     # commanders = "-".join(sorted(normalize_text(commanders)))
     col = db['scores']
     print(time.time() - tik)
-    commander_data = col.find_one({"commanders": commanders})
+    commander_data = col.find_one({"commanderstring": commanderstring})
     print(time.time() - tik)
     if commander_data is None:
         return {}
@@ -191,12 +191,12 @@ def new_get_all_commander_counts():
             "$lookup":
             {
                 "from": "cards",
-                "localField": "commanders",
+                "localField": "commanderstring",
                 "foreignField": "normalized",
                 "as": "data"
             }
         },
-        {"$project": {"_id": 0, "commanders": 1, "count": 1, "data": 1}},
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "data": 1}},
     ])
     return [x for x in results]
 
@@ -242,16 +242,17 @@ def add_to_scores(deck_data):
     commanders.sort()
     print(commanders)
     col = db['scores']
-    result = col.find_one({"commanders": "-".join(commanders)})
+    result = col.find_one({"commanderstring": "-".join(commanders)})
     if result is None:
-        col.insert_one({"commanders": "-".join(commanders), "cards": {}, "count": 0})
-        result = col.find_one({"commanders": "-".join(commanders)})
+        col.insert_one({"commanderstring": "-".join(commanders), "cards": {}, "count": 0})
+        result = col.find_one({"commanderstring": "-".join(commanders)})
     for card in deck_data['cards']:
         if card not in result['cards']:
             result['cards'][card] = 0
         result['cards'][card] += 1
     result['count'] += 1
-    col.update_one({'commanders': '-'.join(commanders)}, {"$set": result}, upsert=True)
+    result['commanders'] = sorted([x for x in deck_data['commanders']])
+    col.update_one({'commanderstring': '-'.join(commanders)}, {"$set": result}, upsert=True)
     col = db['alldeckscores']
     for card in deck_data['cards']:
         result = col.find_one({"name": card})
@@ -266,7 +267,7 @@ def subtract_from_scores(deck_data):
     commanders.sort()
     print(commanders)
     col = db['scores']
-    result = col.find_one({"commanders": "-".join(commanders)})
+    result = col.find_one({"commanderstring": "-".join(commanders)})
     if result is None:
         print("Subtracting when none to subtract..")
         return False
@@ -276,7 +277,7 @@ def subtract_from_scores(deck_data):
             return False
         result['cards'][card] -= 1
     result['count'] -= 1
-    col.update_one({'commanders': '-'.join(commanders)}, {"$set": result}, upsert=True)
+    col.update_one({'commanderstring': '-'.join(commanders)}, {"$set": result}, upsert=True)
     col = db['alldeckscores']
     for card in deck_data['cards']:
         if col.find_one({"name": card}) is None:
