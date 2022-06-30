@@ -11,8 +11,6 @@ Three main collections will be use:
 import time
 
 from pymongo import MongoClient
-import datetime
-from dateutil import parser
 from utils import normalize_text
 from scryfall import get_card_data
 
@@ -184,29 +182,31 @@ def new_count_all_decks():
 
 
 def save_card_data(card_name):
-    col = db['metadata']
+    try:
+        col = db['metadata']
 
-    data = get_card_data(card_name)
-    exists = col.find_one({"_id": data['id'] + "card", "type": "card"})
-    if exists is not None and len([x for x in exists]) != 0:
-        return
-    to_write = {}
+        data = get_card_data(card_name)
+        exists = col.find_one({"_id": data['id'] + "card", "type": "card"})
+        if exists is not None and len([x for x in exists]) != 0:
+            return
+        to_write = {}
 
-    to_write["_id"] = data['id'] + "card"
-    to_write["type"] = "card"
-    to_write["name"] = data['name']
-    to_write["commandername"] = data['name']
-    to_write["normalized"] = normalize_text([data['name']])[0]
-    to_write["image"] = data['image_uris']['large'] if 'large' in data['image_uris'] else \
-        data['image_uris'][list(data['image_uris'].keys())[0]]
-    to_write["colors"] = data['color_identity']
+        to_write["_id"] = data['id'] + "card"
+        to_write["type"] = "card"
+        to_write["name"] = data['name']
+        to_write["commandername"] = data['name']
+        to_write["normalized"] = normalize_text([data['name']])[0]
+        to_write["image"] = data['image_uris']['large'] if 'large' in data['image_uris'] else \
+            data['image_uris'][list(data['image_uris'].keys())[0]]
+        to_write["colors"] = data['color_identity']
 
-    if to_write['name'] == "Mr. Orfeo, the Boulder":
-        to_write['name'] = "Mr Orfeo, the Boulder"
-        to_write['commandername'] = "Mr Orfeo, the Boulder"
+        if to_write['name'] == "Mr. Orfeo, the Boulder":
+            to_write['name'] = "Mr Orfeo, the Boulder"
+            to_write['commandername'] = "Mr Orfeo, the Boulder"
 
-    col.insert_one(to_write)
-
+        col.insert_one(to_write)
+    except Exception as e:
+        print(e)
 
 def add_to_scores(deck_data, commander=True):
     time.sleep(1)
