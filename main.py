@@ -2,14 +2,13 @@ import time
 
 from dateutil import parser
 
-from database import save_metadata, load_metadata, save_cards, get_ids_need_update, get_all_metadata, \
-    get_newest_metadata, get_commander_aggregate, get_synergy_scores, add_to_scores, get_new_synergy_scores
+from azure_database import save_metadata, load_metadata, save_cards, get_ids_need_update, get_all_metadata, get_newest_metadata
 from moxfield import get_deck_data, get_new_decks
 
 def smart_update():
     data = get_all_metadata()
     new_decks = get_new_decks()
-    last_time_update = get_newest_metadata()['lastUpdatedAtUtc']
+    last_time_update = get_newest_metadata() # ['lastUpdatedAtUtc']
     newest_deck = new_decks[0]  # Information is received in sorted order.
     # Check if the newest deck is newer than the current newest:
     print("Comparing Times")
@@ -41,14 +40,11 @@ def smart_update():
         print("No new decks")
 
 
-
-
-
 if __name__ == "__main__":
     # Check if there's anything in the database.  If not, add one so we can smart update.
     if len([x for x in get_all_metadata()]) == 0:
         deck = get_new_decks(60)[-1]
-        # deck = get_new_decks(5)[-1]
+        # deck = get_new_decks(1)[-1]
         save_metadata({
             "id": deck['id'],
             "publicId": deck['publicId'],
@@ -57,10 +53,13 @@ if __name__ == "__main__":
             "needsUpdate": True,
             "lastUpdatedAtUtc": parser.parse(deck['lastUpdatedAtUtc']).timestamp(),
         })
-    smart_update()
-    for public_id in get_ids_need_update():
-        card_data = get_deck_data(public_id)
-        save_cards(card_data)
-        data = load_metadata(public_id)
-        data['needsUpdate'] = False
-        save_metadata(data)
+    while True:
+        smart_update()
+        for public_id in get_ids_need_update():
+            card_data = get_deck_data(public_id)
+            if card_data is not False:
+                save_cards(card_data)
+            data = load_metadata(public_id)
+            data['needsUpdate'] = False
+            save_metadata(data)
+        time.sleep(60 * 10)

@@ -16,6 +16,7 @@ from dateutil import parser
 from utils import normalize_text
 from scryfall import get_card_data
 
+# client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
 client = MongoClient()
 db = client['pdhrec']
 
@@ -84,6 +85,7 @@ def save_cards(data):
         result = col.find_one({"_id": info['_id']})
         if result is None:
             add_to_scores(info)
+
             col.insert_one(info)
         else:
             subtract_from_scores(result)
@@ -143,7 +145,8 @@ def get_ids_need_update():
 def get_newest_metadata():
     col = db['metadata']
     col.find_one()
-    return [x for x in db['metadata'].find().sort("lastUpdatedAtUtc", -1).limit(1)][0]
+    return list(reversed(sorted([x['lastUpdatedAtUtc'] for x in db['metadata'].find({})])))[0]
+    # return [x for x in db['metadata'].find().sort(["lastUpdatedAtUtc"], [-1]).limit(1)][0]
 
 
 def get_all_metadata():
@@ -260,6 +263,7 @@ def save_card_data(card_name):
 
 
 def add_to_scores(deck_data):
+    time.sleep(1)
     commanders = normalize_text([x for x in deck_data['commanders']])
     commanders.sort()
     print(commanders)
@@ -270,8 +274,9 @@ def add_to_scores(deck_data):
         result = col.find_one({"commanderstring": "-".join(commanders)})
     for card in deck_data['cards']:
         if card not in result['cards']:
-            result['cards'][card] = 0
-        result['cards'][card] += 1
+            col.update_one({"name": card}, {"$set": {"cards." + card: 0}})
+        col.update_one({"name": card}, {"$inc": {"cards." + card: 1}})
+        # result['cards'][card] += 1
     result['count'] += 1
     result['commanders'] = sorted([x for x in deck_data['commanders']])
     col.update_one({'commanderstring': '-'.join(commanders)}, {"$set": result}, upsert=True)
@@ -322,3 +327,6 @@ if __name__ == "__main__":
     results = get_commander_aggregate(["Ley Weaver", "Lore Weaver"])
     # results = get_all_commanders_and_counts()
     # results = dict(sorted(results.items(), key=lambda item: -item[1]))
+    from moxfield import get_deck_data
+    card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
+    save_cards(card_data)
