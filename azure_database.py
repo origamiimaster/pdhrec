@@ -16,9 +16,9 @@ from dateutil import parser
 from utils import normalize_text
 from scryfall import get_card_data
 
-# client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
+client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
 # client = MongoClient("mongodb+srv://origamiimaster:<password>@pdhrec.pfi73ng.mongodb.net/?retryWrites=true&w=majority")
-client = MongoClient()
+# client = MongoClient()
 db = client['azure_pdhrec']
 
 
