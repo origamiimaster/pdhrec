@@ -6,7 +6,7 @@ from flask import Flask
 from azure_database import new_get_all_commander_counts, get_new_synergy_scores
 import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 
 
 @app.route('/commander/<username>')

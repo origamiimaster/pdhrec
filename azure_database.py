@@ -16,9 +16,9 @@ from dateutil import parser
 from utils import normalize_text
 from scryfall import get_card_data
 
-client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
+# client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
 # client = MongoClient("mongodb+srv://origamiimaster:<password>@pdhrec.pfi73ng.mongodb.net/?retryWrites=true&w=majority")
-# client = MongoClient()
+client = MongoClient()
 db = client['azure_pdhrec']
 
 
@@ -32,6 +32,7 @@ def save_metadata(data):
     col = db['metadata']
     data["_id"] = data['publicId'] + "metadata"
     data["type"] = "metadata"
+    data['commandername'] = ""
     col.update_one({"_id": data["_id"], "type": "metadata"}, {"$set": data}, upsert=True)
 
 
@@ -65,7 +66,7 @@ def save_cards(data):
                 return False
         else:
             return False
-        # save_card_data(card)
+        save_card_data(card)
         if card == "Mr. Orfeo, the Boulder":
             card2 = "Mr Orfeo, the Boulder"
             info['commanders'][card2] = info['commanders'][card]
@@ -81,6 +82,7 @@ def save_cards(data):
     if not 0 < len(info['commanders']) <= 2:
         return False
     print("Inserting cards..")
+    info['commandername'] = ""
     print(info)
     # Does it already exist in the database?
     result = col.find_one({"_id": info['_id'], "type": "deck"})
@@ -97,21 +99,6 @@ def save_cards(data):
     #     print(e)
     #     return False
     return True
-
-
-# def get_synergy_scores(commanders):
-#     # score is % of decks the card is in for the commander, - % of cards in the deck for all decks
-#
-#     one = get_commander_aggregate_bad(commanders)
-#
-#     two = get_commander_aggregate_bad([])
-#
-#     scores = {}
-#     for card in one:
-#         a = one[card] / get_decks_with_commanders(commanders)
-#         b = two[card] / get_decks_with_commanders([])
-#         scores[card] = a - b
-#     return scores
 
 
 def get_new_synergy_scores(commanderstring):
@@ -144,74 +131,31 @@ def get_newest_metadata():
     col = db['metadata']
     col.find_one()
     return list(reversed(sorted([x['lastUpdatedAtUtc'] for x in db['metadata'].find({"type": "metadata"})])))[0]
-    # return [x for x in db['metadata'].find().sort(["lastUpdatedAtUtc"], [-1]).limit(1)][0]
 
 
 def get_all_metadata():
     return db['metadata'].find({})
 
 
-# def get_commander_aggregate(commanders):
-#     col = db['decks']
-#     if len(commanders) == 2:
-#         match = {"$and": [{f"commanders.{commanders[0]}": {"$exists": 1}}, {f"commanders.{commanders[1]}": {
-#             "$exists": 1}}]}
-#     elif len(commanders) == 1:
-#         match = {f"commanders.{commanders[0]}": {"$exists": 1}}
-#     else:
-#         match = {}
-#     # print({"$match": match})
-#     result = col.aggregate(pipeline=[
-#         {"$match": match},
-#         # {"$project": {"_id": 0, "cards": 1}},
-#
-#     ])
-#     return result
 
-#
-# def get_commander_aggregate_bad(commanders):
-#     decks = get_commander_aggregate(commanders)
-#     sums = {}
-#     for deck in decks:
-#         for card in deck['cards']:
-#             if card not in sums:
-#                 sums[card] = 0
-#             # sums[card] += deck['cards'][card]
-#             sums[card] += 1  # Fixed to one win per card.  Reduces shifting from rat colony type cards
-#     return sums
-
-#
-# def get_decks_with_commanders(commanders):
-#     return len([x for x in get_commander_aggregate(commanders)])
-#
-#
 def new_get_all_commander_counts():
     col = db['scores']
     results = col.aggregate(pipeline=[
-        # {
-        #     "$lookup":
-        #     {
-        #         "from": "cards",
-        #         "localField": "commanderstring",
-        #         "foreignField": "normalized",
-        #         "as": "data"
-        #     }
-        # },
         {
             "$lookup":
             {
-                "from": "cards",
+                "from": "metadata",
                 "localField": "commanders.0",
-                "foreignField": "name",
+                "foreignField": "commandername",
                 "as": "partner1"
             }
          },
         {
             "$lookup":
                 {
-                    "from": "cards",
+                    "from": "metadata",
                     "localField": "commanders.1",
-                    "foreignField": "name",
+                    "foreignField": "commandername",
                     "as": "partner2"
                 }
         },
@@ -240,16 +184,18 @@ def new_count_all_decks():
 
 
 def save_card_data(card_name):
-    col = db['cards']
+    col = db['metadata']
 
     data = get_card_data(card_name)
-    exists = col.find_one({"_id": data['id']})
+    exists = col.find_one({"_id": data['id'] + "card", "type": "card"})
     if exists is not None and len([x for x in exists]) != 0:
         return
     to_write = {}
 
-    to_write["_id"] = data['id']
+    to_write["_id"] = data['id'] + "card"
+    to_write["type"] = "card"
     to_write["name"] = data['name']
+    to_write["commandername"] = data['name']
     to_write["normalized"] = normalize_text([data['name']])[0]
     to_write["image"] = data['image_uris']['large'] if 'large' in data['image_uris'] else \
         data['image_uris'][list(data['image_uris'].keys())[0]]
@@ -257,6 +203,7 @@ def save_card_data(card_name):
 
     if to_write['name'] == "Mr. Orfeo, the Boulder":
         to_write['name'] = "Mr Orfeo, the Boulder"
+        to_write['commandername'] = "Mr Orfeo, the Boulder"
 
     col.insert_one(to_write)
 
