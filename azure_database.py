@@ -64,7 +64,7 @@ def save_cards(data):
                 return False
         else:
             return False
-        save_card_data(card)
+        # url = save_card_data(card)
         if card == "Mr. Orfeo, the Boulder":
             card2 = "Mr Orfeo, the Boulder"
             info['commanders'][card2] = info['commanders'][card]
@@ -139,26 +139,25 @@ def get_all_metadata():
 def new_get_all_commander_counts():
     col = db['scores']
     results = col.aggregate(pipeline=[
-        {
-            "$lookup":
-            {
-                "from": "metadata",
-                "localField": "commanders.0",
-                "foreignField": "commandername",
-                "as": "partner1"
-            }
-         },
-        {
-            "$lookup":
-                {
-                    "from": "metadata",
-                    "localField": "commanders.1",
-                    "foreignField": "commandername",
-                    "as": "partner2"
-                }
-        },
-        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "partner1": 1,
-                      "partner2": 1}},
+        # {
+            # "$lookup":
+            # {
+                # "from": "metadata",
+                # "localField": "commanders.0",
+                # "foreignField": "commandername",
+                # "as": "partner1"
+            # }
+         # },
+        # {
+            # "$lookup":
+                # {
+                    # "from": "metadata",
+                    # "localField": "commanders.1",
+                    # "foreignField": "commandername",
+                    # "as": "partner2"
+                # }
+        # },
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "urls": 1}},
     ])
     return [x for x in [x for x in results] if x['commanderstring'] != '']
 
@@ -208,6 +207,15 @@ def save_card_data(card_name):
     except Exception as e:
         print(e)
 
+def get_card_url(card_name):
+    try:
+        data = get_card_data(card_name)
+        return data["image_uris"]["large"] if "large" in data["image_uris"] else data["image_uris"][list(data['image_uris'].keys())[0]]
+    except Exception as e:
+        print(e)
+        return "https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914"
+
+
 def add_to_scores(deck_data, commander=True):
     time.sleep(1)
     if commander:
@@ -219,7 +227,13 @@ def add_to_scores(deck_data, commander=True):
     col = db['scores']
     result = col.find_one({"commanderstring": "-".join(commanders)})
     if result is None:
-        col.insert_one({"commanderstring": "-".join(commanders), "cards": {}, "count": 0})
+        to_insert = {"commanderstring": "-".join(commanders), "cards": {}, "count": 0}
+        if commander is True:
+            to_insert["urls"] = []
+            for commander in deck_data["commanders"]:
+                to_insert["urls"].append(get_card_url(commander))
+            # to_insert["partner1"] = get_card_url()
+        col.insert_one(to_insert)
         result = col.find_one({"commanderstring": "-".join(commanders)})
     for card in deck_data['cards']:
         if card not in result['cards']:
@@ -302,3 +316,6 @@ if __name__ == "__main__":
     # card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
     # save_cards(card_data)
     col = db['metadata']
+    data = new_get_all_commander_counts()
+    print(data)
+    print(get_card_url("Colossal Dreadmaw"))

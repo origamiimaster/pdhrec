@@ -2,7 +2,7 @@
 Runs the flask server to host the project...
 Not for deployment, just development for now
 """
-from flask import Flask
+from flask import Flask, send_file
 from azure_database import new_get_all_commander_counts, get_new_synergy_scores
 import json
 
@@ -22,7 +22,7 @@ def top_commanders():
 
 @app.route("/")
 def hello():
-    return "<html><body> TESTING.... go to /topcommanders</body></html>"
+    return send_file("static/index.html")
 
 
 if __name__ == '__main__':
