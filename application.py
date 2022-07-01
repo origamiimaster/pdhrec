@@ -22,13 +22,27 @@ def get_pretty_commander(commander_data):
     cards_and_scores = [(card, commander_data[card]) for card in commander_data]
     cards_and_scores.sort(key=lambda x: x[1])
     cards_and_scores.reverse()
-    cards_and_scores_text = [x[0] + ":" + str(x[1]) for x in cards_and_scores]
+    # cards_and_scores_text = [x[0] + ":" + str(x[1]) for x in cards_and_scores]
+    cards_and_scores_text = [f"<tr><td>{x[0]}</td><td>{'{0:.2%}'.format(x[1])}</td></tr>" for x in cards_and_scores]
     return f"""
 <html>
     <head>
+        <!-- <link rel="stylesheet" href="main.css"></link>-->
+        <style>
+            table {{
+                border-color: blue;
+                width: 100%;
+                font-size: 1.5em;
+            }}
+
+        </style>
     </head>
 <body>
-{'<br>'.join(cards_and_scores_text)}
+<h1> Card Data (beta) </h1>
+<table>
+<tr><th>Card Name</th><th>Synergy Score</th></tr>
+{''.join(cards_and_scores_text)}
+</table>
 </body>
 </html>
 """
