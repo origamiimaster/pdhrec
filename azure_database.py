@@ -217,7 +217,7 @@ def get_card_url(card_name):
 
 
 def add_to_scores(deck_data, commander=True):
-    time.sleep(1)
+    # time.sleep(1)
     if commander:
         commanders = normalize_text([x for x in deck_data['commanders']])
         commanders.sort()
