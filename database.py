@@ -16,9 +16,9 @@ from dateutil import parser
 from utils import normalize_text
 from scryfall import get_card_data
 
-# client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
-client = MongoClient()
-db = client['pdhrec']
+client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
+# client = MongoClient()
+db = client['azure_pdhrec']
 
 
 def save_metadata(data):
@@ -223,6 +223,13 @@ def new_get_all_commander_counts():
     return [x for x in results]
 
 
+def get_all_staples():
+
+    col = db['scores']
+    data = col.find_one({"commanderstring": ""})
+    data.pop("_id")
+    return data
+
 def new_count_all_decks():
     col = db['decks']
     return col.count()
@@ -324,9 +331,11 @@ if __name__ == "__main__":
     # results = dict(sorted(results.items(), key=lambda item: -item[1]))
     # for x in results:
     #     print(f"{x}:{results[x]}")
-    results = get_commander_aggregate(["Ley Weaver", "Lore Weaver"])
+    # results = get_commander_aggregate(["Ley Weaver", "Lore Weaver"])
     # results = get_all_commanders_and_counts()
     # results = dict(sorted(results.items(), key=lambda item: -item[1]))
-    from moxfield import get_deck_data
-    card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
-    save_cards(card_data)
+    # from moxfield import get_deck_data
+    # card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
+    # save_cards(card_data)
+
+    print(get_all_staples())

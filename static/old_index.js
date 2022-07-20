@@ -1,50 +1,59 @@
-function applyHash(hash) {
-    if (hash == "about") {
-        document.getElementById("main").style.display = "none"
-        document.getElementById("staples").style.display = "none"
-        document.getElementById("about").style.display = "block"
-    } else if (hash == "staples") {
-        document.getElementById("about").style.display = "none"
-        document.getElementById("main").style.display = "none"
-        document.getElementById("staples").style.display = "block"
-    } else {
-        document.getElementById("about").style.display = "none"
-        document.getElementById("staples").style.display = "none"
-        document.getElementById("main").style.display = "block"
-    }
+function showAbout(){
+    document.getElementById("main").style.display = "none";
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("commander").style.display = "none";
+    document.getElementById("about").style.display = "block"
+}
+
+function showContact(){
+    document.getElementById("main").style.display = "none";
+    document.getElementById("about").style.display = "none"
+    document.getElementById("commander").style.display = "none";
+    document.getElementById("contact").style.display = "block";
+}
+
+function showHome(){
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("commander").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("main").style.display = "block";
+}
+function showCommander(){
+    document.getElementById("contact").style.display = "none";
+    document.getElementById("about").style.display = "none";
+    document.getElementById("main").style.display = "none";
+    document.getElementById("commander").style.display = "block";
 }
 
 function init() {
     window.addEventListener("hashchange", (e)=>{
         let hash = window.location.hash.substr(1);
-        applyHash(hash)
-//        if (hash == "contact") {
-//            showContact();
-//        } else if (hash == "about") {
-//            showAbout();
-//        } else {
-//            showHome();
-//        }
+        if (hash == "contact") {
+            showContact();
+        } else if (hash == "about") {
+            showAbout();
+        } else {
+            showHome();
+        }
     })
-    applyHash(window.location.hash.substr(1))
-//    let hash = window.location.hash.substr(1);
-//    if (hash == "contact") {
-//        showContact();
-//    } else if (hash == "about") {
-//        showAbout();
-//    } else if (hash == "commander"){
-//        showCommander()
-//    } else {
-//        showHome();
-//    }
+    let hash = window.location.hash.substr(1);
+    if (hash == "contact") {
+        showContact();
+    } else if (hash == "about") {
+        showAbout();
+    } else if (hash == "commander"){
+        showCommander()
+    } else {
+        showHome();
+    }
 
-//    document.getElementById("search").addEventListener("keydown", (e)=>{
-//        if (e.key == "Enter") {
-//            let input = document.getElementById("search").value
-//            input = input.toLowerCase().replaceAll(" ", "_").replace(/\W/g, '').replaceAll("_", "-")
-//            doSearch(input)
-//        }
-//    })
+    document.getElementById("search").addEventListener("keydown", (e)=>{
+        if (e.key == "Enter") {
+            let input = document.getElementById("search").value
+            input = input.toLowerCase().replaceAll(" ", "_").replace(/\W/g, '').replaceAll("_", "-")
+            doSearch(input)
+        }
+    })
 }
 
 function autocomplete(inp, arr) {
@@ -168,7 +177,9 @@ window.onload = ()=>{
         })
         commanders = data;
 
-        let gallery = document.getElementById("gallery")
+        let gallery = document.createElement("div")
+        gallery.className = "gallery"
+        document.getElementById("main").appendChild(gallery)
         let count = 0;
         commanders.forEach(obj => {
             count += 1
@@ -176,12 +187,10 @@ window.onload = ()=>{
                 let new_box = document.createElement("a");
                 new_box.target="_blank"
                 new_box.href = "/commander/" + obj.commanderstring
-                new_box.className = "gallery-item"
+                new_box.className = "card"
                 let img = document.createElement("img")
-                img.setAttribute("loading", "lazy")
-//                img.src = "https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914Y"
+                img.src = "https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914Y"
                 img.alt = "Image"
-                placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
                 try {
                     let info_box = document.createElement("div");
                     info_box.className = "info"
@@ -189,25 +198,18 @@ window.onload = ()=>{
 
                     if (obj.commanders.length == 1) {
                          img.alt = obj.commanders[0]
-                        img.src = placeholder//obj.urls[0]
-                        img.classList.add("lazy")
-                        img.setAttribute('data-src', obj.urls[0])
+                        img.src = obj.urls[0]
                         new_box.appendChild(img)
                         new_box.appendChild(info_box)
                     } else {
                         let partners = document.createElement("div")
                         partners.className = "partners"
                         img.className = "partner1"
-                        img.classList.add("lazy")
-                        img.src = placeholder //obj.urls[0]
-                        img.setAttribute('data-src', obj.urls[0])
+                        img.src = obj.urls[0]
                         img.alt = obj.commanders[0]
                         let img2 = document.createElement("img")
-                        img2.setAttribute("loading", "lazy")
                         img2.className = "partner2"
-                        img2.classList.add("lazy")
-                        img2.src = placeholder //obj.urls[1]
-                        img2.setAttribute('data-src', obj.urls[1])
+                        img2.src = obj.urls[1]
                         img2.alt = obj.commanders[1]
                         partners.appendChild(img)
                         partners.appendChild(img2)
@@ -219,54 +221,7 @@ window.onload = ()=>{
                 }
                 gallery.appendChild(new_box)
             }
+            autocomplete(document.getElementById("search"), test)
         })
-          var lazyloadImages;
-          if ("IntersectionObserver" in window) {
-            lazyloadImages = document.querySelectorAll(".lazy");
-            var imageObserver = new IntersectionObserver(function(entries, observer) {
-              entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                  var image = entry.target;
-                  image.src = image.dataset.src;
-                  image.classList.remove("lazy");
-                  imageObserver.unobserve(image);
-                }
-              });
-            });
-            lazyloadImages.forEach(function(image) {
-              imageObserver.observe(image);
-            });
-          } else {
-              console.log("Not observer")
-            var lazyloadThrottleTimeout;
-            lazyloadImages = document.querySelectorAll(".lazy");
-
-            function lazyload () {
-              if(lazyloadThrottleTimeout) {
-                clearTimeout(lazyloadThrottleTimeout);
-              }
-
-              lazyloadThrottleTimeout = setTimeout(function() {
-                var scrollTop = window.pageYOffset;
-                lazyloadImages.forEach(function(img) {
-                    if(img.offsetTop < (window.innerHeight + scrollTop)) {
-                      img.src = img.dataset.src;
-                      img.classList.remove('lazy');
-                    }
-                });
-                if(lazyloadImages.length == 0) {
-                  document.removeEventListener("scroll", lazyload);
-                  window.removeEventListener("resize", lazyload);
-                  window.removeEventListener("orientationChange", lazyload);
-                }
-              }, 20);
-            }
-
-            document.addEventListener("scroll", lazyload);
-            window.addEventListener("resize", lazyload);
-            window.addEventListener("orientationChange", lazyload);
-          }
-
     })
 }
-

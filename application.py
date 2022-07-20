@@ -3,6 +3,8 @@ Runs the flask server to host the project...
 Not for deployment, just development for now
 """
 from flask import Flask, send_file, request
+
+import database
 from azure_database import new_get_all_commander_counts, get_new_synergy_scores
 import json
 
@@ -62,6 +64,9 @@ def top_commanders():
 def hello():
     return send_file("static/index.html")
 
+@app.route("/get-staples")
+def get_staples():
+    return database.get_all_staples()
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)  # run our Flask app

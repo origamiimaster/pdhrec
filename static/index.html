@@ -14,32 +14,56 @@
 </head>
 <body>
 <script src="index.js"></script>
-<div class="topnav">
-  <a class="active" href="#home">Home</a>
-  <a href="#about" onclick="showAbout()">About</a>
-  <a href="#contact" onclick="showContact()">Contact</a>
-  <input id="search" type="text" autocomplete="off" placeholder="Search.." onsubmit="doSearch()">
-</div>
 
-<div id="main">
-  <div style="padding-left:16px;">
-    <h2 style="margin-bottom: 0px;">PDHREC: Top Commanders for Pauper EDH</h2>
-  </div>
-</div>
-<div id="about" style="display: none;">
-  <div style="padding-left:16px">
-    <h2>What is PDHREC?</h2>
-    <p>Inspired by <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
-      PDHREC is an attempt to do similar things for Pauper Commander.    </p>
-  </div>
-</div>
-<div id="contact" style="display: none;">
-  <div style="padding-left:16px">
-    <h2>Contact:</h2>
-    <p>Reach out to me online.  You can probably find me on the PDH Homebase discord server.  </p>
-    <p><a target="_blank" href="https://discord.gg/NYtscywtkS">https://discord.gg/NYtscywtkS</a></p>
-  </div>
-</div>
+
+    <div id="navbar">
+      <div id="navbar-control">
+        <a title="PDHREC" href="/" class="header-home">
+          <h1 class="header-home-h1">PDHREC</h1>
+        </a>
+        <form action="/search" class="nav-search">
+          <input type="text" name="q" id="nav-search-field" autocomplete="off" placeholder="Search for cards...">
+        </form>
+        <div class="nav-links">
+          <a href="/" class="nav-link">Commanders</a>
+          <a href="#staples" class="nav-link">Staples</a>
+          <a href="#about" class="nav-link">About</a>
+        </div>
+      </div>
+    </div>
+    <div id="main" class="main">
+      <div id="gallery" class="gallery">
+      </div>
+    </div>
+    <div id="about" class="main" style="display: none;">
+        <p>
+            <h2>About PDHREC</h2>
+        </p>
+        <p>Inspired by <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+          PDHREC is an attempt to do similar things for Pauper Commander.    </p>
+        <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+          the data.  </p>
+        <p>
+          The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+          decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+          commander it is in, and then subtracting the percentage of decks it is in on average.  A score of -100% synergy
+          means every deck runs it, except for decks with your commander.  A score of +100% synergy is highly unlikely,
+          but means that every single deck with this commander runs it, and no others decks do.
+        </p>
+    </div>
+    <div id="staples" class="main" style="display: none;">
+        <p>
+            Coming soon.
+        </p>
+    </div>
+<footer id="footer">
+    <div id="footer-flex">
+        <p>
+            PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+        </p>
+    </div>
+
+</footer>
 
 </body>
 </html>
