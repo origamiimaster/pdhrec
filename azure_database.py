@@ -14,7 +14,8 @@ from pymongo import MongoClient
 from utils import normalize_text
 from scryfall import get_card_data
 
-client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
+client = MongoClient(
+    "mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
 # client = MongoClient("mongodb+srv://origamiimaster:<password>@pdhrec.pfi73ng.mongodb.net/?retryWrites=true&w=majority")
 # client = MongoClient()
 db = client['azure_pdhrec']
@@ -135,27 +136,26 @@ def get_all_metadata():
     return db['metadata'].find({})
 
 
-
 def new_get_all_commander_counts():
     col = db['scores']
     results = col.aggregate(pipeline=[
         # {
-            # "$lookup":
-            # {
-                # "from": "metadata",
-                # "localField": "commanders.0",
-                # "foreignField": "commandername",
-                # "as": "partner1"
-            # }
-         # },
+        # "$lookup":
         # {
-            # "$lookup":
-                # {
-                    # "from": "metadata",
-                    # "localField": "commanders.1",
-                    # "foreignField": "commandername",
-                    # "as": "partner2"
-                # }
+        # "from": "metadata",
+        # "localField": "commanders.0",
+        # "foreignField": "commandername",
+        # "as": "partner1"
+        # }
+        # },
+        # {
+        # "$lookup":
+        # {
+        # "from": "metadata",
+        # "localField": "commanders.1",
+        # "foreignField": "commandername",
+        # "as": "partner2"
+        # }
         # },
         {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "urls": 1}},
     ])
@@ -207,10 +207,12 @@ def save_card_data(card_name):
     except Exception as e:
         print(e)
 
+
 def get_card_url(card_name):
     try:
         data = get_card_data(card_name)
-        return data["image_uris"]["large"] if "large" in data["image_uris"] else data["image_uris"][list(data['image_uris'].keys())[0]]
+        return data["image_uris"]["large"] if "large" in data["image_uris"] else data["image_uris"][
+            list(data['image_uris'].keys())[0]]
     except Exception as e:
         print(e)
         return "https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914"
@@ -297,6 +299,14 @@ def subtract_from_scores(deck_data, commander=True):
     #         return False
     #     else:
     #         col.update_one({"name": card}, {"$inc": {"count": -1}})
+
+
+def check_commander_exists(commander_name) -> bool:
+    col = db['scores']
+    if col.find_one({"commanderstring": commander_name}) is None:
+        return False
+    else:
+        return True
 
 
 if __name__ == "__main__":
