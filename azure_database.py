@@ -46,8 +46,7 @@ def save_cards(data):
             'colors': {'W': False, 'U': False, 'B': False,
                        'R': False, 'G': False}, "type": "deck"}
     for card in data['mainboard']:
-        if "paupercommander" not in data['mainboard'][card]['card']['legalities'] or data['mainboard'][card][
-            'card']['legalities']['paupercommander'] != "legal":
+        if "paupercommander" not in data['mainboard'][card]['card']['legalities'] or data['mainboard'][card]['card']['legalities']['paupercommander'] != "legal":
             return False
         info['cards'][card] = data['mainboard'][card]["quantity"]
 
@@ -82,7 +81,6 @@ def save_cards(data):
         return False
     print("Inserting cards..")
     info['commandername'] = ""
-    print(info)
     # Does it already exist in the database?
     result = col.find_one({"_id": info['_id'], "type": "deck"})
     if result is None:
@@ -94,9 +92,7 @@ def save_cards(data):
         add_to_scores(info)
         info['type'] = "deck"
         col.update_one({'_id': info['_id'], "type": "deck"}, {"$set": info}, upsert=True)
-    # except Exception as e:
-    #     print(e)
-    #     return False
+
     return True
 
 
@@ -219,7 +215,6 @@ def get_card_url(card_name):
 
 
 def add_to_scores(deck_data, commander=True):
-    # time.sleep(1)
     if commander:
         commanders = normalize_text([x for x in deck_data['commanders']])
         commanders.sort()
@@ -249,19 +244,6 @@ def add_to_scores(deck_data, commander=True):
     if commander:
         add_to_scores(deck_data, False)
 
-    # if commanders[0] == "" and len(commanders) == 1:
-    #     pass
-    # else:
-    #     deck_data['commanders'] = [""]
-    #     add_to_scores(deck_data)
-
-    # col = db['alldeckscores']
-    # for card in deck_data['cards']:
-    #     result = col.find_one({"name": card})
-    #     if result is None:
-    #         col.insert_one({"name": card, "count": 1})
-    #     else:
-    #         col.update_one({'name': card}, {"$inc": {"count": 1}})
 
 
 def subtract_from_scores(deck_data, commander=True):
