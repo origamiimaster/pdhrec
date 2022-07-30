@@ -6,7 +6,7 @@ from flask import Flask, send_file, request, redirect
 
 from utils import normalize_text
 import database
-from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists
+from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, get_commander_names
 import json
 
 app = Flask(__name__, static_url_path="")
@@ -18,7 +18,8 @@ def show_commander(name):
         format = request.args.get("format")
         if format == "json":
             return json.dumps(get_new_synergy_scores(name))
-    return get_pretty_commander(get_new_synergy_scores(name))
+    # Return the deck data page...
+    return send_file("static/data.html")
 
 
 def get_pretty_commander(commander_data):
@@ -61,6 +62,11 @@ def top_commanders():
     return json.dumps(new_get_all_commander_counts())
 
 
+@app.route("/commander-names")
+def commander_names():
+    return json.dumps([x for x in get_commander_names()])
+
+
 @app.route("/")
 def hello():
     return send_file("static/index.html")
@@ -68,7 +74,12 @@ def hello():
 
 @app.route("/get-staples")
 def get_staples():
-    return database.get_all_staples()
+    return json.dumps(database.get_all_staples())
+
+
+@app.route("/staples")
+def staples():
+    return send_file("static/staples.html")
 
 
 @app.route("/search")

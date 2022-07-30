@@ -15,10 +15,6 @@ function applyHash(hash) {
     }
 }
 
-function addCommanderToGallery(commander) {
-
-}
-
 function init() {
     window.addEventListener("hashchange", (e) => {
         let hash = window.location.hash.substr(1);
@@ -99,78 +95,54 @@ function autocomplete(inp, arr) {
 
 window.onload = () => {
     init();
-    $.get("/top-commanders", (data) => {
-        data = JSON.parse(data)
-        data.sort((a, b) => {
-            if (a.count > b.count) {
+    $.get(window.location.pathname + "?format=json", (data) => {
+        data = JSON.parse(data);
+        cards = []
+        Object.keys(data).forEach((thing) => {
+            cards.push([thing, data[thing]])
+        })
+        cards.sort((a, b) => {
+            if (a[1] > b[1]) {
                 return -1;
-            } else if (a.count < b.count) {
-                return 1
+            } else if (a[1] < b[1]) {
+                return 1;
             } else {
                 return 0;
             }
         })
-        commanders = data;
+
 
         let gallery = document.getElementById("gallery")
         let count = 0;
         let commanderNames = [];
-        commanders.forEach(obj => {
+        cards.forEach(obj => {
             count += 1
             if (count <= 100) {
                 let new_box = document.createElement("a");
-                //                new_box.target="_blank"
-                new_box.href = "/commander/" + obj.commanderstring
                 new_box.className = "gallery-item"
                 let img = document.createElement("img")
                 img.setAttribute("loading", "lazy")
                 img.alt = "Image"
                 placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
                 try {
+                    img.src = placeholder
                     let info_box = document.createElement("div");
                     info_box.className = "info"
-                    info_box.innerHTML = "In " + obj.count + " decks"
-                    if (obj.commanders.length == 1) {
-                        img.alt = obj.commanders[0]
-                        img.src = placeholder
-                        img.classList.add("lazy")
-                        img.setAttribute('data-src', obj.urls[0])
-                        new_box.appendChild(img)
-                        new_box.appendChild(info_box)
-                        // commanderNames.push(obj.commanders[0])
-                    } else {
-                        let partners = document.createElement("div")
-                        partners.className = "partners"
-                        img.className = "partner1"
-                        img.classList.add("lazy")
-                        img.src = placeholder
-                        img.setAttribute('data-src', obj.urls[0])
-                        img.alt = obj.commanders[0]
-                        let img2 = document.createElement("img")
-                        img2.setAttribute("loading", "lazy")
-                        img2.className = "partner2"
-                        img2.classList.add("lazy")
-                        img2.src = placeholder
-                        img2.setAttribute('data-src', obj.urls[1])
-                        img2.alt = obj.commanders[1]
-                        partners.appendChild(img)
-                        partners.appendChild(img2)
-                        new_box.appendChild(partners)
-                        partners.appendChild(info_box)
-                        // commanderNames.push(obj.commanders.join(" "))
-                    }
+                    info_box.innerHTML = obj[0] + ": " + Math.round(obj[1] * 10000) / 100 + "%"
+
+                    img.alt = obj[0]
+                    img.classList.add("lazy")
+                    let img_url = "https://api.scryfall.com/cards/named?fuzzy="
+                    img_url += encodeURIComponent(obj[0]);
+                    img.setAttribute('data-src', img_url)
+                    new_box.appendChild(img)
+                    new_box.appendChild(info_box)
                 } catch (e) {
                     console.log(e)
                 }
                 gallery.appendChild(new_box)
             }
-            if (obj.commanders.length == 1) {
-                commanderNames.push(obj.commanders[0])
-            } else {
-                commanderNames.push(obj.commanders.join(" "))
-            }
         })
-        autocomplete(document.getElementById("nav-search-field"), commanderNames)
         var lazyloadImages;
         if ("IntersectionObserver" in window) {
             lazyloadImages = document.querySelectorAll(".lazy");
@@ -178,9 +150,21 @@ window.onload = () => {
                 entries.forEach(function (entry) {
                     if (entry.isIntersecting) {
                         var image = entry.target;
-                        image.src = image.dataset.src;
-                        image.classList.remove("lazy");
-                        imageObserver.unobserve(image);
+                        $(window).queue(() => {
+                            $.get(image.dataset.src, (response) => {
+                                try {
+                                    if (response['image_uris'] == undefined) {
+                                        image.src = response['card_faces'][0]['image_uris']['normal']
+                                    }
+                                    image.src = response['image_uris']['normal']
+                                } catch (e) {
+                                    console.log("Image didn't load", e);
+                                }
+                                image.classList.remove("lazy");
+                                imageObserver.unobserve(image);
+                                $(window).delay(50).dequeue();
+                            })
+                        })
                     }
                 });
             });
@@ -218,6 +202,14 @@ window.onload = () => {
             window.addEventListener("orientationChange", lazyload);
         }
 
+    })
+    $.get("/commander-names", (data) => {
+        let commanderNames = []
+        data = JSON.parse(data)
+        data.forEach((obj) => {
+            commanderNames.push(obj["commanders"].join(" "))
+        })
+        autocomplete(document.getElementById("nav-search-field"), commanderNames)
     })
 }
 

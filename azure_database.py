@@ -164,18 +164,6 @@ def new_count_all_decks():
     # return col.count()
 
 
-# def get_all_commanders_and_counts():
-#     in_data = get_commander_aggregate([])
-#     out_data = {}
-#     for deck in in_data:
-#         commanders = sorted([key for key in deck['commanders']])
-#         commanders = normalize_text(commanders)
-#         if "-".join(commanders) not in out_data:
-#             out_data["-".join(commanders)] = 0
-#         out_data["-".join(commanders)] += 1
-#     return out_data
-
-
 def save_card_data(card_name):
     try:
         col = db['metadata']
@@ -245,7 +233,6 @@ def add_to_scores(deck_data, commander=True):
         add_to_scores(deck_data, False)
 
 
-
 def subtract_from_scores(deck_data, commander=True):
     if commander:
         commanders = normalize_text([x for x in deck_data['commanders']])
@@ -287,8 +274,15 @@ def check_commander_exists(commander_name) -> bool:
     col = db['scores']
     if col.find_one({"commanderstring": commander_name}) is None:
         return False
-    else:
-        return True
+    return True
+
+
+def get_commander_names():
+    col = db['scores']
+    results = col.aggregate(pipeline=[
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1}},
+    ])
+    return results
 
 
 if __name__ == "__main__":
