@@ -95,11 +95,28 @@ function autocomplete(inp, arr) {
 
 window.onload = () => {
     init();
+    // $("<div>TEST</div>").insertBefore("#gallery")
     $.get(window.location.pathname + "?format=json", (data) => {
+        $("#gallery").append("<div id='commander-information' class='gallery-item' style='width: 100%; display: flex;'></div>")
         data = JSON.parse(data);
+        let img = document.createElement("img");
+        img.className = "gallery-item"
+        img.setAttribute("loading", "lazy")
+        img.alt = "Image"
+        img.src = data['commander']['urls'][0]
+
+        
+        img.alt = data['commander']['commanders'].join(" ");
+
+        document.getElementById("commander-information").appendChild(img)
+
+        $("#commander-information").append(`<div class="big-gallery-item">${data['commander']['commanders'].join(" ")}</div>`)
+
+
+        // data = data['cards']
         cards = []
-        Object.keys(data).forEach((thing) => {
-            cards.push([thing, data[thing]])
+        Object.keys(data['cards']).forEach((thing) => {
+            cards.push([thing, data['cards'][thing]])
         })
         cards.sort((a, b) => {
             if (a[1] > b[1]) {

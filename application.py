@@ -6,7 +6,8 @@ from flask import Flask, send_file, request, redirect
 
 from utils import normalize_text
 import database
-from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, get_commander_names
+from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, \
+    get_commander_names, get_commander_data
 import json
 
 app = Flask(__name__, static_url_path="")
@@ -17,7 +18,7 @@ def show_commander(name):
     if "format" in request.args:
         format = request.args.get("format")
         if format == "json":
-            return json.dumps(get_new_synergy_scores(name))
+            return json.dumps({"cards": get_new_synergy_scores(name), "commander": get_commander_data(name)})
     # Return the deck data page...
     return send_file("static/data.html")
 

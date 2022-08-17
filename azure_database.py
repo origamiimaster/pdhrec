@@ -284,6 +284,14 @@ def get_commander_names():
     ])
     return results
 
+def get_commander_data(commander_name):
+    col = db['scores']
+    results = col.aggregate(pipeline=[
+        {"$match": {"commanderstring": commander_name}},
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "urls": 1}},
+    ])
+    # print(results)
+    return results.next()
 
 if __name__ == "__main__":
     # in_the_deck = get_commander_aggregate_bad(["Crypt Rats"])
