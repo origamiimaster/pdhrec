@@ -293,6 +293,20 @@ def get_commander_data(commander_name):
     # print(results)
     return results.next()
 
+def add_website_visit():
+    col = db["metadata"]
+    if col.find_one({"type": "visits"}) is None:
+        col.insert_one({"type":"visits", "_id":"visits", "count": 0})
+    data = col.find_one({"type":"visits"})
+    data["count"] += 1
+    col.update_one({"type":"visits"}, {"$set": data})
+
+def get_website_visit():
+    col = db["metadata"]
+    if col.find_one({"type":"visits"}) is None:
+        return 0
+    return col.find_one({"type":"visits"})["count"]
+
 if __name__ == "__main__":
     # in_the_deck = get_commander_aggregate_bad(["Crypt Rats"])
     # in_all_decks = get_commander_aggregate_bad([])

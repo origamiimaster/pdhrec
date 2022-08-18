@@ -7,7 +7,7 @@ from flask import Flask, send_file, request, redirect
 from utils import normalize_text
 import database
 from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, \
-    get_commander_names, get_commander_data
+    get_commander_names, get_commander_data, add_website_visit, get_website_visit
 import json
 
 app = Flask(__name__, static_url_path="")
@@ -70,6 +70,7 @@ def commander_names():
 
 @app.route("/")
 def hello():
+    add_website_visit()
     return send_file("static/index.html")
 
 
@@ -81,6 +82,10 @@ def get_staples():
 @app.route("/staples")
 def staples():
     return send_file("static/staples.html")
+
+@app.route("/counter")
+def counter():
+    return {"count":get_website_visit()}
 
 
 @app.route("/search")
