@@ -22,7 +22,7 @@ function init() {
     })
     applyHash(window.location.hash.substr(1))
 }
-
+/*
 function autocomplete(inp, arr) {
     var currentFocus;
     inp.addEventListener("input", function (e) {
@@ -92,7 +92,7 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
 }
-
+*/
 window.onload = () => {
     init();
     // $("<div>TEST</div>").insertBefore("#gallery")
@@ -110,8 +110,7 @@ window.onload = () => {
 
         document.getElementById("commander-information").appendChild(img)
 
-        $("#commander-information").append(`<div class="big-gallery-item">${data['commander']['commanders'].join(" ")}</div>`)
-
+        $("#commander-information").append(`<div class="big-gallery-item">${data['commander']['commanders'].join(" and ")} <br /> In ${data["commander"]["count"]} decks.</div>`)
 
         // data = data['cards']
         cards = []
@@ -220,6 +219,7 @@ window.onload = () => {
         }
 
     })
+    /*
     $.get("/commander-names", (data) => {
         let commanderNames = []
         data = JSON.parse(data)
@@ -228,5 +228,6 @@ window.onload = () => {
         })
         autocomplete(document.getElementById("nav-search-field"), commanderNames)
     })
+    */
 }
 

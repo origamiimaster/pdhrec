@@ -22,7 +22,7 @@ function init() {
     })
     applyHash(window.location.hash.substr(1))
 }
-
+/*
 function autocomplete(inp, arr) {
     var currentFocus;
     inp.addEventListener("input", function (e) {
@@ -92,7 +92,7 @@ function autocomplete(inp, arr) {
         closeAllLists(e.target);
     });
 }
-
+*/
 window.onload = () => {
     init();
     $.get("/get-staples", (data) => {
@@ -203,6 +203,7 @@ window.onload = () => {
         }
 
     })
+    /*
     $.get("/commander-names", (data) => {
         let commanderNames = []
         data = JSON.parse(data)
@@ -211,5 +212,6 @@ window.onload = () => {
         })
         autocomplete(document.getElementById("nav-search-field"), commanderNames)
     })
+    */
 }
 

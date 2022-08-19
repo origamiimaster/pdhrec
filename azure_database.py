@@ -288,7 +288,7 @@ def get_commander_data(commander_name):
     col = db['scores']
     results = col.aggregate(pipeline=[
         {"$match": {"commanderstring": commander_name}},
-        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "urls": 1}},
+        {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "urls": 1, "count": 1}},
     ])
     # print(results)
     return results.next()
