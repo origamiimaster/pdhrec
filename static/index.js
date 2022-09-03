@@ -30,6 +30,7 @@ function init() {
 
 window.onload = () => {
     init();
+    $.get("/add-site-counter")
     $.get("/top-commanders", (data) => {
         data = JSON.parse(data)
         data.sort((a, b) => {

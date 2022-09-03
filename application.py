@@ -70,7 +70,6 @@ def commander_names():
 
 @app.route("/")
 def hello():
-    add_website_visit()
     return send_file("static/index.html")
 
 
@@ -83,9 +82,16 @@ def get_staples():
 def staples():
     return send_file("static/staples.html")
 
+
 @app.route("/counter")
 def counter():
-    return {"count":get_website_visit()}
+    return {"count": get_website_visit()}
+
+
+@app.route("/add-site-counter")
+def add_site_counter():
+    add_website_visit()
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/search")

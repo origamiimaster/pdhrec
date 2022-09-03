@@ -22,80 +22,9 @@ function init() {
     })
     applyHash(window.location.hash.substr(1))
 }
-/*
-function autocomplete(inp, arr) {
-    var currentFocus;
-    inp.addEventListener("input", function (e) {
-        var a, b, i, val = this.value;
-        closeAllLists();
-        if (!val) {
-            return false;
-        }
-        currentFocus = -1;
-        a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "-autocomplete-list");
-        a.setAttribute("class", "autocomplete-items");
-        this.parentNode.appendChild(a);
-        for (i = 0; i < arr.length; i++) {
-            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-                b = document.createElement("DIV");
-                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                b.innerHTML += arr[i].substr(val.length);
-                b.innerHTML += `<input type="hidden" value="${arr[i]}">`
-                b.addEventListener("click", function (e) {
-                    console.log("Clicked", this.getElementsByTagName("input")[0].value)
-                    inp.value = this.getElementsByTagName("input")[0].value;
-                    closeAllLists();
-                });
-                a.appendChild(b);
-            }
-        }
-    });
-    inp.addEventListener("keydown", function (e) {
-        var x = document.getElementById(this.id + "-autocomplete-list");
-        if (x) x = x.getElementsByTagName("div");
-        if (e.keyCode == 40) {
-            currentFocus++;
-            addActive(x);
-        } else if (e.keyCode == 38) { //up
-            currentFocus--;
-            addActive(x);
-        } else if (e.keyCode == 13) {
-            if (currentFocus > -1) {
-                e.preventDefault();
-                if (x) x[currentFocus].click();
-                currentFocus = -1;
-            }
-        }
-    });
-    function addActive(x) {
-        if (!x) return false;
-        removeActive(x);
-        if (currentFocus >= x.length) currentFocus = 0;
-        if (currentFocus < 0) currentFocus = (x.length - 1);
-        x[currentFocus].classList.add("autocomplete-active");
-    }
-    function removeActive(x) {
-        for (var i = 0; i < x.length; i++) {
-            x[i].classList.remove("autocomplete-active");
-        }
-    }
-    function closeAllLists(elmnt) {
-        var x = document.getElementsByClassName("autocomplete-items");
-        for (var i = 0; i < x.length; i++) {
-            if (elmnt != x[i] && elmnt != inp) {
-                x[i].parentNode.removeChild(x[i]);
-            }
-        }
-    }
-    document.addEventListener("click", function (e) {
-        closeAllLists(e.target);
-    });
-}
-*/
+
 window.onload = () => {
     init();
-    // $("<div>TEST</div>").insertBefore("#gallery")
     $.get(window.location.pathname + "?format=json", (data) => {
         $("#gallery").append("<div id='commander-information' class='gallery-item' style='width: 100%; display: flex;'></div>")
         data = JSON.parse(data);
@@ -112,7 +41,6 @@ window.onload = () => {
 
         $("#commander-information").append(`<div class="big-gallery-item">${data['commander']['commanders'].join(" and ")} <br /> In ${data["commander"]["count"]} decks.</div>`)
 
-        // data = data['cards']
         cards = []
         Object.keys(data['cards']).forEach((thing) => {
             cards.push([thing, data['cards'][thing]])
@@ -217,17 +145,6 @@ window.onload = () => {
             window.addEventListener("resize", lazyload);
             window.addEventListener("orientationChange", lazyload);
         }
-
     })
-    /*
-    $.get("/commander-names", (data) => {
-        let commanderNames = []
-        data = JSON.parse(data)
-        data.forEach((obj) => {
-            commanderNames.push(obj["commanders"].join(" "))
-        })
-        autocomplete(document.getElementById("nav-search-field"), commanderNames)
-    })
-    */
 }
 
