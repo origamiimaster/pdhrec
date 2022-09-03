@@ -28,16 +28,52 @@ window.onload = () => {
     $.get(window.location.pathname + "?format=json", (data) => {
         $("#gallery").append("<div id='commander-information' class='gallery-item' style='width: 100%; display: flex;'></div>")
         data = JSON.parse(data);
-        let img = document.createElement("img");
-        img.className = "gallery-item"
-        img.setAttribute("loading", "lazy")
+        obj = data.commander;
+        let gallery = document.getElementById("gallery")
+        let count = 0;
+        let commanderNames = [];
+        let new_box = document.createElement("a");
+        new_box.href = "/commander/" + obj.commanderstring
+        new_box.className = "gallery-item"
+        let img = document.createElement("img")
         img.alt = "Image"
-        img.src = data['commander']['urls'][0]
+        placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
+        try {
+            let info_box = document.createElement("div");
+            info_box.className = "info"
+            info_box.innerHTML = "In " + obj.count + " decks"
+            if (obj.commanders.length == 1) {
+                img.alt = obj.commanders[0]
+                img.src = placeholder
+                img.setAttribute('src', obj.urls[0])
+                new_box.appendChild(img)
+                new_box.appendChild(info_box)
+            } else {
+                let partners = document.createElement("div")
+                let bg_img = document.createElement("img")
+                bg_img.src = placeholder;
+                bg_img.className = "partner3"
+                partners.className = "partners"
+                img.className = "partner1"
+                img.src = placeholder
+                img.setAttribute('src', obj.urls[0])
+                img.alt = obj.commanders[0]
+                let img2 = document.createElement("img")
+                img2.className = "partner2"
+                img2.src = placeholder
+                img2.setAttribute('src', obj.urls[1])
+                img2.alt = obj.commanders[1]
+                partners.appendChild(bg_img)
+                partners.appendChild(img)
+                partners.appendChild(img2)
+                new_box.appendChild(partners)
+                partners.appendChild(info_box)
+            }
+        } catch (e) {
+            console.log(e)
+        }
 
-        
-        img.alt = data['commander']['commanders'].join(" ");
-
-        document.getElementById("commander-information").appendChild(img)
+        document.getElementById("commander-information").appendChild(new_box)
 
         $("#commander-information").append(`<div class="big-gallery-item">${data['commander']['commanders'].join(" and ")} <br /> In ${data["commander"]["count"]} decks.</div>`)
 
@@ -56,9 +92,6 @@ window.onload = () => {
         })
 
 
-        let gallery = document.getElementById("gallery")
-        let count = 0;
-        let commanderNames = [];
         cards.forEach(obj => {
             count += 1
             if (count <= 100) {

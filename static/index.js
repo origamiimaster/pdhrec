@@ -51,7 +51,6 @@ window.onload = () => {
             count += 1
             if (count <= 100) {
                 let new_box = document.createElement("a");
-                //                new_box.target="_blank"
                 new_box.href = "/commander/" + obj.commanderstring
                 new_box.className = "gallery-item"
                 let img = document.createElement("img")
@@ -69,12 +68,11 @@ window.onload = () => {
                         img.setAttribute('data-src', obj.urls[0])
                         new_box.appendChild(img)
                         new_box.appendChild(info_box)
-                        // commanderNames.push(obj.commanders[0])
                     } else {
                         let partners = document.createElement("div")
-                        // let bg_img = document.createElement("img")
-                        // bg_img.href = placeholder;
-                        // bg_img.className = "partner_bg"
+                        let bg_img = document.createElement("img")
+                        bg_img.src = placeholder;
+                        bg_img.className = "partner3"
                         partners.className = "partners"
                         img.className = "partner1"
                         img.classList.add("lazy")
@@ -88,7 +86,7 @@ window.onload = () => {
                         img2.src = placeholder
                         img2.setAttribute('data-src', obj.urls[1])
                         img2.alt = obj.commanders[1]
-                        // partners.appendChild(bg_img)
+                        partners.appendChild(bg_img)
                         partners.appendChild(img)
                         partners.appendChild(img2)
                         new_box.appendChild(partners)
