@@ -9,7 +9,7 @@ Three main collections will be use:
 
 # TODO: Fix importing commanders with '.' in the name... publicId = SLmLYywh7k2IND_xkmcQ5A
 import time
-
+import json
 from pymongo import MongoClient
 from utils import normalize_text
 from scryfall import get_card_data
@@ -307,6 +307,35 @@ def get_website_visit():
         return 0
     return col.find_one({"type":"visits"})["count"]
 
+def insert_card(card_name):
+    col = db["metadata"]
+    # Check if card is already in the database, we don't want duplicates
+    if col.find_one({"type":"card", "name": card_name}) is not None:
+        return False
+
+    data = get_card_data(card_name)
+    # only accept exact matches here
+    if "name" in data and data["name"] == card_name:
+        col.insert_one({"type":"card", "name": data["name"],"data": data})
+    return True        
+
+def insert_card_data(data):
+    col = db["metadata"]
+    if col.find_one({"type":"card", "name": data["name"]}) is not None:
+        return False
+    col.insert_one({"type":"card", "name": data["name"], "data": data})
+    return True
+    
+def load_all_cards():
+    with open("oracle-cards-20220824090259.json", "r") as f:
+        cards = json.loads(f.read())
+    for card in cards:
+        if card["legalities"]["paupercommander"] != "not_legal":
+            print(card["name"])
+            insert_card_data(card)
+            break
+
+
 if __name__ == "__main__":
     # in_the_deck = get_commander_aggregate_bad(["Crypt Rats"])
     # in_all_decks = get_commander_aggregate_bad([])
@@ -323,7 +352,10 @@ if __name__ == "__main__":
     # from moxfield import get_deck_data
     # card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
     # save_cards(card_data)
-    col = db['metadata']
-    data = new_get_all_commander_counts()
-    print(data)
-    print(get_card_url("Colossal Dreadmaw"))
+    # col = db['metadata']
+    # data = new_get_all_commander_counts()
+    # print(data)
+    # print(get_card_url("Colossal Dreadmaw"))
+    # insert_card("Tatyova, Benthic Druid")
+    load_all_cards()
+    
