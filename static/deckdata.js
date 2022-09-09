@@ -103,14 +103,13 @@ window.onload = () => {
                 placeholder = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
                 try {
                     img.src = placeholder
-                    let info_box = document.createElement("div");
+                    let info_box = documentx.createElement("div");
                     info_box.className = "info"
                     info_box.innerHTML = obj[0] + ": " + Math.round(obj[1] * 10000) / 100 + "%"
 
                     img.alt = obj[0]
                     img.classList.add("lazy")
-                    let img_url = "https://api.scryfall.com/cards/named?fuzzy="
-                    img_url += encodeURIComponent(obj[0]);
+                    let img_url = "/image/" + encodeURIComponent(obj[0])
                     img.setAttribute('data-src', img_url)
                     new_box.appendChild(img)
                     new_box.appendChild(info_box)
@@ -129,14 +128,15 @@ window.onload = () => {
                         var image = entry.target;
                         $(window).queue(() => {
                             $.get(image.dataset.src, (response) => {
-                                try {
-                                    if (response['image_uris'] == undefined) {
-                                        image.src = response['card_faces'][0]['image_uris']['normal']
-                                    }
-                                    image.src = response['image_uris']['normal']
-                                } catch (e) {
-                                    console.log("Image didn't load", e);
-                                }
+                                image.src = response;
+//                                try {
+//                                    if (response['image_uris'] == undefined) {
+//                                        image.src = response['card_faces'][0]['image_uris']['normal']
+//                                    }
+//                                    image.src = response['image_uris']['normal']
+//                                } catch (e) {
+//                                    console.log("Image didn't load", e);
+//                                }
                                 image.classList.remove("lazy");
                                 imageObserver.unobserve(image);
                                 $(window).delay(50).dequeue();

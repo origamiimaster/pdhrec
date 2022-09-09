@@ -46,7 +46,8 @@ def save_cards(data):
             'colors': {'W': False, 'U': False, 'B': False,
                        'R': False, 'G': False}, "type": "deck"}
     for card in data['mainboard']:
-        if "paupercommander" not in data['mainboard'][card]['card']['legalities'] or data['mainboard'][card]['card']['legalities']['paupercommander'] != "legal":
+        if "paupercommander" not in data['mainboard'][card]['card']['legalities'] or \
+                data['mainboard'][card]['card']['legalities']['paupercommander'] != "legal":
             return False
         info['cards'][card] = data['mainboard'][card]["quantity"]
 
@@ -156,12 +157,6 @@ def new_get_all_commander_counts():
         {"$project": {"_id": 0, "commanderstring": 1, "commanders": 1, "count": 1, "urls": 1}},
     ])
     return [x for x in [x for x in results] if x['commanderstring'] != '']
-
-
-def new_count_all_decks():
-    pass
-    # col = db['decks']
-    # return col.count()
 
 
 def save_card_data(card_name):
@@ -284,6 +279,7 @@ def get_commander_names():
     ])
     return results
 
+
 def get_commander_data(commander_name):
     col = db['scores']
     results = col.aggregate(pipeline=[
@@ -293,69 +289,75 @@ def get_commander_data(commander_name):
     # print(results)
     return results.next()
 
+
 def add_website_visit():
     col = db["metadata"]
     if col.find_one({"type": "visits"}) is None:
-        col.insert_one({"type":"visits", "_id":"visits", "count": 0})
-    data = col.find_one({"type":"visits"})
+        col.insert_one({"type": "visits", "_id": "visits", "count": 0})
+    data = col.find_one({"type": "visits"})
     data["count"] += 1
-    col.update_one({"type":"visits"}, {"$set": data})
+    col.update_one({"type": "visits"}, {"$set": data})
+
 
 def get_website_visit():
     col = db["metadata"]
-    if col.find_one({"type":"visits"}) is None:
+    if col.find_one({"type": "visits"}) is None:
         return 0
-    return col.find_one({"type":"visits"})["count"]
+    return col.find_one({"type": "visits"})["count"]
+
 
 def insert_card(card_name):
     col = db["metadata"]
     # Check if card is already in the database, we don't want duplicates
-    if col.find_one({"type":"card", "name": card_name}) is not None:
+    if col.find_one({"type": "card", "name": card_name}) is not None:
         return False
 
     data = get_card_data(card_name)
     # only accept exact matches here
     if "name" in data and data["name"] == card_name:
-        col.insert_one({"type":"card", "name": data["name"],"data": data})
-    return True        
+        col.insert_one({"type": "card", "name": data["name"], "data": data})
+    return True
+
 
 def insert_card_data(data):
     col = db["metadata"]
-    if col.find_one({"type":"card", "name": data["name"]}) is not None:
+    if db["metadata"].count_documents({"type": "card", "name": data["name"]}, limit=1) != 0:
         return False
-    col.insert_one({"type":"card", "name": data["name"], "data": data})
+    col.insert_one({"type": "card", "name": data["name"], "data": data})
     return True
-    
+
+
 def load_all_cards():
-    with open("oracle-cards-20220824090259.json", "r") as f:
+    with open("oracle-cards-20220903090217.json", "r") as f:
         cards = json.loads(f.read())
+    flag = False
     for card in cards:
-        if card["legalities"]["paupercommander"] != "not_legal":
+        if card["name"] == "Telekinetic Sliver":
+            flag = True
+        if flag and card["legalities"]["paupercommander"] != "not_legal":
             print(card["name"])
             insert_card_data(card)
-            break
+
+
+def retrieve_color_identity(card_name):
+    col = db["metadata"]
+    data = col.find_one({"type": "card", "name": card_name})
+    if data is None:
+        return False
+    return data["data"]["color_identity"]
+
+
+def retrieve_card_image(card):
+    col = db["metadata"]
+    obj = col.find_one({"type": "card", "name": card})
+    if obj is None:
+        return False
+    else:
+        try:
+            return obj["data"]["image_uris"]["large"]
+        except KeyError:
+            return ""
 
 
 if __name__ == "__main__":
-    # in_the_deck = get_commander_aggregate_bad(["Crypt Rats"])
-    # in_all_decks = get_commander_aggregate_bad([])
-    # scores = {}
-    # for card in in_the_deck:
-    #     scores[card] = in_the_deck[card] / in_all_decks[card]
-    # results = get_synergy_scores(["Vizkopa Guildmage"])
-    # results = dict(sorted(results.items(), key=lambda item: -item[1]))
-    # for x in results:
-    #     print(f"{x}:{results[x]}")
-    # results = get_commander_aggregate(["Ley Weaver", "Lore Weaver"])
-    # results = get_all_commanders_and_counts()
-    # results = dict(sorted(results.items(), key=lambda item: -item[1]))
-    # from moxfield import get_deck_data
-    # card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
-    # save_cards(card_data)
-    # col = db['metadata']
-    # data = new_get_all_commander_counts()
-    # print(data)
-    # print(get_card_url("Colossal Dreadmaw"))
-    # insert_card("Tatyova, Benthic Druid")
     load_all_cards()
-    

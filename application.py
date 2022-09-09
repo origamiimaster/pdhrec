@@ -3,11 +3,12 @@ Runs the flask server to host the project...
 Not for deployment, just development for now
 """
 from flask import Flask, send_file, request, redirect
+from urllib.parse import quote, unquote
 
 from utils import normalize_text
 import database
 from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, \
-    get_commander_names, get_commander_data, add_website_visit, get_website_visit
+    get_commander_names, get_commander_data, add_website_visit, get_website_visit, retrieve_card_image
 import json
 
 app = Flask(__name__, static_url_path="")
@@ -92,6 +93,11 @@ def counter():
 def add_site_counter():
     add_website_visit()
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/image/<name>")
+def image(name):
+    return retrieve_card_image(unquote(name))
 
 
 @app.route("/search")
