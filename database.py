@@ -336,6 +336,6 @@ if __name__ == "__main__":
     # results = dict(sorted(results.items(), key=lambda item: -item[1]))
     # from moxfield import get_deck_data
     # card_data = get_deck_data("wc2xdCuzE027BF9NmsXpZg")
-    # save_cards(card_data)
+    # insert_deck_cards(card_data)
 
     print(get_all_staples())

@@ -21,7 +21,7 @@ client = MongoClient(
 db = client['azure_pdhrec']
 
 
-def save_metadata(data):
+def insert_deck_metadata(data):
     """
     Inserts deck metadata into the metadata collection, updating if exists already, otherwise inserting.
     :param data: deck metadata, a dict of publicId, id, lastUpdatedAtUtc, name, hasPrimer, needsUpdate.
@@ -35,12 +35,11 @@ def save_metadata(data):
     col.update_one({"_id": data["_id"], "type": "metadata"}, {"$set": data}, upsert=True)
 
 
-def load_metadata(publicId):
+def get_deck_metadata(publicId):
     return db['metadata'].find_one({"_id": publicId + "metadata", "type": "metadata"})
 
 
-def save_cards(data):
-    # try:
+def insert_deck_cards(data):
     col = db['metadata']
     info = {'_id': data['publicId'] + "deck", 'cards': {}, 'commanders': {},
             'colors': {'W': False, 'U': False, 'B': False,
@@ -65,9 +64,8 @@ def save_cards(data):
                 return False
         else:
             return False
-        # url = save_card_data(card)
-        if card == "Mr. Orfeo, the Boulder":
-            card2 = "Mr Orfeo, the Boulder"
+        if "." in card:
+            card2 = card.replace(".", "")
             info['commanders'][card2] = info['commanders'][card]
             info['commanders'].pop(card)
     info['commanderstring'] = "-".join(normalize_text([x for x in info['commanders']]))
