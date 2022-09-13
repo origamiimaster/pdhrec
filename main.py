@@ -2,7 +2,7 @@ import time
 
 from dateutil import parser
 
-from azure_database import save_metadata, load_metadata, save_cards, get_ids_need_update, get_all_metadata, get_newest_metadata
+from azure_database import insert_deck_metadata, get_deck_metadata, insert_deck_cards, get_ids_need_update, get_all_metadata, get_newest_metadata
 from moxfield import get_deck_data, get_new_decks
 
 def smart_update():
@@ -22,7 +22,7 @@ def smart_update():
         while time_to_reach < last_deck_time:
             for deck in new_decks:
                 print(f"Saving deck {deck['name']}")
-                save_metadata({
+                insert_deck_metadata({
                     "id": deck['id'],
                     "publicId": deck['publicId'],
                     "hasPrimer": deck['hasPrimer'],
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     if len([x for x in get_all_metadata()]) == 0:
         deck = get_new_decks(60)[-1]
         # deck = get_new_decks(1)[-1]
-        save_metadata({
+        insert_deck_metadata({
             "id": deck['id'],
             "publicId": deck['publicId'],
             "hasPrimer": deck['hasPrimer'],
@@ -58,8 +58,8 @@ if __name__ == "__main__":
         for public_id in get_ids_need_update():
             card_data = get_deck_data(public_id)
             if card_data is not False:
-                save_cards(card_data)
-            data = load_metadata(public_id)
+                insert_deck_cards(card_data)
+            data = get_deck_metadata(public_id)
             data['needsUpdate'] = False
-            save_metadata(data)
+            insert_deck_metadata(data)
         time.sleep(60 * 10)
