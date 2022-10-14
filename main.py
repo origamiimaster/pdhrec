@@ -2,13 +2,14 @@ import time
 
 from dateutil import parser
 
-from azure_database import insert_deck_metadata, get_deck_metadata, insert_deck_cards, get_ids_need_update, get_all_metadata, get_newest_metadata
+from azure_database import insert_deck_metadata, get_deck_metadata, insert_deck_cards, get_ids_need_update, \
+    get_all_metadata, get_newest_metadata, get_metadata_count
 from moxfield import get_deck_data, get_new_decks
 
 def smart_update():
     data = get_all_metadata()
     new_decks = get_new_decks()
-    last_time_update = get_newest_metadata() # ['lastUpdatedAtUtc']
+    last_time_update = get_newest_metadata()  # ['lastUpdatedAtUtc']
     newest_deck = new_decks[0]  # Information is received in sorted order.
     # Check if the newest deck is newer than the current newest:
     print("Comparing Times")
@@ -42,7 +43,7 @@ def smart_update():
 
 if __name__ == "__main__":
     # Check if there's anything in the database.  If not, add one so we can smart update.
-    if len([x for x in get_all_metadata()]) == 0:
+    if get_metadata_count() == 0:
         deck = get_new_decks(60)[-1]
         # deck = get_new_decks(1)[-1]
         insert_deck_metadata({
