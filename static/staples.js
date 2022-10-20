@@ -2,15 +2,12 @@ let commanders = [];
 function applyHash(hash) {
     if (hash == "about") {
         document.getElementById("main").style.display = "none"
-        document.getElementById("staples").style.display = "none"
         document.getElementById("about").style.display = "block"
     } else if (hash == "staples") {
         document.getElementById("about").style.display = "none"
         document.getElementById("main").style.display = "none"
-        document.getElementById("staples").style.display = "block"
     } else {
         document.getElementById("about").style.display = "none"
-        document.getElementById("staples").style.display = "none"
         document.getElementById("main").style.display = "block"
     }
 }
@@ -22,100 +19,23 @@ function init() {
     })
     applyHash(window.location.hash.substr(1))
 }
-/*
-function autocomplete(inp, arr) {
-    var currentFocus;
-    inp.addEventListener("input", function (e) {
-        var a, b, i, val = this.value;
-        closeAllLists();
-        if (!val) {
-            return false;
-        }
-        currentFocus = -1;
-        a = document.createElement("DIV");
-        a.setAttribute("id", this.id + "-autocomplete-list");
-        a.setAttribute("class", "autocomplete-items");
-        this.parentNode.appendChild(a);
-        for (i = 0; i < arr.length; i++) {
-            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-                b = document.createElement("DIV");
-                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-                b.innerHTML += arr[i].substr(val.length);
-                b.innerHTML += `<input type="hidden" value="${arr[i]}">`
-                b.addEventListener("click", function (e) {
-                    console.log("Clicked", this.getElementsByTagName("input")[0].value)
-                    inp.value = this.getElementsByTagName("input")[0].value;
-                    closeAllLists();
-                });
-                a.appendChild(b);
-            }
-        }
-    });
-    inp.addEventListener("keydown", function (e) {
-        var x = document.getElementById(this.id + "-autocomplete-list");
-        if (x) x = x.getElementsByTagName("div");
-        if (e.keyCode == 40) {
-            currentFocus++;
-            addActive(x);
-        } else if (e.keyCode == 38) { //up
-            currentFocus--;
-            addActive(x);
-        } else if (e.keyCode == 13) {
-            if (currentFocus > -1) {
-                e.preventDefault();
-                if (x) x[currentFocus].click();
-                currentFocus = -1;
-            }
-        }
-    });
-    function addActive(x) {
-        if (!x) return false;
-        removeActive(x);
-        if (currentFocus >= x.length) currentFocus = 0;
-        if (currentFocus < 0) currentFocus = (x.length - 1);
-        x[currentFocus].classList.add("autocomplete-active");
-    }
-    function removeActive(x) {
-        for (var i = 0; i < x.length; i++) {
-            x[i].classList.remove("autocomplete-active");
-        }
-    }
-    function closeAllLists(elmnt) {
-        var x = document.getElementsByClassName("autocomplete-items");
-        for (var i = 0; i < x.length; i++) {
-            if (elmnt != x[i] && elmnt != inp) {
-                x[i].parentNode.removeChild(x[i]);
-            }
-        }
-    }
-    document.addEventListener("click", function (e) {
-        closeAllLists(e.target);
-    });
-}
-*/
+
 window.onload = () => {
     init();
     $.get("/get-staples", (data) => {
-        data = JSON.parse(data)['cards'];
-        cards = []
-        Object.keys(data).forEach((thing) => {
-            cards.push([thing, data[thing]])
-        })
-        cards.sort((a, b) => {
-            if (a[1] > b[1]) {
-                return -1;
-            } else if (a[1] < b[1]) {
-                return 1;
-            } else {
-                return 0;
-            }
-        })
+        data = JSON.parse(data);
+        cards = [data['cardcounts'], data['cardnames'], data['coloridentities']]
+        cards = cards.map(
+            (indices => a => indices.map(i => a[i]))
+            ([...cards[0].keys()].sort((a, b) => cards[0][b] - cards[0][a]))
+        );
 
 
         let gallery = document.getElementById("gallery")
         let count = 0;
         let commanderNames = [];
-        cards.forEach(obj => {
+
+        for (let i = 0; i < cards[0].length; i++) {
             count += 1
             if (count <= 100) {
                 let new_box = document.createElement("a");
@@ -128,21 +48,22 @@ window.onload = () => {
                     img.src = placeholder
                     let info_box = document.createElement("div");
                     info_box.className = "info"
-                    info_box.innerHTML = obj[0] + ": " + obj[1]
+                    info_box.innerHTML = cards[1][i] + ": " + cards[0][i]
 
-                    img.alt = obj[0]
+                    img.alt = cards[1][i]
                     img.classList.add("lazy")
                     let img_url = "https://api.scryfall.com/cards/named?fuzzy="
-                    img_url += encodeURIComponent(obj[0]);
+                    img_url += encodeURIComponent(cards[1][i]);
                     img.setAttribute('data-src', img_url)
                     new_box.appendChild(img)
                     new_box.appendChild(info_box)
+                    new_box.setAttribute("color-identity", JSON.stringify(cards[2][i]))
                 } catch (e) {
                     console.log(e)
                 }
                 gallery.appendChild(new_box)
             }
-        })
+        }
         var lazyloadImages;
         if ("IntersectionObserver" in window) {
             lazyloadImages = document.querySelectorAll(".lazy");
@@ -203,15 +124,5 @@ window.onload = () => {
         }
 
     })
-    /*
-    $.get("/commander-names", (data) => {
-        let commanderNames = []
-        data = JSON.parse(data)
-        data.forEach((obj) => {
-            commanderNames.push(obj["commanders"].join(" "))
-        })
-        autocomplete(document.getElementById("nav-search-field"), commanderNames)
-    })
-    */
 }
 

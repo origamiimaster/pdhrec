@@ -6,15 +6,14 @@ Three main collections will be use:
 2. Deck Cards: For each deck, what cards does it run? Is it legal?
 3. Commander Cards: For each commander, what cards does it run? In what quantities?
 """
-
-# TODO: Fix importing commanders with '.' in the name... publicId = SLmLYywh7k2IND_xkmcQ5A
 import time
 import json
 from pymongo import MongoClient
 from utils import normalize_text
 from scryfall import get_card_data
 
-client = MongoClient("mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
+client = MongoClient(
+    "mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
 # client = MongoClient("mongodb+srv://origamiimaster:<password>@pdhrec.pfi73ng.mongodb.net/?retryWrites=true&w=majority")
 # client = MongoClient()
 db = client['azure_pdhrec']
@@ -26,7 +25,6 @@ def insert_deck_metadata(data):
     :param data: deck metadata, a dict of publicId, id, lastUpdatedAtUtc, name, hasPrimer, needsUpdate.
     :return: None
     """
-    # print(data)
     col = db['metadata']
     data["_id"] = data['publicId'] + "metadata"
     data["type"] = "metadata"
@@ -345,8 +343,11 @@ def retrieve_color_identity(card_name):
 
 
 def retrieve_card_image(card):
+    a = time.time()
     col = db["metadata"]
     obj = col.find_one({"type": "card", "name": card})
+    b = time.time()
+    print(b - a)
     if obj is None:
         return False
     else:
@@ -355,10 +356,63 @@ def retrieve_card_image(card):
         except KeyError:
             return ""
 
+
 def get_metadata_count():
     col = db['metadata']
     return col.count_documents({"type": "metadata"})
 
 
+def get_all_staples():
+    data = db['scores'].aggregate(pipeline=[
+        {"$match": {"commanderstring": ""}},
+        {"$project": {"cards": {"$objectToArray": "$cards"}}},
+        {"$unwind": {"path": "$cards"}},
+        {"$project": {"_id": 0, "cardname": "$cards.k", "cardcount": "$cards.v"}},
+        {"$lookup": {
+            "from": "metadata",
+            "localField": "cardname",
+            "foreignField": "name",
+            "as": "carddata"
+        }},
+        {"$project": {"carddata": 0, "coloridentity": "$carddata.data.color_identity", "cardname": 1, "cardcount": 1}},
+        {"$replaceRoot": {"newRoot": {"$mergeObjects": ["$$ROOT"]}}},
+        {"$group": {
+            "_id": None,
+            "cardnames": {"$push": "$cardname"},
+            "cardcounts": {"$push": "$cardcount"},
+            "coloridentities": {"$push": "$coloridentity"}
+        }},
+        {"$project": {"_id": 0}}
+    ])
+    return next(data)
+
+
 if __name__ == "__main__":
-    load_all_cards()
+    data = get_all_staples()
+
+"""
+Extra queries: 
+db.scores.aggregate([
+    {$match: {commanderstring: ""}},
+    {$project: {"cards": {$objectToArray: "$cards"}}},
+    {$unwind: {path: "$cards"}},
+    {$project: {"_id": 0, "cardname": "$cards.k", "cardcount": "$cards.v"}},
+    {$lookup: {
+    from:"metadata",
+    localField: "cardname",
+    foreignField: "name",
+    as: "carddata"
+    }},
+    {$project: {"carddata": 0, "coloridentity": "$carddata.data.color_identity", "cardname": 1, "cardcount":1}}, 
+    {
+      $replaceRoot: { newRoot: { $mergeObjects: [ "$$ROOT"] } }
+    },
+    {$group: {
+        _id: null,
+        cardames: {"$push": "$cardname"},
+        cardcounts: {"$push": "$cardcount"},
+        coloridentities: {"$push": "$coloridentity"}
+    }}
+])
+
+"""

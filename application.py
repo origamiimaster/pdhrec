@@ -6,8 +6,9 @@ from flask import Flask, send_file, request, redirect
 from urllib.parse import quote, unquote
 
 from utils import normalize_text
-import database
-from azure_database import new_get_all_commander_counts, get_new_synergy_scores, check_commander_exists, \
+# import database
+from azure_database import get_all_staples, new_get_all_commander_counts, get_new_synergy_scores, \
+    check_commander_exists, \
     get_commander_names, get_commander_data, add_website_visit, get_website_visit, retrieve_card_image
 import json
 
@@ -76,7 +77,7 @@ def hello():
 
 @app.route("/get-staples")
 def get_staples():
-    return json.dumps(database.get_all_staples())
+    return json.dumps(get_all_staples())
 
 
 @app.route("/staples")

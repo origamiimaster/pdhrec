@@ -129,14 +129,6 @@ window.onload = () => {
                         $(window).queue(() => {
                             $.get(image.dataset.src, (response) => {
                                 image.src = response;
-//                                try {
-//                                    if (response['image_uris'] == undefined) {
-//                                        image.src = response['card_faces'][0]['image_uris']['normal']
-//                                    }
-//                                    image.src = response['image_uris']['normal']
-//                                } catch (e) {
-//                                    console.log("Image didn't load", e);
-//                                }
                                 image.classList.remove("lazy");
                                 imageObserver.unobserve(image);
                                 $(window).delay(50).dequeue();
