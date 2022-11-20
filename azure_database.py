@@ -10,6 +10,7 @@ import time
 import json
 from pymongo import MongoClient
 from utils import normalize_text
+# from urllib import quote
 from scryfall import get_card_data
 
 client = MongoClient(
@@ -347,7 +348,6 @@ def retrieve_card_image(card):
     col = db["metadata"]
     obj = col.find_one({"type": "card", "name": card})
     b = time.time()
-    print(b - a)
     if obj is None:
         return False
     else:

@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PDHREC | Pauper Commander</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
+    <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+    <meta property="og:description" content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/nav.css"></link>
+    <link rel="stylesheet" href="/css/main.css"></link>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <script src="/js/nav.js"></script>
+<div id="navbar">
+  <div id="navbar-control">
+    <a title="PDHREC" href="/" class="header-home first-home">
+      <h1 class="header-home-h1">PDHREC</h1>
+    </a>
+    <a title="PDHREC" href="/" class="header-home second-home">
+      <div class="header-home-h3">
+        <h3>
+          PDH
+        </h3>
+        <h3>
+          REC
+        </h3>
+      </div>
+    </a>
+    <form class="nav-search">
+      <div class="autocomplete">
+        <input type="text" name="q" id="nav-search-field" autocomplete="off" placeholder="Search for cards...">
+      </div>
+    </form>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Commanders</a>
+      <a href="/staples" class="nav-link">Staples</a>
+      <a href="#about" class="nav-link">About</a>
+    </div>
+    <a class="nav-link nav-menu-button">
+      Menu
+    </a>
+  </div>
+  <div class="mobile-nav">
+    <div class="nav-links-mobile">
+      <a href="/" class="nav-link-mobile">Commanders</a>
+      <a href="/staples" class="nav-link-mobile">Staples</a>
+      <a href="#about" class="nav-link-mobile">About</a>
+    </div>
+  </div>
+</div>
+
+    <script src="/js/deckdata.js"></script>
+    <div id="main" class="main">
+      <div id="gallery" class="gallery">
+        <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
+          
+  <a href="/commander/jhoiras-familiar" class="gallery-item">
+    <img loading="lazy" alt="Jhoira's Familiar" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/b/7b89a074-9aca-4f7f-953a-b401199be1cb.jpg?1599709387">
+    <div class="info">In 2 decks</div>
+  </a>
+
+
+          <div class="big-gallery-item">Jhoira's Familiar <br> In 2 decks.</div>
+        </div>
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Thermal Navigator" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/b/eb86854f-c933-4b6c-bd0a-67c3615e908f.jpg?1562880500" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/b/eb86854f-c933-4b6c-bd0a-67c3615e908f.jpg?1562880500"/>
+            <div class="info">Thermal Navigator: 99.67%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Dross Scorpion" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/7/27c5381c-2e79-41fa-b1d7-2cf0c6dc1808.jpg?1562138758" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/7/27c5381c-2e79-41fa-b1d7-2cf0c6dc1808.jpg?1562138758"/>
+            <div class="info">Dross Scorpion: 99.3%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Guardians of Koilos" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/b/bbbc615a-708a-444b-acab-871cce22694d.jpg?1636491669" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/b/bbbc615a-708a-444b-acab-871cce22694d.jpg?1636491669"/>
+            <div class="info">Guardians of Koilos: 99.2%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Rusted Slasher" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f2228ee5-507a-46ba-82ae-72ba3088a568.jpg?1562615859" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f2228ee5-507a-46ba-82ae-72ba3088a568.jpg?1562615859"/>
+            <div class="info">Rusted Slasher: 99.18%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Automated Artificer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b8c30ffb-b4f5-40b0-87b8-800a42bded2b.jpg?1654568639" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b8c30ffb-b4f5-40b0-87b8-800a42bded2b.jpg?1654568639"/>
+            <div class="info">Automated Artificer: 99.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Myr Moonvessel" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/f/af0515cc-bf2d-4674-b339-4f4eefbc943d.jpg?1562638935" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/f/af0515cc-bf2d-4674-b339-4f4eefbc943d.jpg?1562638935"/>
+            <div class="info">Myr Moonvessel: 98.98%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Wastes" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/c/9cc070d3-4b83-4684-9caf-063e5c473a77.jpg?1657725364" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/c/9cc070d3-4b83-4684-9caf-063e5c473a77.jpg?1657725364"/>
+            <div class="info">Wastes: 98.73%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Kozilek's Channeler" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/5/c550d179-32ec-4ad8-91c2-d79320a21cba.jpg?1562941588" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/5/c550d179-32ec-4ad8-91c2-d79320a21cba.jpg?1562941588"/>
+            <div class="info">Kozilek's Channeler: 98.5%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ancestral Statue" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/d/8d4113be-6dd9-4c15-9f57-a146bc520df8.jpg?1601080559" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/d/8d4113be-6dd9-4c15-9f57-a146bc520df8.jpg?1601080559"/>
+            <div class="info">Ancestral Statue: 98.16%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Introduction to Annihilation" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b0bc4682-bcaf-4f51-be0b-9f2851a16e3b.jpg?1637082326" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b0bc4682-bcaf-4f51-be0b-9f2851a16e3b.jpg?1637082326"/>
+            <div class="info">Introduction to Annihilation: 98%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Frogmite" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/2/b2991802-e313-40de-b167-0ede5efff101.jpg?1562266618" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/2/b2991802-e313-40de-b167-0ede5efff101.jpg?1562266618"/>
+            <div class="info">Frogmite: 97.83%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Seer's Lantern" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/9/09bcfd12-6b50-4fdf-9bda-6d52bba2f897.jpg?1608911681" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/9/09bcfd12-6b50-4fdf-9bda-6d52bba2f897.jpg?1608911681"/>
+            <div class="info">Seer's Lantern: 97.38%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Urza's Mine" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/8/08dea8f6-bd32-44a3-bec4-93a5607819df.jpg?1599710699" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/8/08dea8f6-bd32-44a3-bec4-93a5607819df.jpg?1599710699"/>
+            <div class="info">Urza's Mine: 97.36%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Urza's Tower" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/e/9e369f3f-354b-42bf-9b2f-286912730c6c.jpg?1599710735" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/e/9e369f3f-354b-42bf-9b2f-286912730c6c.jpg?1599710735"/>
+            <div class="info">Urza's Tower: 97.36%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Urza's Power Plant" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/4/54445d1f-5426-47e9-9e02-0274cea7174f.jpg?1599710725" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/4/54445d1f-5426-47e9-9e02-0274cea7174f.jpg?1599710725"/>
+            <div class="info">Urza's Power Plant: 97.36%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fractured Powerstone" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/b/3b276615-24e2-4c8d-a2b4-b5ff777c5086.jpg?1562905891" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/b/3b276615-24e2-4c8d-a2b4-b5ff777c5086.jpg?1562905891"/>
+            <div class="info">Fractured Powerstone: 97.34%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ur-Golem's Eye" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/a/7a2ea921-8ef9-4a31-b484-73375e828d34.jpg?1561947461" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/a/7a2ea921-8ef9-4a31-b484-73375e828d34.jpg?1561947461"/>
+            <div class="info">Ur-Golem's Eye: 96.69%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Magnifying Glass" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/a/7a0c879b-c566-431e-a8fa-6104c39b6d7c.jpg?1599709480" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/a/7a0c879b-c566-431e-a8fa-6104c39b6d7c.jpg?1599709480"/>
+            <div class="info">Magnifying Glass: 96.61%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Conjurer's Bauble" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/d/2d32960e-d182-455f-8e74-eb11b10050da.jpg?1562876061" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/d/2d32960e-d182-455f-8e74-eb11b10050da.jpg?1562876061"/>
+            <div class="info">Conjurer's Bauble: 96.56%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Myr Enforcer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/f/dff51ae7-4b68-4770-915b-fb6bcf9ca1ed.jpg?1562268373" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/f/dff51ae7-4b68-4770-915b-fb6bcf9ca1ed.jpg?1562268373"/>
+            <div class="info">Myr Enforcer: 96.23%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sojourner's Companion" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/c/8c6af084-eee7-4259-a58b-a866e0cf171b.jpg?1639440497" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/c/8c6af084-eee7-4259-a58b-a866e0cf171b.jpg?1639440497"/>
+            <div class="info">Sojourner's Companion: 96.06%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Golem Foundry" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/c/3cef2e6a-e46b-4425-b507-3213cfd1400c.jpg?1562816635" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/c/3cef2e6a-e46b-4425-b507-3213cfd1400c.jpg?1562816635"/>
+            <div class="info">Golem Foundry: 95.46%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sisay's Ring" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/0/20c0e608-0208-408a-b473-1e54caa96cea.jpg?1608911699" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/0/20c0e608-0208-408a-b473-1e54caa96cea.jpg?1608911699"/>
+            <div class="info">Sisay's Ring: 95.46%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Workshop Assistant" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/9/e9387e8f-0e72-4212-81c8-e64050700c52.jpg?1608911774" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/9/e9387e8f-0e72-4212-81c8-e64050700c52.jpg?1608911774"/>
+            <div class="info">Workshop Assistant: 94.61%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Quicksand" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/e/ce833a90-7c1d-4c05-ace3-57e974c0769b.jpg?1562441184" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/e/ce833a90-7c1d-4c05-ace3-57e974c0769b.jpg?1562441184"/>
+            <div class="info">Quicksand: 94.27%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Radiant Fountain" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/e/7ee5e77f-ca43-480d-ac37-48336d3bf044.jpg?1625980789" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/e/7ee5e77f-ca43-480d-ac37-48336d3bf044.jpg?1625980789"/>
+            <div class="info">Radiant Fountain: 93.87%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Network Terminal" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/6/d61e596f-97ef-4eb3-af42-ddfe50d07667.jpg?1654568760" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/6/d61e596f-97ef-4eb3-af42-ddfe50d07667.jpg?1654568760"/>
+            <div class="info">Network Terminal: 93.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Myr Retriever" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/f/7f0149d4-0731-474a-a1c3-28c25e486c14.jpg?1599709634" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/f/7f0149d4-0731-474a-a1c3-28c25e486c14.jpg?1599709634"/>
+            <div class="info">Myr Retriever: 93.45%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Foundry Inspector" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/412d8300-926a-4f94-9edf-e45f07349fb9.jpg?1651656292" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/412d8300-926a-4f94-9edf-e45f07349fb9.jpg?1651656292"/>
+            <div class="info">Foundry Inspector: 93.35%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Prismatic Lens" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/c/0c3be020-37a3-49ce-8604-27794175bf9d.jpg?1619399044" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/c/0c3be020-37a3-49ce-8604-27794175bf9d.jpg?1619399044"/>
+            <div class="info">Prismatic Lens: 92.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Darksteel Citadel" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/b/2ba7597d-6d76-45b8-b172-342999e401bd.jpg?1625979955" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/b/2ba7597d-6d76-45b8-b172-342999e401bd.jpg?1625979955"/>
+            <div class="info">Darksteel Citadel: 90.66%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ashnod's Altar" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/7/87da5ad8-b35f-4f9c-b17a-bb2563cbc186.jpg?1580015173" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/7/87da5ad8-b35f-4f9c-b17a-bb2563cbc186.jpg?1580015173"/>
+            <div class="info">Ashnod's Altar: 89.21%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Thought Vessel" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/0/10e9cbf2-99ed-4f70-8744-b9a08a5f5f42.jpg?1654119115" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/0/10e9cbf2-99ed-4f70-8744-b9a08a5f5f42.jpg?1654119115"/>
+            <div class="info">Thought Vessel: 88.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Everflowing Chalice" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/b/fb35c235-7749-4016-917c-dd8b586ac819.jpg?1654118476" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/b/fb35c235-7749-4016-917c-dd8b586ac819.jpg?1654118476"/>
+            <div class="info">Everflowing Chalice: 88.48%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Haunted Fengraf" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/97a1d55a-39a8-4bf4-91b7-5565146c9c40.jpg?1592711522" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/97a1d55a-39a8-4bf4-91b7-5565146c9c40.jpg?1592711522"/>
+            <div class="info">Haunted Fengraf: 88.14%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Commander's Sphere" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e6458206-bfbd-4f4c-b2cf-e2853a939d50.jpg?1661392014" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e6458206-bfbd-4f4c-b2cf-e2853a939d50.jpg?1661392014"/>
+            <div class="info">Commander's Sphere: 67.17%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Mind Stone" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/9/1969ddc0-ee6c-4c3d-a9dd-7f1c491609be.jpg?1660730119" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/9/1969ddc0-ee6c-4c3d-a9dd-7f1c491609be.jpg?1660730119"/>
+            <div class="info">Mind Stone: 64.04%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Aeolipile" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/3/533dc518-125b-4286-b0d3-32cb67c4c13b.jpg?1562868557" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/3/533dc518-125b-4286-b0d3-32cb67c4c13b.jpg?1562868557"/>
+            <div class="info">Aeolipile: 49.87%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Peace Strider" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bc9bd97-f256-4dcd-b2a7-3239d443a0af.jpg?1599709711" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bc9bd97-f256-4dcd-b2a7-3239d443a0af.jpg?1599709711"/>
+            <div class="info">Peace Strider: 49.78%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Scroll of Griselbrand" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/2/2263ceaf-49d2-40fe-86b8-146271b11e46.jpg?1592709605" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/2/2263ceaf-49d2-40fe-86b8-146271b11e46.jpg?1592709605"/>
+            <div class="info">Scroll of Griselbrand: 49.78%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Snapsail Glider" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/c/fc98e0af-b18e-4172-bc56-19952ebd0303.jpg?1562825528" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/c/fc98e0af-b18e-4172-bc56-19952ebd0303.jpg?1562825528"/>
+            <div class="info">Snapsail Glider: 49.77%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Scale of Chiss-Goria" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/133b367c-b1a1-46f7-a539-a33ee655affb.jpg?1562136566" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/133b367c-b1a1-46f7-a539-a33ee655affb.jpg?1562136566"/>
+            <div class="info">Scale of Chiss-Goria: 49.68%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Pierce Strider" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/d/1dd4c278-4215-4582-8725-bc4b0b664d13.jpg?1562900874" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/d/1dd4c278-4215-4582-8725-bc4b0b664d13.jpg?1562900874"/>
+            <div class="info">Pierce Strider: 49.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Glasses of Urza" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bd9f45f-30b3-4bff-9fd3-9a71137ac741.jpg?1562912735" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bd9f45f-30b3-4bff-9fd3-9a71137ac741.jpg?1562912735"/>
+            <div class="info">Glasses of Urza: 49.6%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Lens of Clarity" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/c/3c82e2b8-f0f6-44da-83ee-8a671344ac62.jpg?1562785174" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/c/3c82e2b8-f0f6-44da-83ee-8a671344ac62.jpg?1562785174"/>
+            <div class="info">Lens of Clarity: 49.58%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Inventor's Goggles" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/f/8fc62d61-2bc0-4b84-a0e9-5a01fcd4ef92.jpg?1561759314" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/f/8fc62d61-2bc0-4b84-a0e9-5a01fcd4ef92.jpg?1561759314"/>
+            <div class="info">Inventor's Goggles: 49.52%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Tooth of Chiss-Goria" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/b/db5a91db-1b86-4471-badc-884142c355ca.jpg?1562159900" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/b/db5a91db-1b86-4471-badc-884142c355ca.jpg?1562159900"/>
+            <div class="info">Tooth of Chiss-Goria: 49.47%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bottle Gnomes" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/a/fa29a4ce-a8fa-499d-9994-f294c38b2ce5.jpg?1562276551" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/a/fa29a4ce-a8fa-499d-9994-f294c38b2ce5.jpg?1562276551"/>
+            <div class="info">Bottle Gnomes: 49.4%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Cloudpost" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/f/2f28ecdc-a4f0-4327-a78c-340be41555ee.jpg?1562139726" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/f/2f28ecdc-a4f0-4327-a78c-340be41555ee.jpg?1562139726"/>
+            <div class="info">Cloudpost: 49.4%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Blood Servitor" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/7/87845cc2-bf5d-491d-bfa2-b33b034557a4.jpg?1643594580" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/7/87845cc2-bf5d-491d-bfa2-b33b034557a4.jpg?1643594580"/>
+            <div class="info">Blood Servitor: 49.33%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Voltaic Servant" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/8/28564ac6-8b9b-4b99-9630-8fb3158d354c.jpg?1562733045" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/8/28564ac6-8b9b-4b99-9630-8fb3158d354c.jpg?1562733045"/>
+            <div class="info">Voltaic Servant: 49.22%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Kozilek's Pathfinder" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/7/b75585bd-fdd8-44d1-8c7c-b96df5fc473e.jpg?1562931898" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/7/b75585bd-fdd8-44d1-8c7c-b96df5fc473e.jpg?1562931898"/>
+            <div class="info">Kozilek's Pathfinder: 49.22%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Myr Adapter" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/d/0d6ddde9-4427-4a0f-b05c-9cfd886aad2d.jpg?1562135624" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/d/0d6ddde9-4427-4a0f-b05c-9cfd886aad2d.jpg?1562135624"/>
+            <div class="info">Myr Adapter: 49.1%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Expanded Anatomy" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/5/c5642b9d-0daa-4e6b-ad48-f88dd37d6574.jpg?1637082010" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/5/c5642b9d-0daa-4e6b-ad48-f88dd37d6574.jpg?1637082010"/>
+            <div class="info">Expanded Anatomy: 49.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Cathodion" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/13ddba34-e627-4f4c-b78c-ea0c48a22537.jpg?1599708789" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/13ddba34-e627-4f4c-b78c-ea0c48a22537.jpg?1599708789"/>
+            <div class="info">Cathodion: 49.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Library of Leng" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/2/c2fbf45f-9599-42e2-8510-7e20731e6c68.jpg?1562941071" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/2/c2fbf45f-9599-42e2-8510-7e20731e6c68.jpg?1562941071"/>
+            <div class="info">Library of Leng: 49.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Mobile Garrison" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/a/da443378-f5cb-4240-9524-2c40ec17c933.jpg?1576382347" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/a/da443378-f5cb-4240-9524-2c40ec17c933.jpg?1576382347"/>
+            <div class="info">Mobile Garrison: 49.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sparring Construct" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/a/badc7db8-386e-4fb6-aefa-591e99747eb2.jpg?1562741935" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/a/badc7db8-386e-4fb6-aefa-591e99747eb2.jpg?1562741935"/>
+            <div class="info">Sparring Construct: 49.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Glimmerpost" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/b/8b63efb6-249c-4f57-9af1-baffe938520c.jpg?1562820112" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/b/8b63efb6-249c-4f57-9af1-baffe938520c.jpg?1562820112"/>
+            <div class="info">Glimmerpost: 48.95%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Jalum Tome" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/4/24814552-c407-447a-a782-22c69c5b912b.jpg?1608911498" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/4/24814552-c407-447a-a782-22c69c5b912b.jpg?1608911498"/>
+            <div class="info">Jalum Tome: 48.8%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Introduction to Prophecy" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/8/7820923e-bad2-4d6a-92b3-97b9737d2ca9.jpg?1637082328" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/8/7820923e-bad2-4d6a-92b3-97b9737d2ca9.jpg?1637082328"/>
+            <div class="info">Introduction to Prophecy: 48.66%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fountain of Ichor" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b022a628-4883-427a-8477-0e87d1a71028.jpg?1562202462" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b022a628-4883-427a-8477-0e87d1a71028.jpg?1562202462"/>
+            <div class="info">Fountain of Ichor: 48.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sleeper Dart" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/1/311f827a-1585-483e-b0fd-3dc05969b485.jpg?1591228570" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/1/311f827a-1585-483e-b0fd-3dc05969b485.jpg?1591228570"/>
+            <div class="info">Sleeper Dart: 48.55%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Skyblinder Staff" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/1/d1602ee8-019d-4dde-8d31-042207017615.jpg?1561847178" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/1/d1602ee8-019d-4dde-8d31-042207017615.jpg?1561847178"/>
+            <div class="info">Skyblinder Staff: 48.53%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Arcbound Worker" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/d/fdfc2453-5a2b-4104-bf82-84f935de7b99.jpg?1561969500" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/d/fdfc2453-5a2b-4104-bf82-84f935de7b99.jpg?1561969500"/>
+            <div class="info">Arcbound Worker: 48.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Crystal Grotto" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/d/bd250c9d-c65f-4293-a6b0-007fac634d3d.jpg?1661539894" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/d/bd250c9d-c65f-4293-a6b0-007fac634d3d.jpg?1661539894"/>
+            <div class="info">Crystal Grotto: 48.46%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Jack-o'-Lantern" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/1/21b589ab-45a0-480a-a891-581c34f8a9bf.jpg?1637114561" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/1/21b589ab-45a0-480a-a891-581c34f8a9bf.jpg?1637114561"/>
+            <div class="info">Jack-o'-Lantern: 48.4%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Iron Apprentice" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/13d6d9fc-509b-42db-8ac1-85066eb6e9c4.jpg?1654568727" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/3/13d6d9fc-509b-42db-8ac1-85066eb6e9c4.jpg?1654568727"/>
+            <div class="info">Iron Apprentice: 48.35%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Seraph Sanctuary" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/1/e1c1fa29-362f-40b4-b67f-513f6592fb3b.jpg?1592762924" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/1/e1c1fa29-362f-40b4-b67f-513f6592fb3b.jpg?1592762924"/>
+            <div class="info">Seraph Sanctuary: 48.3%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Adventuring Gear" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/a/3aa395f2-656e-4bf3-bd9b-6240bd3e2774.jpg?1562611375" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/a/3aa395f2-656e-4bf3-bd9b-6240bd3e2774.jpg?1562611375"/>
+            <div class="info">Adventuring Gear: 48.18%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Universal Solvent" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/1/e142122f-3a04-436e-a958-dc2224b4fc6d.jpg?1660730530" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/1/e142122f-3a04-436e-a958-dc2224b4fc6d.jpg?1660730530"/>
+            <div class="info">Universal Solvent: 48.13%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Feldon's Cane" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/2/726ce95b-bc4d-4c34-a8e1-b4c6c28accc9.jpg?1562778128" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/2/726ce95b-bc4d-4c34-a8e1-b4c6c28accc9.jpg?1562778128"/>
+            <div class="info">Feldon's Cane: 47.95%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Flayer Husk" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/0/20b394f9-644d-426e-801b-110774092018.jpg?1599709210" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/0/20b394f9-644d-426e-801b-110774092018.jpg?1599709210"/>
+            <div class="info">Flayer Husk: 47.56%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Myr Sire" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/3/a3f2e2e5-5ed2-4040-92ba-ad1ac13f03f6.jpg?1601080826" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/3/a3f2e2e5-5ed2-4040-92ba-ad1ac13f03f6.jpg?1601080826"/>
+            <div class="info">Myr Sire: 47.46%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Perilous Myr" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a15c8ef-04ad-4aab-a7f1-c7a90c10eb50.jpg?1608911609" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a15c8ef-04ad-4aab-a7f1-c7a90c10eb50.jpg?1608911609"/>
+            <div class="info">Perilous Myr: 47.41%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Battered Golem" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/6/f69add35-c529-4b30-8e64-f09b8308432f.jpg?1562880761" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/6/f69add35-c529-4b30-8e64-f09b8308432f.jpg?1562880761"/>
+            <div class="info">Battered Golem: 47.38%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Gleaming Barrier" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/410c7922-5d99-4b94-bcdb-4f02ca175e65.jpg?1599709231" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/410c7922-5d99-4b94-bcdb-4f02ca175e65.jpg?1599709231"/>
+            <div class="info">Gleaming Barrier: 47.36%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Scour from Existence" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/e/6e47edb2-e43d-479f-a911-e72b67a06c3b.jpg?1562920977" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/e/6e47edb2-e43d-479f-a911-e72b67a06c3b.jpg?1562920977"/>
+            <div class="info">Scour from Existence: 47.28%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Hand of Emrakul" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/4/84d602f4-5876-416a-95e5-821a285358bf.jpg?1562705822" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/4/84d602f4-5876-416a-95e5-821a285358bf.jpg?1562705822"/>
+            <div class="info">Hand of Emrakul: 47.18%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Golden Egg" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/2/525142c3-f17c-4e02-a02d-fa385215aa12.jpg?1572490979" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/2/525142c3-f17c-4e02-a02d-fa385215aa12.jpg?1572490979"/>
+            <div class="info">Golden Egg: 47.18%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sunscorched Desert" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/0/405434c7-9206-45b7-af0f-d59aae294d39.jpg?1543676421" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/0/405434c7-9206-45b7-af0f-d59aae294d39.jpg?1543676421"/>
+            <div class="info">Sunscorched Desert: 47.11%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Prized Statue" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/8/58a49829-c354-4823-8cc1-a159fc46c0d7.jpg?1660730316" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/8/58a49829-c354-4823-8cc1-a159fc46c0d7.jpg?1660730316"/>
+            <div class="info">Prized Statue: 47.06%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Hedron Crawler" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/f/9f827f92-1df6-4fd0-aa61-ec2e53476f9c.jpg?1562927179" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/f/9f827f92-1df6-4fd0-aa61-ec2e53476f9c.jpg?1562927179"/>
+            <div class="info">Hedron Crawler: 47.06%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Manakin" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/f/9f91e78e-9297-4ae3-b55f-d73e79d0d21a.jpg?1562852096" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/f/9f91e78e-9297-4ae3-b55f-d73e79d0d21a.jpg?1562852096"/>
+            <div class="info">Manakin: 46.86%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Leather Armor" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e62d4e76-cdb0-48c7-aa1c-b1f514057b68.jpg?1627709907" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e62d4e76-cdb0-48c7-aa1c-b1f514057b68.jpg?1627709907"/>
+            <div class="info">Leather Armor: 46.81%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Golem-Skin Gauntlets" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/e/ee198804-a247-46b9-be6e-71bbb5840401.jpg?1599709255" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/e/ee198804-a247-46b9-be6e-71bbb5840401.jpg?1599709255"/>
+            <div class="info">Golem-Skin Gauntlets: 46.78%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Guardian Idol" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/9/393ef742-6968-4266-ae07-a4564b7f6ede.jpg?1616182167" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/9/393ef742-6968-4266-ae07-a4564b7f6ede.jpg?1616182167"/>
+            <div class="info">Guardian Idol: 46.61%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bladed Pinions" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/f/bf479c90-c791-4152-a8e6-fd3123f698df.jpg?1562822572" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/f/bf479c90-c791-4152-a8e6-fd3123f698df.jpg?1562822572"/>
+            <div class="info">Bladed Pinions: 46.49%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Lantern of Revealing" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/f/2f43d21a-4400-4770-95a9-ce074ee68232.jpg?1660729971" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/f/2f43d21a-4400-4770-95a9-ce074ee68232.jpg?1660729971"/>
+            <div class="info">Lantern of Revealing: 46.39%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Orazca Relic" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/d/fd9e5b05-11b5-46fc-a1c8-484f41a0cee6.jpg?1631589120" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/d/fd9e5b05-11b5-46fc-a1c8-484f41a0cee6.jpg?1631589120"/>
+            <div class="info">Orazca Relic: 46.19%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Chromatic Sphere" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/d/edabc8b2-4413-48e4-8d6f-521b19d839a6.jpg?1601080615" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/d/edabc8b2-4413-48e4-8d6f-521b19d839a6.jpg?1601080615"/>
+            <div class="info">Chromatic Sphere: 46.13%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Mycosynth Wellspring" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/1/c11c16ff-1786-4426-86b0-d7beb7a71798.jpg?1625978921" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/1/c11c16ff-1786-4426-86b0-d7beb7a71798.jpg?1625978921"/>
+            <div class="info">Mycosynth Wellspring: 45.69%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Cliffhaven Kitesail" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/e/eebf8f67-49d0-42de-a5cc-ad13d19d2c55.jpg?1604200689" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/e/eebf8f67-49d0-42de-a5cc-ad13d19d2c55.jpg?1604200689"/>
+            <div class="info">Cliffhaven Kitesail: 45.49%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Desert" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/7/c74e13eb-6f82-4db1-9d0d-8310f48d9f6d.jpg?1631589551" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/7/c74e13eb-6f82-4db1-9d0d-8310f48d9f6d.jpg?1631589551"/>
+            <div class="info">Desert: 45.46%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Gingerbrute" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/1/c1195ec5-979b-4c4a-9c04-62bb53c2b011.jpg?1601080671" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/1/c1195ec5-979b-4c4a-9c04-62bb53c2b011.jpg?1601080671"/>
+            <div class="info">Gingerbrute: 45.37%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Springleaf Drum" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/3/f3b3869b-6da1-4b01-a2e7-2018d478b6e5.jpg?1599709959" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/3/f3b3869b-6da1-4b01-a2e7-2018d478b6e5.jpg?1599709959"/>
+            <div class="info">Springleaf Drum: 45.01%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Spare Supplies" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/5/a53baf25-1782-427b-a9dd-fc9b8dc6444f.jpg?1604201030" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/5/a53baf25-1782-427b-a9dd-fc9b8dc6444f.jpg?1604201030"/>
+            <div class="info">Spare Supplies: 44.99%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Maelstrom Colossus" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/2/322491d2-d082-4d38-8d81-8588c011e725.jpg?1608911533" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/2/322491d2-d082-4d38-8d81-8588c011e725.jpg?1608911533"/>
+            <div class="info">Maelstrom Colossus: 44.97%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Viridian Longbow" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/4/f4607634-6206-4c6c-b389-abcbfe969b65.jpg?1631589299" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/4/f4607634-6206-4c6c-b389-abcbfe969b65.jpg?1631589299"/>
+            <div class="info">Viridian Longbow: 44.26%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Skyscanner" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/a/cab69fbd-0179-4b02-adba-71d2a0eeea5c.jpg?1594737556" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/a/cab69fbd-0179-4b02-adba-71d2a0eeea5c.jpg?1594737556"/>
+            <div class="info">Skyscanner: 44.15%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Pristine Talisman" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/b/6b6307f3-bc63-463c-8ffc-a8b8b829e5d7.jpg?1625979109" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/b/6b6307f3-bc63-463c-8ffc-a8b8b829e5d7.jpg?1625979109"/>
+            <div class="info">Pristine Talisman: 43.92%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Chromatic Star" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/2/c2e8d492-2c67-410b-b556-c157a14c4cec.jpg?1619404181" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/2/c2e8d492-2c67-410b-b556-c157a14c4cec.jpg?1619404181"/>
+            <div class="info">Chromatic Star: 43.82%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Staunch Throneguard" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/41017b24-957b-403d-b417-d84ad2624794.jpg?1608911739" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/1/41017b24-957b-403d-b417-d84ad2624794.jpg?1608911739"/>
+            <div class="info">Staunch Throneguard: 43.2%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ichor Wellspring" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/c/1ccdb407-ac8f-4736-89d3-ab0d086096ea.jpg?1625978684" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/c/1ccdb407-ac8f-4736-89d3-ab0d086096ea.jpg?1625978684"/>
+            <div class="info">Ichor Wellspring: 42.54%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Prying Blade" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/d/ad45720e-2870-414d-8119-8e48c5600d3b.jpg?1562562057" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/d/ad45720e-2870-414d-8119-8e48c5600d3b.jpg?1562562057"/>
+            <div class="info">Prying Blade: 42.35%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bonesplitter" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/9/690972a8-72df-4050-a353-16e45589167c.jpg?1608917758" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/9/690972a8-72df-4050-a353-16e45589167c.jpg?1608917758"/>
+            <div class="info">Bonesplitter: 41.97%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Explorer's Scope" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/e/1ef03100-f095-43e4-a697-2f473779b5a9.jpg?1631588943" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/e/1ef03100-f095-43e4-a697-2f473779b5a9.jpg?1631588943"/>
+            <div class="info">Explorer's Scope: 41.68%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Expedition Map" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/5/551c0a45-9515-4e51-84e5-79703832a661.jpg?1646666270" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/5/551c0a45-9515-4e51-84e5-79703832a661.jpg?1646666270"/>
+            <div class="info">Expedition Map: 41.15%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ulamog's Crusher" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/d/eda0fd38-38e6-4e9b-9c17-4d855e01b1e1.jpg?1547515341" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/d/eda0fd38-38e6-4e9b-9c17-4d855e01b1e1.jpg?1547515341"/>
+            <div class="info">Ulamog's Crusher: 39.66%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Forge of Heroes" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/2/826ff8c2-8a1d-45f5-a7e2-d8bf826fcadc.jpg?1592710371" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/2/826ff8c2-8a1d-45f5-a7e2-d8bf826fcadc.jpg?1592710371"/>
+            <div class="info">Forge of Heroes: 39.26%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ornithopter of Paradise" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/2/025b0f0f-daf6-4071-82e7-39c015447ce4.jpg?1626108479" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/2/025b0f0f-daf6-4071-82e7-39c015447ce4.jpg?1626108479"/>
+            <div class="info">Ornithopter of Paradise: 38.41%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Relic of Progenitus" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/436cd66c-0622-43cd-8748-af4d21a2db3f.jpg?1580015265" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/436cd66c-0622-43cd-8748-af4d21a2db3f.jpg?1580015265"/>
+            <div class="info">Relic of Progenitus: 34.47%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fellwar Stone" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/b/5bf29f9d-0745-4aab-b7fc-7b04ba2eeaba.jpg?1661392034" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/b/5bf29f9d-0745-4aab-b7fc-7b04ba2eeaba.jpg?1661392034"/>
+            <div class="info">Fellwar Stone: 33.32%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Wayfarer's Bauble" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b865d247-fe0a-4583-b088-ae900ffe521b.jpg?1660730584" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b865d247-fe0a-4583-b088-ae900ffe521b.jpg?1660730584"/>
+            <div class="info">Wayfarer's Bauble: 29.28%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Opal Palace" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/e/3e639915-9c9c-482f-ad9b-b8158f2971e1.jpg?1651656497" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/e/3e639915-9c9c-482f-ad9b-b8158f2971e1.jpg?1651656497"/>
+            <div class="info">Opal Palace: 25.92%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bonder's Ornament" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5afe425c-50a7-4d29-ac14-0edb094fc770.jpg?1642716757" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5afe425c-50a7-4d29-ac14-0edb094fc770.jpg?1642716757"/>
+            <div class="info">Bonder's Ornament: 24%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Arcane Signet" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/b/1bf50ef8-e7e8-4099-ba91-0d7c31b04541.jpg?1661391940" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/b/1bf50ef8-e7e8-4099-ba91-0d7c31b04541.jpg?1661391940"/>
+            <div class="info">Arcane Signet: 0.7%</div>
+          </a>
+
+        
+
+      </div>
+    </div>
+  <div id="about" class="main" style="display: none;">
+      <p></p>
+      <h2>About PDHREC</h2>
+      <p></p>
+      <p>Inspired by
+        <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+        PDHREC is an attempt to do similar things for Pauper Commander.
+      </p>
+      <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+        the data.
+      </p>
+      <p>
+        The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+        decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+                                  commander it is in, and then subtracting the percentage of decks it is in on average.  A score of -100% synergy
+                                  means every deck runs it, except for decks with your commander.  A score of +100% synergy is highly unlikely,
+                                  but means that every single deck with this commander runs it, and no others decks do.
+      </p>
+    </div>
+    <footer id="footer">
+      <div id="footer-flex">
+        <p>
+          PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>

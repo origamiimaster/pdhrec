@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PDHREC | Pauper Commander</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
+    <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+    <meta property="og:description" content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/nav.css"></link>
+    <link rel="stylesheet" href="/css/main.css"></link>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
+  <body>
+    <script src="/js/nav.js"></script>
+<div id="navbar">
+  <div id="navbar-control">
+    <a title="PDHREC" href="/" class="header-home first-home">
+      <h1 class="header-home-h1">PDHREC</h1>
+    </a>
+    <a title="PDHREC" href="/" class="header-home second-home">
+      <div class="header-home-h3">
+        <h3>
+          PDH
+        </h3>
+        <h3>
+          REC
+        </h3>
+      </div>
+    </a>
+    <form class="nav-search">
+      <div class="autocomplete">
+        <input type="text" name="q" id="nav-search-field" autocomplete="off" placeholder="Search for cards...">
+      </div>
+    </form>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Commanders</a>
+      <a href="/staples" class="nav-link">Staples</a>
+      <a href="#about" class="nav-link">About</a>
+    </div>
+    <a class="nav-link nav-menu-button">
+      Menu
+    </a>
+  </div>
+  <div class="mobile-nav">
+    <div class="nav-links-mobile">
+      <a href="/" class="nav-link-mobile">Commanders</a>
+      <a href="/staples" class="nav-link-mobile">Staples</a>
+      <a href="#about" class="nav-link-mobile">About</a>
+    </div>
+  </div>
+</div>
+
+    <script src="/js/deckdata.js"></script>
+    <div id="main" class="main">
+      <div id="gallery" class="gallery">
+        <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
+          
+
+  <a href="/commander/agent-of-the-iron-throne-livaan-cultist-of-tiamat" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Agent of the Iron Throne" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a5984d3-1e76-4d97-9373-b59cfa9c38ae.jpg?1653000764" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a5984d3-1e76-4d97-9373-b59cfa9c38ae.jpg?1653000764">
+      <img loading="lazy" alt="Livaan, Cultist of Tiamat" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/1/616c5b52-94bc-48e3-8e4f-e2db1eca7536.jpg?1652816658" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/1/616c5b52-94bc-48e3-8e4f-e2db1eca7536.jpg?1652816658">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+          <div class="big-gallery-item">Agent of the Iron Throne <br> In 1 decks.</div>
+        </div>
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bump in the Night" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/2/320e394c-c8b1-42ad-91a5-6d57296f85ab.jpg?1592714563" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/2/320e394c-c8b1-42ad-91a5-6d57296f85ab.jpg?1592714563"/>
+            <div class="info">Bump in the Night: 99.95%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Falter" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a30309f-7e81-4e53-abb5-7cab084a10cd.jpg?1562913319" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a30309f-7e81-4e53-abb5-7cab084a10cd.jpg?1562913319"/>
+            <div class="info">Falter: 99.83%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Ruthless Ripper" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/c/bc78993c-ca67-43b3-a64d-ce0c3bc415bc.jpg?1562440260" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/c/bc78993c-ca67-43b3-a64d-ce0c3bc415bc.jpg?1562440260"/>
+            <div class="info">Ruthless Ripper: 99.83%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fruit of Tizerus" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/6/66e577a0-e5d7-4e6a-919c-d85c2ae819ce.jpg?1581479782" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/6/66e577a0-e5d7-4e6a-919c-d85c2ae819ce.jpg?1581479782"/>
+            <div class="info">Fruit of Tizerus: 99.78%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Vampire Interloper" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/3/c3e2ea59-36f1-4e95-bfe8-7008b085194f.jpg?1634350330" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/3/c3e2ea59-36f1-4e95-bfe8-7008b085194f.jpg?1634350330"/>
+            <div class="info">Vampire Interloper: 99.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Storm Caller" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/b/1b6d123c-c16d-43fa-b183-8a59c7e1a11e.jpg?1596250199" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/b/1b6d123c-c16d-43fa-b183-8a59c7e1a11e.jpg?1596250199"/>
+            <div class="info">Storm Caller: 99.62%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Viashino Pyromancer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/8/a82fdb2f-b199-44ff-9615-90fc074cb8b0.jpg?1562303465" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/8/a82fdb2f-b199-44ff-9615-90fc074cb8b0.jpg?1562303465"/>
+            <div class="info">Viashino Pyromancer: 99.6%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Orcish Hellraiser" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/6/56ea32e5-b164-4a8d-9312-c35ae5cd8b2a.jpg?1562201902" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/6/56ea32e5-b164-4a8d-9312-c35ae5cd8b2a.jpg?1562201902"/>
+            <div class="info">Orcish Hellraiser: 99.6%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Keldon Marauders" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/f/bf42524c-97e5-40b2-8a6d-d2a1f0a9eb65.jpg?1618940501" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/f/bf42524c-97e5-40b2-8a6d-d2a1f0a9eb65.jpg?1618940501"/>
+            <div class="info">Keldon Marauders: 99.58%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Volcanic Hammer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/d/9db3f454-4aeb-4e48-b961-bea760ea8ddf.jpg?1562739230" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/d/9db3f454-4aeb-4e48-b961-bea760ea8ddf.jpg?1562739230"/>
+            <div class="info">Volcanic Hammer: 99.53%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Piranha Marsh" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/a/ea077cff-b5c9-4a40-8e66-8810c37be5cb.jpg?1562617915" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/a/ea077cff-b5c9-4a40-8e66-8810c37be5cb.jpg?1562617915"/>
+            <div class="info">Piranha Marsh: 99.53%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Curse of the Pierced Heart" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/1/71010182-c004-4d18-adab-80319cd1e625.jpg?1562831956" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/1/71010182-c004-4d18-adab-80319cd1e625.jpg?1562831956"/>
+            <div class="info">Curse of the Pierced Heart: 99.52%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Shard Volley" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/43db4810-078e-487a-afef-57cbc1db0cc7.jpg?1562878159" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/43db4810-078e-487a-afef-57cbc1db0cc7.jpg?1562878159"/>
+            <div class="info">Shard Volley: 99.5%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Malakir Blood-Priest" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/b/bbbd64da-6071-49f4-87aa-066209ec1ae9.jpg?1654116192" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/b/bbbd64da-6071-49f4-87aa-066209ec1ae9.jpg?1654116192"/>
+            <div class="info">Malakir Blood-Priest: 99.42%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Dauthi Horror" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/c/7c41afe6-7eed-4cf5-9bbb-ccc9f82cb4fa.jpg?1654116000" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/c/7c41afe6-7eed-4cf5-9bbb-ccc9f82cb4fa.jpg?1654116000"/>
+            <div class="info">Dauthi Horror: 99.4%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Okiba Reckoner Raid // Nezumi Road Captain" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/f/4f0582b4-d951-4450-b158-4a34109e48cd.jpg?1656453196" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/f/4f0582b4-d951-4450-b158-4a34109e48cd.jpg?1656453196"/>
+            <div class="info">Okiba Reckoner Raid // Nezumi Road Captain: 99.4%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Blightning" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/c/ccf0f075-4401-41da-a17f-a209d6a03782.jpg?1562441147" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/c/ccf0f075-4401-41da-a17f-a209d6a03782.jpg?1562441147"/>
+            <div class="info">Blightning: 99.38%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Tyrant's Choice" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/e/5ed37b1c-7377-40bd-ae98-7f5ce56156b1.jpg?1562914207" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/e/5ed37b1c-7377-40bd-ae98-7f5ce56156b1.jpg?1562914207"/>
+            <div class="info">Tyrant's Choice: 99.38%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Arrogant Outlaw" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/9/496a9d45-6197-44b6-b0fc-17aeae281b2f.jpg?1634349480" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/9/496a9d45-6197-44b6-b0fc-17aeae281b2f.jpg?1634349480"/>
+            <div class="info">Arrogant Outlaw: 99.38%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Reckless Abandon" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/4327fd85-eb89-4707-80f8-bdf41179eda5.jpg?1592754699" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/3/4327fd85-eb89-4707-80f8-bdf41179eda5.jpg?1592754699"/>
+            <div class="info">Reckless Abandon: 99.33%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Roil Eruption" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1604197631" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/6/86572747-8faa-4242-b059-07d11e6be1cd.jpg?1604197631"/>
+            <div class="info">Roil Eruption: 99.3%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Heartfire" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/f/af482a14-a144-4e60-bd04-a548a3c89f5a.jpg?1601081772" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/f/af482a14-a144-4e60-bd04-a548a3c89f5a.jpg?1601081772"/>
+            <div class="info">Heartfire: 99.16%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Brimstone Volley" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/4/94fa0577-f02a-4d24-835b-fef8d849b37a.jpg?1599706255" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/4/94fa0577-f02a-4d24-835b-fef8d849b37a.jpg?1599706255"/>
+            <div class="info">Brimstone Volley: 99.15%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Collateral Damage" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/1/81232b04-a4a0-48d8-b8af-a6e3d50173e5.jpg?1601077443" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/1/81232b04-a4a0-48d8-b8af-a6e3d50173e5.jpg?1601077443"/>
+            <div class="info">Collateral Damage: 99.06%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Staggershock" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/6/56976d52-053d-49e9-94c0-f21dc13029ac.jpg?1656068073" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/6/56976d52-053d-49e9-94c0-f21dc13029ac.jpg?1656068073"/>
+            <div class="info">Staggershock: 99.05%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fireblast" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/1/51e839d8-2c62-46df-a6ca-3964f43b7e54.jpg?1611933944" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/1/51e839d8-2c62-46df-a6ca-3964f43b7e54.jpg?1611933944"/>
+            <div class="info">Fireblast: 99.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Dynacharge" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/9/a9e530cc-21b9-43c2-a6a9-f1d96e06c2cd.jpg?1593813457" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/9/a9e530cc-21b9-43c2-a6a9-f1d96e06c2cd.jpg?1593813457"/>
+            <div class="info">Dynacharge: 98.98%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Vampire's Kiss" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/974bf8cc-4259-48cc-8e7f-1580bb010d3f.jpg?1643590522" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/974bf8cc-4259-48cc-8e7f-1580bb010d3f.jpg?1643590522"/>
+            <div class="info">Vampire's Kiss: 98.88%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Tormented Soul" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/3/63492d71-c891-4c70-b050-ceb361e0844d.jpg?1562913369" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/3/63492d71-c891-4c70-b050-ceb361e0844d.jpg?1562913369"/>
+            <div class="info">Tormented Soul: 98.85%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Vampire Spawn" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b8975c72-b2ec-4c5f-86a4-4e1e3bb41c15.jpg?1627705486" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/8/b8975c72-b2ec-4c5f-86a4-4e1e3bb41c15.jpg?1627705486"/>
+            <div class="info">Vampire Spawn: 98.83%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Searing Spear" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/4/44c5f884-d071-40c2-bb2c-925dc2197ea3.jpg?1592765729" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/4/44c5f884-d071-40c2-bb2c-925dc2197ea3.jpg?1592765729"/>
+            <div class="info">Searing Spear: 98.73%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Grim Initiate" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/9/29b6ec9d-3861-48bf-a198-dc7efba5d89c.jpg?1557576710" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/9/29b6ec9d-3861-48bf-a198-dc7efba5d89c.jpg?1557576710"/>
+            <div class="info">Grim Initiate: 98.71%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Skewer the Critics" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/97295660-6bea-46ae-9a3b-0fc6abba407f.jpg?1584831035" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/7/97295660-6bea-46ae-9a3b-0fc6abba407f.jpg?1584831035"/>
+            <div class="info">Skewer the Critics: 98.65%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Teetering Peaks" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/5/e56aca36-bb51-45e3-9ef9-9f9f2aa1e088.jpg?1562617727" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/5/e56aca36-bb51-45e3-9ef9-9f9f2aa1e088.jpg?1562617727"/>
+            <div class="info">Teetering Peaks: 98.58%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Rift Bolt" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/c/4ccd0ada-92b2-48f3-b5ae-96346fc138b6.jpg?1655394634" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/c/4ccd0ada-92b2-48f3-b5ae-96346fc138b6.jpg?1655394634"/>
+            <div class="info">Rift Bolt: 98.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Monastery Swiftspear" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/8/e8b9d59d-bac9-4092-901e-2b861c186868.jpg?1656006347" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/8/e8b9d59d-bac9-4092-901e-2b861c186868.jpg?1656006347"/>
+            <div class="info">Monastery Swiftspear: 98.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Raid Bombardment" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/a/ca75d458-4947-4075-89b6-e93936c67370.jpg?1547517351" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/a/ca75d458-4947-4075-89b6-e93936c67370.jpg?1547517351"/>
+            <div class="info">Raid Bombardment: 98.45%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Guildsworn Prowler" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/7/d7efb10f-c760-431c-8ac6-904965d850dc.jpg?1660725243" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/7/d7efb10f-c760-431c-8ac6-904965d850dc.jpg?1660725243"/>
+            <div class="info">Guildsworn Prowler: 98.43%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Tattered Mummy" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/c/4c006ad5-db2b-42c6-8018-660e08f18f50.jpg?1611940593" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/c/4c006ad5-db2b-42c6-8018-660e08f18f50.jpg?1611940593"/>
+            <div class="info">Tattered Mummy: 98.43%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Flame Rift" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e63ed449-d249-4639-85d2-f8fe75496d5c.jpg?1626100460" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/6/e63ed449-d249-4639-85d2-f8fe75496d5c.jpg?1626100460"/>
+            <div class="info">Flame Rift: 98.31%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Blood Seeker" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8033de8d-a396-4097-aedd-f9facb800b33.jpg?1562649032" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8033de8d-a396-4097-aedd-f9facb800b33.jpg?1562649032"/>
+            <div class="info">Blood Seeker: 97.98%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sudden Breakthrough" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b011707a-471b-41c2-bc73-376a55d26bee.jpg?1624592238" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/0/b011707a-471b-41c2-bc73-376a55d26bee.jpg?1624592238"/>
+            <div class="info">Sudden Breakthrough: 97.95%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Incinerate" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f23dff46-e040-4cba-890a-97c2899701f2.jpg?1562378497" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f23dff46-e040-4cba-890a-97c2899701f2.jpg?1562378497"/>
+            <div class="info">Incinerate: 97.88%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Crushing Disappointment" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/f/7fbe8cf1-11df-4ca4-9a6b-265193c49250.jpg?1624590861" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/f/7fbe8cf1-11df-4ca4-9a6b-265193c49250.jpg?1624590861"/>
+            <div class="info">Crushing Disappointment: 97.85%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Goldhound" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/0/c059e4b4-1542-4b5c-810a-9f0abac5792b.jpg?1660717983" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/0/c059e4b4-1542-4b5c-810a-9f0abac5792b.jpg?1660717983"/>
+            <div class="info">Goldhound: 97.76%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bone Picker" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/7/f7de3d27-f3e0-4aea-a737-6577de1bd1c5.jpg?1598304462" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/7/f7de3d27-f3e0-4aea-a737-6577de1bd1c5.jpg?1598304462"/>
+            <div class="info">Bone Picker: 97.75%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Goblin Bushwhacker" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/0/4085a5bf-a71b-4c73-9b39-0dcc328fe11b.jpg?1562611583" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/0/4085a5bf-a71b-4c73-9b39-0dcc328fe11b.jpg?1562611583"/>
+            <div class="info">Goblin Bushwhacker: 97.73%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Firebolt" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/8/882b8f98-ee51-4c94-a3eb-c79eb2b50d78.jpg?1562201821" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/8/882b8f98-ee51-4c94-a3eb-c79eb2b50d78.jpg?1562201821"/>
+            <div class="info">Firebolt: 97.68%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Lightning Strike" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/d/7d541125-bfb8-4f88-8bf3-ad7b6af7ad1d.jpg?1660887334" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/d/7d541125-bfb8-4f88-8bf3-ad7b6af7ad1d.jpg?1660887334"/>
+            <div class="info">Lightning Strike: 97.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Chain Lightning" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/7/b7cef88c-0ad6-47c4-b6c8-f989586aa635.jpg?1601077393" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/7/b7cef88c-0ad6-47c4-b6c8-f989586aa635.jpg?1601077393"/>
+            <div class="info">Chain Lightning: 97.34%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Serrated Scorpion" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/c/bc8f0242-35e1-4409-9321-56e742e8fef4.jpg?1591226960" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/c/bc8f0242-35e1-4409-9321-56e742e8fef4.jpg?1591226960"/>
+            <div class="info">Serrated Scorpion: 97.13%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Voldaren Epicure" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/e/ae154e64-f626-45fb-bd52-840c1c27b2d3.jpg?1643592109" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/e/ae154e64-f626-45fb-bd52-840c1c27b2d3.jpg?1643592109"/>
+            <div class="info">Voldaren Epicure: 96.98%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Nested Shambler" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/8/9851f290-f502-49f8-9b48-67f7966d4e34.jpg?1626095801" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/8/9851f290-f502-49f8-9b48-67f7966d4e34.jpg?1626095801"/>
+            <div class="info">Nested Shambler: 96.79%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fake Your Own Death" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/4/b4e117a8-3291-4f9a-ab00-c820c8e2aa00.jpg?1660717218" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/4/b4e117a8-3291-4f9a-ab00-c820c8e2aa00.jpg?1660717218"/>
+            <div class="info">Fake Your Own Death: 96.74%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Tramway Station" src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/0/e0532304-da6d-45cd-b1e6-4779d3f3b2bc.jpg?1660721778" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/e/0/e0532304-da6d-45cd-b1e6-4779d3f3b2bc.jpg?1660721778"/>
+            <div class="info">Tramway Station: 96.68%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Changeling Outcast" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/d/0d2c053f-0ef8-45f2-b2af-24cbb9a7fec4.jpg?1654115912" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/d/0d2c053f-0ef8-45f2-b2af-24cbb9a7fec4.jpg?1654115912"/>
+            <div class="info">Changeling Outcast: 96.64%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Witty Roastmaster" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/1/71d13f19-482b-4a2e-9692-b7d7caf2f9f5.jpg?1660718637" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/1/71d13f19-482b-4a2e-9692-b7d7caf2f9f5.jpg?1660718637"/>
+            <div class="info">Witty Roastmaster: 95.93%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Drossforge Bridge" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/b/5b46b8d8-723a-4752-b97d-29ef83bd294c.jpg?1626099621" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/b/5b46b8d8-723a-4752-b97d-29ef83bd294c.jpg?1626099621"/>
+            <div class="info">Drossforge Bridge: 95.76%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Experimental Synthesizer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/4/c47931c9-685d-4b83-8299-bc347224b4e8.jpg?1654567579" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/4/c47931c9-685d-4b83-8299-bc347224b4e8.jpg?1654567579"/>
+            <div class="info">Experimental Synthesizer: 95.74%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Fists of Flame" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/8/1897b60d-7e15-488c-84d5-505187739b00.jpg?1608912262" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/8/1897b60d-7e15-488c-84d5-505187739b00.jpg?1608912262"/>
+            <div class="info">Fists of Flame: 95.57%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Bloodfell Caves" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/a/ba06fcda-7ab8-48d4-8656-2a911e73dc44.jpg?1654568892" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/a/ba06fcda-7ab8-48d4-8656-2a911e73dc44.jpg?1654568892"/>
+            <div class="info">Bloodfell Caves: 94.69%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Kessig Flamebreather" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/0/303ad78a-b02a-44dc-afe6-7f95781a5062.jpg?1643591531" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/0/303ad78a-b02a-44dc-afe6-7f95781a5062.jpg?1643591531"/>
+            <div class="info">Kessig Flamebreather: 94.51%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Rakdos Carnarium" src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/9/19906ffa-c43e-4c11-b9c0-4a8b77d6691a.jpg?1661392798" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/1/9/19906ffa-c43e-4c11-b9c0-4a8b77d6691a.jpg?1661392798"/>
+            <div class="info">Rakdos Carnarium: 94.05%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Firebrand Archer" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/d/6ddc6b73-298b-4afa-990a-63706e77dd9f.jpg?1562803040" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/d/6ddc6b73-298b-4afa-990a-63706e77dd9f.jpg?1562803040"/>
+            <div class="info">Firebrand Archer: 93.32%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Maestros Theater" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/1/51eb4a44-a5c8-49ed-b440-2462626bb638.jpg?1660721610" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/1/51eb4a44-a5c8-49ed-b440-2462626bb638.jpg?1660721610"/>
+            <div class="info">Maestros Theater: 91.92%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Snuff Out" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/5/75bbe89f-09af-494e-b58e-271f64bde4b5.jpg?1562922833" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/5/75bbe89f-09af-494e-b58e-271f64bde4b5.jpg?1562922833"/>
+            <div class="info">Snuff Out: 88.28%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Sign in Blood" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/1/61388c28-9428-473c-973a-0a82b6b83d62.jpg?1562274085" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/1/61388c28-9428-473c-973a-0a82b6b83d62.jpg?1562274085"/>
+            <div class="info">Sign in Blood: 83.55%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Night's Whisper" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/a/2a16686d-a4eb-46c4-98a9-dcc87b89872e.jpg?1661387679" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/a/2a16686d-a4eb-46c4-98a9-dcc87b89872e.jpg?1661387679"/>
+            <div class="info">Night's Whisper: 82.7%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Lightning Bolt" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f29ba16f-c8fb-42fe-aabf-87089cb214a7.jpg?1655641518" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/2/f29ba16f-c8fb-42fe-aabf-87089cb214a7.jpg?1655641518"/>
+            <div class="info">Lightning Bolt: 81.88%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Mountain" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/8/a82f782e-abc8-4b92-a193-17b2c383f765.jpg?1660951177" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/8/a82f782e-abc8-4b92-a193-17b2c383f765.jpg?1660951177"/>
+            <div class="info">Mountain: 72.04%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Swamp" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a846f00-ccb9-4ee2-8358-7c7722258601.jpg?1660951065" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a846f00-ccb9-4ee2-8358-7c7722258601.jpg?1660951065"/>
+            <div class="info">Swamp: 66.03%</div>
+          </a>
+
+        
+
+          <a class="gallery-item">
+            <img loading="lazy" alt="Command Tower" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/7/77a679dd-220c-4fbe-a158-a8db57f55b86.jpg?1661550978" class="" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/7/77a679dd-220c-4fbe-a158-a8db57f55b86.jpg?1661550978"/>
+            <div class="info">Command Tower: 37.44%</div>
+          </a>
+
+        
+
+      </div>
+    </div>
+  <div id="about" class="main" style="display: none;">
+      <p></p>
+      <h2>About PDHREC</h2>
+      <p></p>
+      <p>Inspired by
+        <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+        PDHREC is an attempt to do similar things for Pauper Commander.
+      </p>
+      <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+        the data.
+      </p>
+      <p>
+        The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+        decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+                                  commander it is in, and then subtracting the percentage of decks it is in on average.  A score of -100% synergy
+                                  means every deck runs it, except for decks with your commander.  A score of +100% synergy is highly unlikely,
+                                  but means that every single deck with this commander runs it, and no others decks do.
+      </p>
+    </div>
+    <footer id="footer">
+      <div id="footer-flex">
+        <p>
+          PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>

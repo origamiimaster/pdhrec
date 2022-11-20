@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PDHREC | Pauper Commander</title>
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
+<meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+<meta property="og:description" content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="main.css"></link>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<script src="index.js"></script>
+<div class="topnav">
+  <a class="active" href="#home">Home</a>
+  <a href="#about" onclick="showAbout()">About</a>
+  <a href="#contact" onclick="showContact()">Contact</a>
+  <form autocomplete="off">
+    <div class="autocomplete" style="width:300px;">
+      <input type="text" name="search" id="search" placeholder="Search..."/>
+    </div>
+  </form>
+</div>
+<div id="page">
+
+<div id="main">
+  <div style="padding-left:16px;">
+    <h2 style="margin-bottom: 0px;">PDHREC: Top Commanders for Pauper EDH</h2>
+  </div>
+</div>
+<div id="about" style="display: none;">
+  <div style="padding-left:16px">
+    <h2>What is PDHREC?</h2>
+    <p>Inspired by <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+      PDHREC is an attempt to do similar things for Pauper Commander.    </p>
+    <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+      the data.  </p>
+    <p>
+      The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+      decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+      commander it is in, and then subtracting the percentage of decks it is in on average.  A score of -100% synergy
+      means every deck runs it, except for decks with your commander.  A score of +100% synergy is highly unlikely,
+      but means that every single deck with this commander runs it, and no others decks do.
+    </p>
+  </div>
+</div>
+<div id="contact" style="display: none;">
+  <div style="padding-left:16px">
+    <h2>Contact:</h2>
+    <p>Reach out to me online.  You can probably find me on the PDH Homebase discord server.  </p>
+    <p><a target="_blank" href="https://discord.gg/NYtscywtkS">https://discord.gg/NYtscywtkS</a></p>
+  </div>
+</div>
+<div id="commander" style="display: none;">
+  <h1 style="width:75%; float:left;">Colossal Dreadmaw</h1>
+  <div class="card" style="width: 25%;float:right;">
+    <img src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914Y"></img>
+  </div>
+  <table id="card-scores">
+    <tr>
+      <th>
+        Card
+      </th>
+      <th>
+        Synergy Score
+      </th>
+      <th>
+        Popularity Score
+      </th>
+    </tr>
+  </table>
+</div>
+</div>
+
+</body>
+</html>

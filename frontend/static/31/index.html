@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>PDHREC | Pauper Commander</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
+  <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+  <meta property="og:description"
+    content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/nav.css"></link>
+  <link rel="stylesheet" href="/css/main.css"></link>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <script src="/js/nav.js"></script>
+<div id="navbar">
+  <div id="navbar-control">
+    <a title="PDHREC" href="/" class="header-home first-home">
+      <h1 class="header-home-h1">PDHREC</h1>
+    </a>
+    <a title="PDHREC" href="/" class="header-home second-home">
+      <div class="header-home-h3">
+        <h3>
+          PDH
+        </h3>
+        <h3>
+          REC
+        </h3>
+      </div>
+    </a>
+    <form class="nav-search">
+      <div class="autocomplete">
+        <input type="text" name="q" id="nav-search-field" autocomplete="off" placeholder="Search for cards...">
+      </div>
+    </form>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Commanders</a>
+      <a href="/staples" class="nav-link">Staples</a>
+      <a href="#about" class="nav-link">About</a>
+    </div>
+    <a class="nav-link nav-menu-button">
+      Menu
+    </a>
+  </div>
+  <div class="mobile-nav">
+    <div class="nav-links-mobile">
+      <a href="/" class="nav-link-mobile">Commanders</a>
+      <a href="/staples" class="nav-link-mobile">Staples</a>
+      <a href="#about" class="nav-link-mobile">About</a>
+    </div>
+  </div>
+</div>
+
+  <div id="main" class="main">
+    <div id="gallery" class="gallery">
+      
+      
+  <a href="/commander/patagia-viper" class="gallery-item">
+    <img loading="lazy" alt="Patagia Viper" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/5/d5e565b4-d5ca-4a29-8bb4-0063bae2a85c.jpg?1562710164">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/wall-of-denial" class="gallery-item">
+    <img loading="lazy" alt="Wall of Denial" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/c/0cd95bba-0c3d-4f2c-94ea-bbd3f396292c.jpg?1593814738">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/nucklavee" class="gallery-item">
+    <img loading="lazy" alt="Nucklavee" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/d/fd706176-477a-49a9-bf47-0d10c0501227.jpg?1592761663">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/tempting-licid" class="gallery-item">
+    <img loading="lazy" alt="Tempting Licid" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/a/da7f3e0b-0600-4451-b621-e40c902a16cb.jpg?1562597815">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/heiko-yamazaki-the-general-norika-yamazaki-the-poet" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Heiko Yamazaki, the General" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/9/09cb553c-58c1-4cfd-b441-297b5f09b263.jpg?1654566451" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/9/09cb553c-58c1-4cfd-b441-297b5f09b263.jpg?1654566451">
+      <img loading="lazy" alt="Norika Yamazaki, the Poet" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/e/9ea5e61c-d903-410b-9acf-96a917ce05cc.jpg?1654567669" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/e/9ea5e61c-d903-410b-9acf-96a917ce05cc.jpg?1654567669">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/runaway-trash-bot" class="gallery-item">
+    <img loading="lazy" alt="Runaway Trash-Bot" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/e/3eebf6a6-f1fd-40a1-ac27-367deafa6f2a.jpg?1654568815">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/caller-of-the-pack" class="gallery-item">
+    <img loading="lazy" alt="Caller of the Pack" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/8/08620dc9-3a83-4d09-a6d4-b25a7d0ac644.jpg?1592672874">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/sky-blessed-samurai" class="gallery-item">
+    <img loading="lazy" alt="Sky-Blessed Samurai" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/9/c9c7ba6f-c58e-4347-92e4-51ae8f2d5a88.jpg?1654566515">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/felidar-guardian" class="gallery-item">
+    <img loading="lazy" alt="Felidar Guardian" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/4/44bdbed8-5d21-4bf5-8a32-9623b1139c85.jpg?1576381396">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/keleth-sunmane-familiar-slurrk-all-ingesting" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Keleth, Sunmane Familiar" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/e/de0ba512-b6c3-4931-be05-cb6bd03a4b7c.jpg?1644853028" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/e/de0ba512-b6c3-4931-be05-cb6bd03a4b7c.jpg?1644853028">
+      <img loading="lazy" alt="Slurrk, All-Ingesting" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/d/4da14a82-0c33-4319-9af5-390013ccbe19.jpg?1608910923" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/d/4da14a82-0c33-4319-9af5-390013ccbe19.jpg?1608910923">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/hotshot-mechanic" class="gallery-item">
+    <img loading="lazy" alt="Hotshot Mechanic" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/a/5a70e8fa-b71d-441e-b049-dacb09a9a7af.jpg?1654566286">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/locust-miser" class="gallery-item">
+    <img loading="lazy" alt="Locust Miser" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/5/55bf4dda-0ce8-4e35-88d9-18a22400e6cb.jpg?1562493740">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/curious-homunculus--voracious-reader" class="gallery-item">
+    <img loading="lazy" alt="Curious Homunculus // Voracious Reader" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/hero-of-leina-tower" class="gallery-item">
+    <img loading="lazy" alt="Hero of Leina Tower" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/3/93f3f0ce-e8f5-4020-b8db-23a6aa7f7cb5.jpg?1547517614">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/anara-wolvid-familiar-slurrk-all-ingesting" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Anara, Wolvid Familiar" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/d/4da14a82-0c33-4319-9af5-390013ccbe19.jpg?1608910923" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/d/4da14a82-0c33-4319-9af5-390013ccbe19.jpg?1608910923">
+      <img loading="lazy" alt="Slurrk, All-Ingesting" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/a/9a67cfaa-990c-4dcb-97a9-9c5d7316cabe.jpg?1608910526" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/a/9a67cfaa-990c-4dcb-97a9-9c5d7316cabe.jpg?1608910526">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/obsessive-stitcher" class="gallery-item">
+    <img loading="lazy" alt="Obsessive Stitcher" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/3/d319c8a2-ae7b-4077-8b11-97937979fed2.jpg?1631588600">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/keleth-sunmane-familiar-radiant-serra-archangel" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Keleth, Sunmane Familiar" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1608908949" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/8/38b00110-e3de-40ce-b2bd-9466fe9e53a3.jpg?1608908949">
+      <img loading="lazy" alt="Radiant, Serra Archangel" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/e/de0ba512-b6c3-4931-be05-cb6bd03a4b7c.jpg?1644853028" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/e/de0ba512-b6c3-4931-be05-cb6bd03a4b7c.jpg?1644853028">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/evil-eye-of-orms-by-gore" class="gallery-item">
+    <img loading="lazy" alt="Evil Eye of Orms-by-Gore" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/d/4dc4d500-a8af-452b-8d6c-200035905104.jpg?1562775948">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/naya-battlemage" class="gallery-item">
+    <img loading="lazy" alt="Naya Battlemage" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/f/4fe73f62-2e80-4d5f-b7b5-c54c895a3e4d.jpg?1562703809">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/swathcutter-giant" class="gallery-item">
+    <img loading="lazy" alt="Swathcutter Giant" src="https://c1.scryfall.com/file/scryfall-cards/large/front/7/0/700b38c5-3fd2-4566-8d27-9a09d5ab02b2.jpg?1572893832">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/regal-leosaur" class="gallery-item">
+    <img loading="lazy" alt="Regal Leosaur" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/6/b6fdf313-740b-4976-911f-9fb5eb54afce.jpg?1591228189">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/brinelin-the-moon-kraken-nadier-agent-of-the-duskenel" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Brinelin, the Moon Kraken" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4b063dfd-5a80-48c9-8f7b-48d21a129a76.jpg?1608909132" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4b063dfd-5a80-48c9-8f7b-48d21a129a76.jpg?1608909132">
+      <img loading="lazy" alt="Nadier, Agent of the Duskenel" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/7/47c5948b-b021-4d07-8003-9c11db690bc0.jpg?1608909819" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/7/47c5948b-b021-4d07-8003-9c11db690bc0.jpg?1608909819">
+      <div class="info">In 1 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/fire-servant" class="gallery-item">
+    <img loading="lazy" alt="Fire Servant" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/3/f3af0acc-258e-4979-bab7-7792006ec7bc.jpg?1562480814">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/rakish-heir" class="gallery-item">
+    <img loading="lazy" alt="Rakish Heir" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/d/0da15652-8207-4be1-b821-3fb3dad66e37.jpg?1641603262">
+    <div class="info">In 1 decks</div>
+  </a>
+
+
+      
+
+      <div class="pagination">
+        
+        <a href="/" >
+          1
+        </a>
+        
+        
+        <a href="/1/" >
+          2
+        </a>
+        
+        
+        <a href="/2/" >
+          3
+        </a>
+        
+        
+        <a href="/3/" >
+          4
+        </a>
+        
+        
+        <a href="/4/" >
+          5
+        </a>
+        
+        
+        <a href="/5/" >
+          6
+        </a>
+        
+        
+        <a href="/6/" >
+          7
+        </a>
+        
+        
+        <a href="/7/" >
+          8
+        </a>
+        
+        
+        <a href="/8/" >
+          9
+        </a>
+        
+        
+        <a href="/9/" >
+          10
+        </a>
+        
+        
+        <a href="/10/" >
+          11
+        </a>
+        
+        
+        <a href="/11/" >
+          12
+        </a>
+        
+        
+        <a href="/12/" >
+          13
+        </a>
+        
+        
+        <a href="/13/" >
+          14
+        </a>
+        
+        
+        <a href="/14/" >
+          15
+        </a>
+        
+        
+        <a href="/15/" >
+          16
+        </a>
+        
+        
+        <a href="/16/" >
+          17
+        </a>
+        
+        
+        <a href="/17/" >
+          18
+        </a>
+        
+        
+        <a href="/18/" >
+          19
+        </a>
+        
+        
+        <a href="/19/" >
+          20
+        </a>
+        
+        
+        <a href="/20/" >
+          21
+        </a>
+        
+        
+        <a href="/21/" >
+          22
+        </a>
+        
+        
+        <a href="/22/" >
+          23
+        </a>
+        
+        
+        <a href="/23/" >
+          24
+        </a>
+        
+        
+        <a href="/24/" >
+          25
+        </a>
+        
+        
+        <a href="/25/" >
+          26
+        </a>
+        
+        
+        <a href="/26/" >
+          27
+        </a>
+        
+        
+        <a href="/27/" >
+          28
+        </a>
+        
+        
+        <a href="/28/" >
+          29
+        </a>
+        
+        
+        <a href="/29/" >
+          30
+        </a>
+        
+        
+        <a href="/30/" >
+          31
+        </a>
+        
+        
+        <a href="/31/"  class="active"
+          >
+          32
+        </a>
+        
+        
+        <a href="/32/" >
+          33
+        </a>
+        
+        
+        <a href="/33/" >
+          34
+        </a>
+        
+        
+        <a href="/34/" >
+          35
+        </a>
+        
+        
+        <a href="/35/" >
+          36
+        </a>
+        
+        
+        <a href="/36/" >
+          37
+        </a>
+        
+        
+        <a href="/37/" >
+          38
+        </a>
+        
+        
+        <a href="/38/" >
+          39
+        </a>
+        
+        
+        <a href="/39/" >
+          40
+        </a>
+        
+        
+        <a href="/40/" >
+          41
+        </a>
+        
+        
+        <a href="/41/" >
+          42
+        </a>
+        
+        
+        <a href="/42/" >
+          43
+        </a>
+        
+        
+        <a href="/43/" >
+          44
+        </a>
+        
+        
+        <a href="/44/" >
+          45
+        </a>
+        
+        
+        <a href="/45/" >46 </a></div>
+  
+
+    </div>
+
+  </div>
+  <div id="about" class="main" style="display: none;">
+    <p>
+    <h2>About PDHREC</h2>
+    </p>
+    <p>Inspired by <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+      PDHREC is an attempt to do similar things for Pauper Commander. </p>
+    <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+      the data. </p>
+    <p>
+      The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+      decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+      commander it is in, and then subtracting the percentage of decks it is in on average. A score of -100% synergy
+      means every deck runs it, except for decks with your commander. A score of +100% synergy is highly unlikely,
+      but means that every single deck with this commander runs it, and no others decks do.
+    </p>
+  </div>
+  <div id="staples" class="main" style="display: none;">
+    <p>
+      Coming soon.
+    </p>
+  </div>
+  <footer id="footer">
+    <div id="footer-flex">
+      <p>
+        PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards.
+        Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+      </p>
+    </div>
+
+  </footer>
+
+</body>
+
+</html>

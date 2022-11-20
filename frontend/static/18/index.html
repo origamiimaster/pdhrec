@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>PDHREC | Pauper Commander</title>
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
+  <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+  <meta property="og:description"
+    content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/nav.css"></link>
+  <link rel="stylesheet" href="/css/main.css"></link>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <script src="/js/nav.js"></script>
+<div id="navbar">
+  <div id="navbar-control">
+    <a title="PDHREC" href="/" class="header-home first-home">
+      <h1 class="header-home-h1">PDHREC</h1>
+    </a>
+    <a title="PDHREC" href="/" class="header-home second-home">
+      <div class="header-home-h3">
+        <h3>
+          PDH
+        </h3>
+        <h3>
+          REC
+        </h3>
+      </div>
+    </a>
+    <form class="nav-search">
+      <div class="autocomplete">
+        <input type="text" name="q" id="nav-search-field" autocomplete="off" placeholder="Search for cards...">
+      </div>
+    </form>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Commanders</a>
+      <a href="/staples" class="nav-link">Staples</a>
+      <a href="#about" class="nav-link">About</a>
+    </div>
+    <a class="nav-link nav-menu-button">
+      Menu
+    </a>
+  </div>
+  <div class="mobile-nav">
+    <div class="nav-links-mobile">
+      <a href="/" class="nav-link-mobile">Commanders</a>
+      <a href="/staples" class="nav-link-mobile">Staples</a>
+      <a href="#about" class="nav-link-mobile">About</a>
+    </div>
+  </div>
+</div>
+
+  <div id="main" class="main">
+    <div id="gallery" class="gallery">
+      
+      
+  <a href="/commander/bereaved-survivor--dauntless-avenger" class="gallery-item">
+    <img loading="lazy" alt="Bereaved Survivor // Dauntless Avenger" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/thunderous-snapper" class="gallery-item">
+    <img loading="lazy" alt="Thunderous Snapper" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/5/9576d4f1-47bb-45e0-803c-93fa2cdacbe5.jpg?1572490940">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/jukai-naturalist" class="gallery-item">
+    <img loading="lazy" alt="Jukai Naturalist" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/3/5366900b-2abf-4e5c-8507-f51aca9c7ce8.jpg?1654568491">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/blaring-captain-blaring-recruiter" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Blaring Captain" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/5/959bb0f1-0af3-4070-9303-684a07edfcfa.jpg?1604708536" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/9/5/959bb0f1-0af3-4070-9303-684a07edfcfa.jpg?1604708536">
+      <img loading="lazy" alt="Blaring Recruiter" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/2/529ff592-88bd-4bab-8f6a-637bb08d9198.jpg?1562911779" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/2/529ff592-88bd-4bab-8f6a-637bb08d9198.jpg?1562911779">
+      <div class="info">In 3 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/flame-channeler--embodiment-of-flame" class="gallery-item">
+    <img loading="lazy" alt="Flame Channeler // Embodiment of Flame" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/0/8059c52b-5d25-4052-b48a-e9e219a7a546.jpg?1594736914">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/angel-of-despair" class="gallery-item">
+    <img loading="lazy" alt="Angel of Despair" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/0/a07809b2-dabe-4242-84c3-fd640d7d5998.jpg?1547517989">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/wandering-mind" class="gallery-item">
+    <img loading="lazy" alt="Wandering Mind" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4b9a1096-6313-4245-be18-1588c219b842.jpg?1643594554">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/corpse-augur" class="gallery-item">
+    <img loading="lazy" alt="Corpse Augur" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/0/600eaa36-5497-42dc-8d21-a5fcdd01fa79.jpg?1654115927">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/glacian-powerstone-engineer-rebbec-architect-of-ascension" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Glacian, Powerstone Engineer" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/7/a736df42-18e9-4259-b0b8-54d21143e72e.jpg?1608909239" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/a/7/a736df42-18e9-4259-b0b8-54d21143e72e.jpg?1608909239">
+      <img loading="lazy" alt="Rebbec, Architect of Ascension" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/6/46975250-950f-4f5d-a7c5-f61aec8e40ad.jpg?1608908966" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/6/46975250-950f-4f5d-a7c5-f61aec8e40ad.jpg?1608908966">
+      <div class="info">In 3 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/huatlis-raptor" class="gallery-item">
+    <img loading="lazy" alt="Huatli's Raptor" src="https://c1.scryfall.com/file/scryfall-cards/large/front/b/a/ba680ad0-6134-46e0-8fcb-532b2052eca7.jpg?1557577162">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/dragons-rage-channeler" class="gallery-item">
+    <img loading="lazy" alt="Dragon's Rage Channeler" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/c/4ced112a-e775-4f97-97b3-74877e9dce12.jpg?1626096503">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/contraband-kingpin" class="gallery-item">
+    <img loading="lazy" alt="Contraband Kingpin" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/9/69beafcd-6c90-40c2-afff-0bd82377febf.jpg?1576382776">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/dreamshaper-shaman" class="gallery-item">
+    <img loading="lazy" alt="Dreamshaper Shaman" src="https://c1.scryfall.com/file/scryfall-cards/large/front/c/1/c11f5d27-37f3-430a-833c-84e249b5e744.jpg?1655824300">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/fathom-fleet-swordjack" class="gallery-item">
+    <img loading="lazy" alt="Fathom Fleet Swordjack" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/3/53c267b7-dbd6-43c5-9741-10f635bff4b1.jpg?1616447015">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/thundering-djinn" class="gallery-item">
+    <img loading="lazy" alt="Thundering Djinn" src="https://c1.scryfall.com/file/scryfall-cards/large/front/2/8/28642fbe-90c8-4beb-9950-91af28d93326.jpg?1562202415">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/hama-pashar-ruin-seeker" class="gallery-item">
+    <img loading="lazy" alt="Hama Pashar, Ruin Seeker" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/7/47b8eb2e-73ac-4ad6-9ab6-4f8da7b41020.jpg?1628299585">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/twinblade-paladin" class="gallery-item">
+    <img loading="lazy" alt="Twinblade Paladin" src="https://c1.scryfall.com/file/scryfall-cards/large/front/6/3/6397d426-00e0-44da-b23c-44ccea65f5aa.jpg?1592518086">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/famished-paladin" class="gallery-item">
+    <img loading="lazy" alt="Famished Paladin" src="https://c1.scryfall.com/file/scryfall-cards/large/front/d/8/d80e3bc9-7b67-4eab-916a-6d83da06f20a.jpg?1555039693">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/skyknight-vanguard" class="gallery-item">
+    <img loading="lazy" alt="Skyknight Vanguard" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/4/549634d8-1c33-401b-841d-a79ef4374dd1.jpg?1592517575">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/blazing-specter" class="gallery-item">
+    <img loading="lazy" alt="Blazing Specter" src="https://c1.scryfall.com/file/scryfall-cards/large/front/0/4/048dbfec-b1d4-4bb2-8709-21a5f0f3d8ab.jpg?1562895872">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/avalanche-caller" class="gallery-item">
+    <img loading="lazy" alt="Avalanche Caller" src="https://c1.scryfall.com/file/scryfall-cards/large/front/8/9/89cef049-6a47-4264-b2bc-b9d291a09c4c.jpg?1631046716">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+  <a href="/commander/vampire-nighthawk" class="gallery-item">
+    <img loading="lazy" alt="Vampire Nighthawk" src="https://c1.scryfall.com/file/scryfall-cards/large/front/3/0/301ff69c-2590-45af-893b-7ac0285e450b.jpg?1641602963">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+      
+
+  <a href="/commander/cloakwood-hermit-viconia-drow-apostate" class="gallery-item">
+    <div class="partners">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII=" class="partner3">
+      <img loading="lazy" alt="Cloakwood Hermit" class="partner1" src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/6/f631762a-e833-40a5-a6e9-b6cde38f62f0.jpg?1652895940" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/f/6/f631762a-e833-40a5-a6e9-b6cde38f62f0.jpg?1652895940">
+      <img loading="lazy" alt="Viconia, Drow Apostate" class="partner2" src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bd8689d-a0c1-4041-bead-7b512fe25663.jpg?1652822485" data-src="https://c1.scryfall.com/file/scryfall-cards/large/front/4/b/4bd8689d-a0c1-4041-bead-7b512fe25663.jpg?1652822485">
+      <div class="info">In 3 decks</div>
+    </div>
+  </a>
+
+      
+      
+  <a href="/commander/devourer-of-memory" class="gallery-item">
+    <img loading="lazy" alt="Devourer of Memory" src="https://c1.scryfall.com/file/scryfall-cards/large/front/5/1/514a6206-c2e5-4a0f-8a20-7efd6628dd0a.jpg?1581481019">
+    <div class="info">In 3 decks</div>
+  </a>
+
+
+      
+
+      <div class="pagination">
+        
+        <a href="/" >
+          1
+        </a>
+        
+        
+        <a href="/1/" >
+          2
+        </a>
+        
+        
+        <a href="/2/" >
+          3
+        </a>
+        
+        
+        <a href="/3/" >
+          4
+        </a>
+        
+        
+        <a href="/4/" >
+          5
+        </a>
+        
+        
+        <a href="/5/" >
+          6
+        </a>
+        
+        
+        <a href="/6/" >
+          7
+        </a>
+        
+        
+        <a href="/7/" >
+          8
+        </a>
+        
+        
+        <a href="/8/" >
+          9
+        </a>
+        
+        
+        <a href="/9/" >
+          10
+        </a>
+        
+        
+        <a href="/10/" >
+          11
+        </a>
+        
+        
+        <a href="/11/" >
+          12
+        </a>
+        
+        
+        <a href="/12/" >
+          13
+        </a>
+        
+        
+        <a href="/13/" >
+          14
+        </a>
+        
+        
+        <a href="/14/" >
+          15
+        </a>
+        
+        
+        <a href="/15/" >
+          16
+        </a>
+        
+        
+        <a href="/16/" >
+          17
+        </a>
+        
+        
+        <a href="/17/" >
+          18
+        </a>
+        
+        
+        <a href="/18/"  class="active"
+          >
+          19
+        </a>
+        
+        
+        <a href="/19/" >
+          20
+        </a>
+        
+        
+        <a href="/20/" >
+          21
+        </a>
+        
+        
+        <a href="/21/" >
+          22
+        </a>
+        
+        
+        <a href="/22/" >
+          23
+        </a>
+        
+        
+        <a href="/23/" >
+          24
+        </a>
+        
+        
+        <a href="/24/" >
+          25
+        </a>
+        
+        
+        <a href="/25/" >
+          26
+        </a>
+        
+        
+        <a href="/26/" >
+          27
+        </a>
+        
+        
+        <a href="/27/" >
+          28
+        </a>
+        
+        
+        <a href="/28/" >
+          29
+        </a>
+        
+        
+        <a href="/29/" >
+          30
+        </a>
+        
+        
+        <a href="/30/" >
+          31
+        </a>
+        
+        
+        <a href="/31/" >
+          32
+        </a>
+        
+        
+        <a href="/32/" >
+          33
+        </a>
+        
+        
+        <a href="/33/" >
+          34
+        </a>
+        
+        
+        <a href="/34/" >
+          35
+        </a>
+        
+        
+        <a href="/35/" >
+          36
+        </a>
+        
+        
+        <a href="/36/" >
+          37
+        </a>
+        
+        
+        <a href="/37/" >
+          38
+        </a>
+        
+        
+        <a href="/38/" >
+          39
+        </a>
+        
+        
+        <a href="/39/" >
+          40
+        </a>
+        
+        
+        <a href="/40/" >
+          41
+        </a>
+        
+        
+        <a href="/41/" >
+          42
+        </a>
+        
+        
+        <a href="/42/" >
+          43
+        </a>
+        
+        
+        <a href="/43/" >
+          44
+        </a>
+        
+        
+        <a href="/44/" >
+          45
+        </a>
+        
+        
+        <a href="/45/" >46 </a></div>
+  
+
+    </div>
+
+  </div>
+  <div id="about" class="main" style="display: none;">
+    <p>
+    <h2>About PDHREC</h2>
+    </p>
+    <p>Inspired by <a target="_blank" href="https://edhrec.com">EDHREC</a>, the Commander website,
+      PDHREC is an attempt to do similar things for Pauper Commander. </p>
+    <p>PDHREC collects data from publicly available decks on deck building websites, and performs aggregations on
+      the data. </p>
+    <p>
+      The synergy score for a card is a measure of how popular a card is in this particular deck, versus in other
+      decks. It's calculated for each card per commander by first calculating the percentage of decks with the
+      commander it is in, and then subtracting the percentage of decks it is in on average. A score of -100% synergy
+      means every deck runs it, except for decks with your commander. A score of +100% synergy is highly unlikely,
+      but means that every single deck with this commander runs it, and no others decks do.
+    </p>
+  </div>
+  <div id="staples" class="main" style="display: none;">
+    <p>
+      Coming soon.
+    </p>
+  </div>
+  <footer id="footer">
+    <div id="footer-flex">
+      <p>
+        PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards.
+        Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+      </p>
+    </div>
+
+  </footer>
+
+</body>
+
+</html>
