@@ -33,12 +33,11 @@ window.onload = () => {
 
         let gallery = document.getElementById("gallery")
         let count = 0;
-        let alt_count = [0, 0, 0, 0, 0, 0]
         let commanderNames = [];
-        $("#gallery").empty()
+
         for (let i = 0; i < cards[0].length; i++) {
-            if (alt_count[0] < 100 || alt_count[1] < 100 || alt_count[2] < 100 || alt_count[3] < 100 || alt_count[4] <
-            100 || alt_count[5] < 100) {
+            count += 1
+            if (count <= 100) {
                 let new_box = document.createElement("a");
                 new_box.className = "gallery-item"
                 let img = document.createElement("img")
@@ -50,6 +49,7 @@ window.onload = () => {
                     let info_box = document.createElement("div");
                     info_box.className = "info"
                     info_box.innerHTML = cards[1][i] + ": " + cards[0][i]
+
                     img.alt = cards[1][i]
                     img.classList.add("lazy")
                     let img_url = "https://api.scryfall.com/cards/named?fuzzy="
@@ -57,41 +57,13 @@ window.onload = () => {
                     img.setAttribute('data-src', img_url)
                     new_box.appendChild(img)
                     new_box.appendChild(info_box)
-                    let identity = cards[2][i].join("");
-                    new_box.setAttribute("color-identity", identity)
-                    alt_count[0] += 1;
-                    if (alt_count[0] >= 100) {
-
-                    }
-
-                    switch (identity){
-                        case "W":
-                        alt_count[1] += 1
-                        break;
-                        case "B":
-                        alt_count[2] += 1
-                        break;
-                        case "U":
-                        alt_count[3] += 1
-                        break;
-                        case "R":
-                        alt_count[4] += 1
-                        break;
-                        case "G":
-                        alt_count[5] += 1
-                        break;
-                    }
-
+                    new_box.setAttribute("color-identity", JSON.stringify(cards[2][i]))
                 } catch (e) {
                     console.log(e)
                 }
                 gallery.appendChild(new_box)
             }
         }
-        // Hide everything except the first 100 images:
-        $("#gallery").find(".gallery-item:gt(99)").hide()
-
-
         var lazyloadImages;
         if ("IntersectionObserver" in window) {
             lazyloadImages = document.querySelectorAll(".lazy");
@@ -154,28 +126,3 @@ window.onload = () => {
     })
 }
 
-function changeColors(){
-    console.log("Called")
-    $('#gallery').find('.gallery-item').hide()
-    switch ($("#colors")[0].value) {
-        case "White":
-            $("#gallery").find(".gallery-item[color-identity=W]").slice(0,99).show()
-
-            break;
-        case "Black":
-            $('#gallery').find(`.gallery-item[color-identity=B]`).slice(0, 99).show()
-        break;
-        case "Blue":
-            $('#gallery').find(`.gallery-item[color-identity=U]`).slice(0, 99).show()
-        break;
-        case "Red":
-            $('#gallery').find(`.gallery-item[color-identity=R]`).slice(0, 99).show()
-        break;
-        case "Green":
-            $('#gallery').find(`.gallery-item[color-identity=G]`).slice(0, 99).show()
-        break;
-        default:
-            $('#gallery').find('.gallery-item').hide()
-            $('#gallery').find(`.gallery-item`).slice(0, 99).show()
-    }
-}
