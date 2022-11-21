@@ -72,7 +72,8 @@ def commander_names():
 
 @app.route("/")
 def hello():
-    return send_file("static/index.html")
+    # return send_file("static/index.html"
+    return redirect("https://pdhrec.com")
 
 
 @app.route("/get-staples")
