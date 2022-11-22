@@ -1,6 +1,7 @@
 # from pymongo import MongoClient
 import json
-from azure_database import new_get_all_commander_counts, get_new_synergy_scores, retrieve_card_image
+from backend.azure_database import new_get_all_commander_counts, get_new_synergy_scores, retrieve_card_image
+
 
 if __name__ == "__main__":
     with open("oracle-cards-20220903090217.json", "r") as f:

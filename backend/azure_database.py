@@ -9,9 +9,9 @@ Three main collections will be use:
 import time
 import json
 from pymongo import MongoClient
-from utils import normalize_text
+from backend.utils import normalize_text
 # from urllib import quote
-from scryfall import get_card_data
+from backend.scryfall import get_card_data
 
 client = MongoClient(
     "mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
