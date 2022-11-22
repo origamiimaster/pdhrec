@@ -35,7 +35,7 @@ $(document).ready(() => {
                         inp.value = this.getElementsByTagName("input")[0].value;
                         closeAllLists();
                         // $('form').submit()
-                        window.location.href = "/commander/"+ inp.value.replaceAll(" ", "-").toLowerCase().replaceAll(",", "").replaceAll("'", "")
+                        window.location.href = "/commander/"+ inp.value.replaceAll(" // ", "--").replaceAll(" ", "-").toLowerCase().replaceAll(",", "").replaceAll("'", "")
                     });
                     a.appendChild(b);
                 }
@@ -58,7 +58,7 @@ $(document).ready(() => {
                     currentFocus = -1;
                 }
                 if (arr.indexOf(inp.value) != -1) {
-                    window.location.href = "/commander/"+ inp.value.replaceAll(" ", "-").toLowerCase().replaceAll(",", "").replaceAll("'", "")
+                    window.location.href = "/commander/"+ inp.value.replaceAll(" // ", "--").replaceAll(" ", "-").toLowerCase().replaceAll(",", "").replaceAll("'", "")
                 } else {
                     e.preventDefault();
                 }
