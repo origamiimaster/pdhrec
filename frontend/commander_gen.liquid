@@ -8,7 +8,13 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PDHREC | Pauper Commander</title>
+    <title>
+      {% if mycommander.commanders.length == 1 %}
+        {{ mycommander.commanders[0]}} 
+      {% endif %}
+      {% if mycommander.commanders.length == 2 %}
+        {{mycommander.commanders[0]}} // {{mycommander.commanders[1]}}
+      {% endif %} | PDHREC</title>
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
