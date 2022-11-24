@@ -13,7 +13,7 @@ It's calculated for each card per commander by first calculating the percentage 
 A score of -100% synergy means every deck runs it, except for decks with your commander. 
 A score of +100% synergy is highly unlikely, but means that every single deck with this commander runs it, and no others decks do.
 
-#  What is PDH?
+## What is PDH?
 Pauper Dragon Highlander, PDH, PEDH, Pauper Commander are all names for a format of Magic: the Gathering which is a cross between the Commander and Pauper formats.  
 
 Just like in Commander, you pick a creature to act as your commander, and then choose cards in the same color identity to build a 100 card deck.  
