@@ -27,7 +27,9 @@ if __name__ == "__main__":
     commander_data = new_get_all_commander_counts()
     total = len(commander_data)
     count = 0
+    commander_name_data = []
     for item in commander_data:
+        commander_data.append(" ".join(item["commanders"]))
         if len(item["commanders"])== 1 and item["commanders"][0] in double_faces:
             print(item["commanders"][0])
             item["urls"] = lookup[item["commanders"][0]]
@@ -56,3 +58,5 @@ if __name__ == "__main__":
 
     with open("frontend/_data/commanders.json", "w") as f:
         json.dump(commander_data, f)
+    with open("frontend/commandernames.json", "w") as f:
+        json.dump(commander_name_data)
