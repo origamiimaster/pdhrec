@@ -36,9 +36,10 @@ class Database:
         :param deck_id:
         :return:
         """
-        pass
+        res = self.cards.find_one({"_id": deck_id})
+        return res
 
-    def insert_card(self, card_data) -> None:
+    def insert_card(self, card_data, insert_many=False) -> None:
         """
         Inserts a card into the database.
         :param card_data:
@@ -55,7 +56,8 @@ class Database:
         :param card_id:
         :return:
         """
-        pass
+        res = self.cards.find_one({"name": card_id})
+        return res
 
 
 if __name__ == "__main__":

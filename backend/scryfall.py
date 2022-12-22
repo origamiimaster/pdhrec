@@ -4,22 +4,36 @@ Accessing scryfall for card images...
 import requests
 from dateutil import parser
 from urllib.parse import quote
+import json
 
 from backend.card import Card
 from backend.legality import check_card_allowed_as_commander, check_card_allowed_in_main
 
-def get_card_data_as_card_object(name, use_json=True):
+with open("../default-cards.json", "r") as f:
+    scryfall_download = json.load(f)
+    cards = {}
+    for card in scryfall_download:
+        if card['name'] not in cards:
+            cards[card['name']] = []
+        cards[card['name']].append(card)
+
+def get_card_data_as_card_object(name):
     """
     Gets the Scryfall card information, and returns the necessary values
 
     :param name:
-    :param use_json:
     :return:
     """
     card = Card()
-    with requests.get(f"https://api.scryfall.com/cards/search?q=\""
-                      f"{quote(name)}\"&order=released&dir=asc&unique=prints") as r:
-        scryfall_card_data = r.json()['data']
+
+    if name in cards:
+        print("Using cached")
+        scryfall_card_data = cards[name]
+    else:
+        print("Searching")
+        with requests.get(f"https://api.scryfall.com/cards/search?q=\""
+                          f"{quote(name)}\"&order=released&dir=asc&unique=prints") as r:
+            scryfall_card_data = r.json()['data']
     scryfall_card_data = [x for x in scryfall_card_data if x["name"] == name]
     card.name = name
     card.legal_as_commander = check_card_allowed_as_commander(scryfall_card_data)
