@@ -17,18 +17,21 @@ class Database:
         self.db = self.client["pdhrec"]
         self.cards = self.db["cards"]
         self.decks = self.db["decks"]
-        self.cards_cache = [x['name'] for x in self.cards.find({})]
+        self.cards_cache = [x['name'] for x in self.cards.aggregate(pipeline=[{"$project": {"_id": 0, "name": 1}}])]
 
     def insert_deck(self, data) -> None:
         """
         Given the data for a particular deck, it takes it and inserts into the database.
         :return: None
         """
-        print({"_id": data['_id']})
+        # print({"_id": data['_id']})
         cards_to_insert = {card for card in data['cards'] if card not in self.cards_cache}
         self.decks.update_one(filter={"_id": data['_id']}, update={"$set": data}, upsert=True)
         for card in cards_to_insert:
             self.insert_card({"name": card, "needsUpdate": True})
+        for card in data['commanders']:
+            if card not in self.cards_cache:
+                self.insert_card({"name": card, "needsUpdate": True})
 
     def get_deck(self, deck_id) -> object:
         """
@@ -47,7 +50,8 @@ class Database:
         """
         assert "name" in card_data
         res = self.cards.update_one({"name": card_data['name']}, {"$set": card_data}, upsert=True)
-        self.cards_cache = [x['name'] for x in self.cards.find({})]
+        # self.cards_cache = [x['name'] for x in self.cards.find({})]
+        self.cards_cache.append(card_data["name"])
         return res
 
     def get_card(self, card_id) -> object:

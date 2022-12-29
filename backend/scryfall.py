@@ -1,6 +1,8 @@
 """
 Accessing scryfall for card images...
 """
+import time
+
 import requests
 from dateutil import parser
 from urllib.parse import quote
@@ -30,6 +32,7 @@ def get_card_data_as_card_object(name):
         print("Using cached")
         scryfall_card_data = cards[name]
     else:
+        time.sleep(50/1000)
         print("Searching")
         with requests.get(f"https://api.scryfall.com/cards/search?q=\""
                           f"{quote(name)}\"&order=released&dir=asc&unique=prints") as r:
