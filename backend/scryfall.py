@@ -11,13 +11,6 @@ import json
 from backend.card import Card
 from backend.legality import check_card_allowed_as_commander, check_card_allowed_in_main
 
-with open("../default-cards.json", "r") as f:
-    scryfall_download = json.load(f)
-    cards = {}
-    for card in scryfall_download:
-        if card['name'] not in cards:
-            cards[card['name']] = []
-        cards[card['name']].append(card)
 
 def get_card_data_as_card_object(name):
     """
@@ -59,3 +52,13 @@ def get_card_data(card_name):
     url = f"https://api.scryfall.com/cards/named?exact={card_name}"
     r = requests.get(url)
     return r.json()
+
+if __name__ == "__main__":
+
+    with open("../default-cards.json", "r") as f:
+        scryfall_download = json.load(f)
+        cards = {}
+        for card in scryfall_download:
+            if card['name'] not in cards:
+                cards[card['name']] = []
+            cards[card['name']].append(card)

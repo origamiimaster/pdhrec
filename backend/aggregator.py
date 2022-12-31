@@ -27,6 +27,32 @@ database = Database(connection_string)
 print("Database initialized")
 
 cards_cached = {}
+"""
+There are 2 main metrics that need to be determined: 
+1. Popularity
+2. "Synergy"
+
+Card popularity is split into two metrics, per commander popularity and overall popularity.  
+
+Overall card popularity can be determined by 
+CARD_POPULARITY = NUM_DECKS_WITH_CARD / NUM_DECKS
+
+Per commander card popularity can be determined by counting only decks with this card: 
+CARD_POPULARITY_WITH_COMMANDER = NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER_TOTAL
+
+Card synergy requires card popularity with commander, as well as the overall popularity. 
+CARD_SYNERGY = CARD_POPULARITY_WITH_COMMANDER - CARD_POPULARITY
+
+New calculations must also account for all decks that *could* run the card, and not include denominators with cards 
+that can only be run in a few decks.  
+
+NEW_CARD_POPULARITY = NUM_DECKS_WITH_CARD / NUM_DECKS_WITH_CORRECT_COLOR_IDENTITY
+
+NEW_CARD_POPULARITY_WITH_COMMANDER = CARD_POPULARITY_WITH_COMMANDER 
+= NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER
+
+NEW_CARD_SYNERGY = NEW_CARD_POPULARITY_WITH_COMMANDER - NEW_CARD_POPULARITY
+"""
 
 num_color_identity = {}
 color_identity_counts = {}
@@ -34,12 +60,14 @@ color_identity_counts = {}
 commander_color_identities = {}
 
 num_decks = {}
+
+all_cards = {}
+
 deck_counts = {}
 for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},
                                                {"$sort": SON([("update_date", -1)])}]):
     deck_id = deck["_id"]
     commanders = tuple(deck['commanders'])
-    print(deck_id)
 
     color_identities = set()
     for commander in commanders:
@@ -52,14 +80,12 @@ for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},
     color_identities = list(color_identities)
     color_identities.sort()
     color_identities = "".join(color_identities)
-    if color_identities not in color_identity_counts:
-        color_identity_counts[color_identities] = 0
-    color_identity_counts[color_identities] += 1
+    if color_identities not in num_color_identity:
+        num_color_identity[color_identities] = 0
+    num_color_identity[color_identities] += 1
 
     if commanders not in commander_color_identities:
         commander_color_identities[commanders] = color_identities
-
-
 
     if commanders not in num_decks:
         num_decks[commanders] = 0
@@ -67,41 +93,41 @@ for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},
 
     if commanders not in deck_counts:
         deck_counts[commanders] = {}
-    for card in deck['cards']:
+    for card in set(deck['cards']):
         if card not in deck_counts[commanders]:
             deck_counts[commanders][card] = 0
         deck_counts[commanders][card] += 1
-
+        if card not in all_cards:
+            all_cards[card] = 0
+        all_cards[card] += 1
 
 print("Done with aggregating initial things")
 
-# For every deck, we have a count
-#
-# counts_decks_with_cards = {}
-# for card in database.cards_cache:
-#     print(card)
+per_commander_popularities = {}
+for commander in deck_counts:
+    per_commander_popularities[commander] = {}
+    for card in deck_counts[commander]:
+        per_commander_popularities[commander][card] = deck_counts[commander][card] / num_decks[commander]
 
-# cards = database.cards.find({})
-# decks = [d for d in database.decks.find({})]
+print("Done normalizing popularities per commander")
 
-list_of_deck_ids = []
+total_commander_popularities = {}
 
-# for deck in database.decks.find({}, sort=[("update_date", -1)]):
-#     print(deck)
-# values =
-# card_dates_in_order = [x for x in database.cards.aggregate(pipeline=[{"$sort": SON([("released", -1)])},
-#                                                                      {"$project": {"_id": 0, "released": 1,
-#                                                                                    "name": 1}}])]
+color_identities = {x['name']: x['color_identities'] for x in
+                    database.cards.aggregate(pipeline=[{"$project": {"_id": 0, "name": 1, "color_identities": 1}}])}
+for card in all_cards:
+    color_identity = color_identities[card]
+    allowed_colors = [x for x in set(commander_color_identities.values()) if all([y in x for y in color_identity])]
+    total_commander_popularities[card] = all_cards[card] / sum([num_color_identity[x] for x in allowed_colors])
 
-# for deck in database.decks.aggregate(pipeline=[{"$sort": SON([("update_date", -1)])},
-#                                                {"$project": {"_id": 1, "update_date": 1}}]):
-#     print(deck)
+print("Done normalizing general probabilities")
 
+per_commander_synergies = {}
 
+for commander in per_commander_popularities:
+    per_commander_synergies[commander] = {}
+    for card in per_commander_popularities[commander]:
+        per_commander_synergies[commander][card] = per_commander_popularities[commander][card] - \
+                                              total_commander_popularities[card]
 
-
-# print("Sorting")
-# sorted_decks = sorted(decks, key=lambda x: x['update_date'])
-# print("Successfully sorted")
-
-
+print("Done calculating everything")
