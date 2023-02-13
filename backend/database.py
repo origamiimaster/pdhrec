@@ -24,7 +24,6 @@ class Database:
         Given the data for a particular deck, it takes it and inserts into the database.
         :return: None
         """
-        # print({"_id": data['_id']})
         cards_to_insert = {card for card in data['cards'] if card not in self.cards_cache}
         self.decks.update_one(filter={"_id": data['_id']}, update={"$set": data}, upsert=True)
         for card in cards_to_insert:

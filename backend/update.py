@@ -2,7 +2,9 @@
 Periodically update the data on decks.
 """
 import json
+import os
 import time
+import requests
 
 from dateutil import parser
 
@@ -44,11 +46,40 @@ def check_legal(deck, cards_so_far, database):
     return True
 
 
-if __name__ == "__main__":
-    with open("../server-token.json") as f:
-        connection_string = json.load(f)['connection']
-    database = Database(connection_string)
-    # Begin an auto update?
+def get_latest_bulk_file(database, directory="../scryfall_data"):
+    """
+    Gets the latest "oracle-data" cards and then saves them to a file labeled "oracle-data-X.json".
+    :return:
+    """
+    r = requests.get("https://api.scryfall.com/bulk-data")
+    data = r.json()
+    oc_version = [x for x in data['data'] if x['type'] == "oracle_cards"][0]
+    print("Checking bulk file version")
+    if not os.path.isfile(f"{directory}/{oc_version['download_uri'].split('/')[-1]}"):
+        print("New bulk file found")
+        r = requests.get(oc_version["download_uri"])
+        with open(f"{directory}/{oc_version['download_uri'].split('/')[-1]}", "wb") as f:
+            f.write(r.content)
+        # Now delete the other versions
+        data_files = os.listdir(f"{directory}")
+        for file in data_files:
+            if file == oc_version['download_uri'].split('/')[-1]:
+                pass
+            else:
+                print(f"Deleting {file}")
+                os.remove(f"{directory}/{file}")
+
+        # Since we've got a new file, some cards can have changed rarities.  Switch over the "needs legality check"
+        # flag.
+        database.cards.update_many({}, {"$set": {"needsUpdate": True}})
+        database.decks.update_many({}, {"$set": {"needsLegalityCheck": True}})
+        return f"{directory}/{oc_version['download_uri'].split('/')[-1]}"
+    else:
+        print("No new bulk file found")
+        return f"{directory}/{oc_version['download_uri'].split('/')[-1]}"
+
+
+def perform_update(database):
     print("Auto updating decks to database")
 
     # Find the most recently updated deck in the database, then iterate backwards from there
@@ -123,3 +154,12 @@ if __name__ == "__main__":
         database.insert_deck(deck)
         if not legal:
             print(f"Illegal deck: https://moxfield.com/decks/{deck['_id']}")
+
+
+if __name__ == "__main__":
+    with open("../server-token.json") as f:
+        connection_string = json.load(f)['connection']
+    database = Database(connection_string)
+    # Begin an auto update?
+    get_latest_bulk_file(database)
+    # perform_update(database)

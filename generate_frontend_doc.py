@@ -2,9 +2,17 @@ import json
 from backend.aggregator import get_all_scores
 from backend.database import Database
 from backend.utils import normalize_text
+from backend.update import perform_update, get_latest_bulk_file
+
 
 if __name__ == "__main__":
-    with open("oracle-cards-20221229100203.json", "r") as f:
+    # Initialize the database:
+    with open("server-token.json") as f:
+        connection_string = json.load(f)['connection']
+    database = Database(connection_string)
+
+    path = get_latest_bulk_file(database, directory="scryfall_data")
+    with open(path, "r") as f:
         all_card = json.load(f)
     lookup = {}
     double_faces = set()
@@ -23,10 +31,8 @@ if __name__ == "__main__":
     # Hardcoded to not use the token version of the card.
     lookup["Llanowar Elves"] = "https://cards.scryfall.io/large/front/8/b/8bbcfb77-daa1-4ce5-b5f9-48d0a8edbba9.jpg?1592765148"
 
-    # Initialize the database:
-    with open("server-token.json") as f:
-        connection_string = json.load(f)['connection']
-    database = Database(connection_string)
+    # Commit updates to the database:
+    perform_update(database)
 
     # Returns a list of the commanders / commander pairs, along with their image urls and cleaned names.
     commander_data = {tuple(x['commanders']) for x in database.decks.aggregate(pipeline=[

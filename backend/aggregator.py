@@ -6,6 +6,7 @@ from bson.son import SON
 
 from backend.database import Database
 
+
 def get_all_scores(database):
     """
     There are 2 main metrics that need to be determined:
@@ -118,14 +119,6 @@ def get_all_scores(database):
 
     print("Done calculating everything")
     return (per_commander_synergies, per_commander_popularities, per_commander_counts)
-
-
-
-
-
-def load_new_decks(database):
-    pass
-
 
 
 if __name__ == "__main__":

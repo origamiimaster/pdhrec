@@ -10,7 +10,7 @@ import json
 
 from backend.card import Card
 from backend.legality import check_card_allowed_as_commander, check_card_allowed_in_main
-
+cards = {}
 
 def get_card_data_as_card_object(name):
     """
