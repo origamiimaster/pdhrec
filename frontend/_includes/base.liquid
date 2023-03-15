@@ -7,15 +7,25 @@ name: base
   <head>
     <title>{{ title }}</title>
     {% include 'components/meta.liquid' %}
+    <link href="https://fonts.cdnfonts.com/css/cera-round-pro" rel="stylesheet">
     <link rel="stylesheet" href="/css/nav.css"></link>
     <link rel="stylesheet" href="/css/main.css"></link>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#063953">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#063953">
   </head>
   {% include 'components/google.liquid' %}
   <body>
     {% include 'components/nav.liquid' %}
     <div id="main" style="min-height: 80vh; margin: 2.5%">
+      <div id="main-wrapper">
         {{ content }}
+      </div>
     </div>
 
 
@@ -23,7 +33,7 @@ name: base
       <div id="footer-flex">
         <p>
           PDHREC is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards.
-          Portions of the materials used are property of Wizards of the Coast. ©Wizards of the Coast LLC.
+          Portions of the materials used are property of Wizards of the Coast. &copy;Wizards of the Coast LLC.
         </p>
       </div>
     </footer>
