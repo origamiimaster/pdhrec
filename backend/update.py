@@ -71,8 +71,8 @@ def get_latest_bulk_file(database, directory="../scryfall_data"):
 
         # Since we've got a new file, some cards can have changed rarities.  Switch over the "needs legality check"
         # flag.
-        database.cards.update_many({}, {"$set": {"needsUpdate": True}})
-        database.decks.update_many({}, {"$set": {"needsLegalityCheck": True}})
+        # database.cards.update_many({}, {"$set": {"needsUpdate": True}})
+        # database.decks.update_many({}, {"$set": {"needsLegalityCheck": True}})
         return f"{directory}/{oc_version['download_uri'].split('/')[-1]}"
     else:
         print("No new bulk file found")
@@ -81,7 +81,7 @@ def get_latest_bulk_file(database, directory="../scryfall_data"):
 
 def perform_update(database):
     print("Auto updating decks to database")
-
+    # Step 1: Update decks
     # Find the most recently updated deck in the database, then iterate backwards from there
     latest = database.decks.find_one(sort=[("update_date", -1)])
     latest_time = latest['update_date']
@@ -109,42 +109,36 @@ def perform_update(database):
             new_decks = get_new_decks(page)
     else:
         pass
-
-    # Temporary measure: Iterate through the latest 10 moxfield decks and attempt to add them.
-    # deck_infos = get_new_decks()[:10]
-    #
-    # for deck_info in deck_infos:
-    #     ti = time.time()
-    #     deck = convert_to_deck(get_deck_data(deck_info['publicId']))
-    #     database.insert_deck(deck.to_dict())
-    #     print(time.time() - ti)
-    #
+    # Step 2: Update all cards.
     # Then have the database update any cards in need of an update:
-    cursor = database.cards.find({"needsUpdate": True})
-    entries_in_mem = [x for x in cursor]
+    # cursor = database.cards.find({"needsUpdate": True})
+    # entries_in_mem = [x for x in cursor]
+    # entries_in_mem = database.cards.find({})
+    entries_in_mem = database.cards.find({"needsUpdate": True})
 
     for entry in entries_in_mem:
+        print(f"Updating card {entry['name']}")
         tik = time.time()
-        card = get_card_data_as_card_object(entry['name']).to_dict()
-        card['needsUpdate'] = False
-        card['needsLegalityCheck'] = True
-        card['isLegal'] = False
-        database.insert_card(card)
-        print(time.time() - tik)
+        card = get_card_data_as_card_object(entry['name'])
+        if card is False:
+            card = entry
+            card['needsUpdate'] = False
+            # card['needsLegalityCheck'] = False
+            card['legal_in_mainboard'] = False
+            card['legal_as_commander'] = False
+            card['error'] = True
+            database.insert_card(card)
+            print(time.time() - tik)
 
-    # Chunk it by 100 entries?
-    # for sublist in [entries_in_mem[n:n+100] for n in range(0, len(entries_in_mem), 100)]:
-    #     to_add = []
-    #     ti = time.time()
-    #     time.sleep(50 / 1000)
-    #     for value in sublist:
-    #         print(value['name'])
-    #         card_obj = get_card_data_as_card_object(value['name']).to_dict()
-    #         card_obj['needsUpdate'] = False
-    #     database.insert_card(card_obj)
-    #     print(time.time() - ti)
+        else:
+            card = card.to_dict()
+            database.insert_card(card)
+            print(time.time() - tik)
 
+    # Step 3:
     # Check each deck for illegal cards
+    #
+    # database.decks.update_many({}, {"$set": {"needsLegalityCheck": True}})
     cards_so_far = {}
     for deck in database.decks.find({"needsLegalityCheck": True}):
         print(deck)
@@ -155,11 +149,58 @@ def perform_update(database):
         if not legal:
             print(f"Illegal deck: https://moxfield.com/decks/{deck['_id']}")
 
+def load_all_decks_backwards(database):
+    """
+    Manually load decks backward (up to a maximum timestamp distance)
+    :param database:
+    :return:
+
+    import json
+    from backend.update import load_all_decks_backwards
+    from backend.database import Database
+    with open("server-token.json") as f:
+        connection_string = json.load(f)['connection']
+    database = Database(connection_string)
+    load_all_decks_backwards(database)
+
+    """
+    latest = database.decks.find_one(sort=[("update_date", -1)])
+    latest_time = latest['update_date']
+    new_decks = get_new_decks()
+    page = 1
+    oldest_deck = new_decks[-1]
+    oldest_time = parser.parse(oldest_deck['lastUpdatedAtUtc']).timestamp()
+    print(f"Looking for time {latest_time} for deck {latest['_id']}")
+    while latest_time < oldest_time:
+        page += 1
+        new_decks = get_new_decks(page)
+        oldest_deck = new_decks[-1]
+        oldest_time = parser.parse(oldest_deck['lastUpdatedAtUtc']).timestamp()
+
+    print(oldest_time)
+    print(oldest_deck)
+
+    while len(new_decks) != 0:
+        print(f"Page = {page}")
+        for deck in new_decks:
+            print(f"Saving deck {deck['name']}, {deck['publicUrl']}")
+            deck_obj = convert_to_deck(get_deck_data(deck['publicId'])).to_dict()
+            deck_obj['needsLegalityCheck'] = True
+
+            database.insert_deck(deck_obj)
+            last_deck_time = deck_obj['update_date']
+            # if time_to_reach >= last_deck_time:
+            #     break
+        page += 1
+        time.sleep(1)
+        new_decks = get_new_decks(page)
+
+
 
 if __name__ == "__main__":
     with open("../server-token.json") as f:
         connection_string = json.load(f)['connection']
     database = Database(connection_string)
     # Begin an auto update?
-    get_latest_bulk_file(database)
-    # perform_update(database)
+    # get_latest_bulk_file(database)
+    perform_update(database)

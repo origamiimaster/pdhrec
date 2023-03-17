@@ -24,13 +24,15 @@ if __name__ == "__main__":
                 double_faces.add(line["name"])
             else:
                 lookup[line["name"]] = line["image_uris"]["large"]
+        except KeyError:
+            continue
         except Exception as e:
             print(e)
             print(json.dumps(line))
             continue
     # Hardcoded to not use the token version of the card.
     lookup["Llanowar Elves"] = "https://cards.scryfall.io/large/front/8/b/8bbcfb77-daa1-4ce5-b5f9-48d0a8edbba9.jpg?1592765148"
-
+    print("Updating database")
     # Commit updates to the database:
     perform_update(database)
 
@@ -39,6 +41,10 @@ if __name__ == "__main__":
         {"$match": {"isLegal": True}},
         {"$project": {"_id": 0, "commanders": 1}}
     ])}
+
+    # Sort the names so that we don't double / half count partners
+    commander_data = list(set(tuple(sorted(x)) for x in commander_data))
+
     new_commander_data = []
     for commanders in commander_data:
         urls = []
@@ -65,7 +71,9 @@ if __name__ == "__main__":
             print(item["commanders"][0])
             item["urls"] = lookup[item["commanders"][0]]
             item["commanders"] = [x for x in item["commanders"][0].split(" // ")]
-
+            item['commanderstring'] = "--".join(normalize_text(item['commanders']))
+        else:
+            item['commanderstring'] = "-".join(sorted(normalize_text(item['commanders'])))
         item['carddata'] = []
         for card in synergy_scores:
             if card in lookup:
@@ -77,7 +85,6 @@ if __name__ == "__main__":
             test = [card, synergy_scores[card], card_image]
             item['carddata'].append(test)
         item['carddata'].sort(key=lambda x: -x[1])
-        item['commanderstring'] = "-".join(normalize_text(item['commanders']))
         print(item['commanderstring'])
         count += 1
         print(f"{count} / {total}")

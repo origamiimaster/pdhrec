@@ -49,7 +49,6 @@ class Database:
         """
         assert "name" in card_data
         res = self.cards.update_one({"name": card_data['name']}, {"$set": card_data}, upsert=True)
-        # self.cards_cache = [x['name'] for x in self.cards.find({})]
         self.cards_cache.append(card_data["name"])
         return res
 

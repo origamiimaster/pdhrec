@@ -21,4 +21,4 @@ class Card:
     def to_dict(self):
         return {"name": self.name, "image_urls": self.image_urls, "released": self.time_first_printed,
                 "color_identities": self.color_identities, "legal_in_mainboard": self.legal_in_mainboard,
-                "legal_as_commander": self.legal_as_commander}
+                "legal_as_commander": self.legal_as_commander, "needsUpdate": False}

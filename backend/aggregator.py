@@ -52,7 +52,7 @@ def get_all_scores(database):
     for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},
                                                    {"$sort": SON([("update_date", -1)])}]):
         deck_id = deck["_id"]
-        commanders = tuple(deck['commanders'])
+        commanders = tuple(sorted(deck['commanders']))
 
         color_identities = set()
         for commander in commanders:
