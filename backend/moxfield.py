@@ -4,9 +4,10 @@ Access moxfield and query decks for inclusion in the database.
 """
 
 import requests
+from dateutil import parser
 
+from backend.deck import Deck
 
-# from database import Database, get_new_decks
 
 def get_deck_data(public_id):
     url = f"https://api.moxfield.com/v2/decks/all/{public_id}"
@@ -52,9 +53,26 @@ def check_deck_legal(deck):
     return True
 
 
+def convert_to_deck(moxfield_deck_data) -> Deck:
+    """
+    Converts a moxfield deck format (from get_deck_data) to a Deck object, for database insertion.
+    :param moxfield_deck_data:
+    :return:
+    """
+    deck = Deck()
+    for commander_name in moxfield_deck_data['commanders']:
+        deck.commanders.append(commander_name)
+    for card_name in moxfield_deck_data['mainboard']:
+        for i in range(moxfield_deck_data['mainboard'][card_name]['quantity']):
+            deck.main_board.append(card_name)
+    deck.id = moxfield_deck_data['publicId']
+    deck.last_updated = parser.parse(moxfield_deck_data['lastUpdatedAtUtc']).timestamp()
+    return deck
+
+
 if __name__ == "__main__":
     deck = get_deck_data("LXiuz3D1DkO8m4mxBKVNGg")
-
+    parsed = convert_to_deck(deck)
     # new_decks = get_new_decks()
     # for deck in new_decks:
     #     db.update_deck(deck)
