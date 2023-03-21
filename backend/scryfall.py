@@ -51,7 +51,7 @@ def get_card_data_as_card_object(name):
         possible_cards = [x for x in scryfall_card_data if
                           not x['digital'] and x['highres_image'] and
                           "etched" not in x['finishes'] and
-                          ("frame_effects" not in x or "showcase" not in x["frame_effects"])
+                          ("frame_effects" not in x or "showcase" not in x["frame_effects"]) and x["set"] != "sld"
                           ]
         image_index = -1
         if "image_uris" not in possible_cards[image_index] and "card_faces" in possible_cards[image_index]:

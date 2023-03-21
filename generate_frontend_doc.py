@@ -18,6 +18,8 @@ if __name__ == "__main__":
     double_faces = set()
     for line in all_card:
         try:
+            if "set_type" in line and line['set_type'] == "token":
+                continue
             if "image_uris" not in line and "card_faces" in line:
                 lookup[line["name"]] = [line["card_faces"][0]["image_uris"]["large"],
                                         line["card_faces"][1]["image_uris"]["large"]]
@@ -30,9 +32,8 @@ if __name__ == "__main__":
             print(e)
             print(json.dumps(line))
             continue
-    # Hardcoded to not use the token version of the card.
-    lookup["Llanowar Elves"] = "https://cards.scryfall.io/large/front/8/b/8bbcfb77-daa1-4ce5-b5f9-48d0a8edbba9.jpg?1592765148"
-    print("Updating database")
+
+    print("Updating datasbase")
     # Commit updates to the database:
     perform_update(database)
 
