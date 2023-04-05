@@ -117,8 +117,26 @@ def get_all_scores(database):
 
     per_commander_counts = num_decks
 
+    per_color_popularities = {}
+    for commanders in deck_counts:
+        cards = deck_counts[commanders]
+        for card in cards:
+            if card not in per_color_popularities:
+                per_color_popularities[card] = 0
+            per_color_popularities[card] += deck_counts[commanders][card]
+    possible_color_identities = list(num_color_identity.keys())
+    for card in per_color_popularities:
+        card_color_identity = set(color_identities[card])
+        total_count = 0
+        for thing in possible_color_identities:
+            if card_color_identity.issubset(set(thing)):
+                total_count += num_color_identity[thing]
+        per_color_popularities[card] /= total_count
+    per_color_popularities = dict(sorted(per_color_popularities.items(), key=lambda item: -item[1]))
+    per_color_popularities = {x: (per_color_popularities[x], color_identities[x]) for x in per_color_popularities}
     print("Done calculating everything")
-    return (per_commander_synergies, per_commander_popularities, per_commander_counts)
+
+    return (per_commander_synergies, per_commander_popularities, per_commander_counts, per_color_popularities)
 
 
 if __name__ == "__main__":
@@ -126,4 +144,4 @@ if __name__ == "__main__":
         connection_string = json.load(f)['connection']
     print("Building database connection")
     database = Database(connection_string)
-    synergy, popularity, counts = get_all_scores(database)
+    synergy, popularity, counts, color_popularity = get_all_scores(database)

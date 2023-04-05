@@ -55,7 +55,7 @@ if __name__ == "__main__":
                 urls.append(url)
         # print(urls)
         new_commander_data.append({"commanders": commanders, "urls": urls})
-    all_synergy_scores, popularity_scores, commander_counts = get_all_scores(database)
+    all_synergy_scores, popularity_scores, commander_counts, color_popularity = get_all_scores(database)
     commander_data = new_commander_data
     total = len(commander_data)
     count = 0
@@ -95,5 +95,7 @@ if __name__ == "__main__":
 
     with open("frontend/_data/commanders.json", "w") as f:
         json.dump(commander_data, f)
+    with open("frontend/_data/staples.json", "w") as f:
+        json.dump(color_popularity, f)
     with open("frontend/commandernames.json", "w") as f:
         json.dump(commander_name_data, f)
