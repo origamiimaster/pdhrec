@@ -15,8 +15,11 @@ if __name__ == "__main__":
     with open(path, "r") as f:
         all_card = json.load(f)
     lookup = {}
+    lands = set()
     double_faces = set()
     for line in all_card:
+        if "Land" in line['type_line']:
+            lands.add(line['name'])
         try:
             if "set_type" in line and line['set_type'] == "token":
                 continue
@@ -80,7 +83,6 @@ if __name__ == "__main__":
             if card in lookup:
                 card_image = lookup[card]
             else:
-                # print(card)
                 card_image = retrieve_card_image(card)
                 lookup[card] = card_image
             test = [card, synergy_scores[card], card_image]
@@ -92,6 +94,18 @@ if __name__ == "__main__":
 
 
     commander_data.sort(key=lambda x: -x["count"])
+    new_color_popularity = []
+    for cardname in color_popularity:
+        if cardname in lands:
+            continue
+        try:
+            item = [cardname, color_popularity[cardname][0], lookup[cardname], color_popularity[cardname][1]]
+            new_color_popularity.append(item)
+        except Exception as e:
+            print(e)
+            print(cardname)
+    color_popularity = new_color_popularity
+
 
     with open("frontend/_data/commanders.json", "w") as f:
         json.dump(commander_data, f)

@@ -1,52 +1,79 @@
-let commanders = [];
-function applyHash(hash) {
-    if (hash == "about") {
-        document.getElementById("main").style.display = "none"
-        document.getElementById("about").style.display = "block"
-    } else if (hash == "staples") {
-        document.getElementById("about").style.display = "none"
-        document.getElementById("main").style.display = "none"
-    } else {
-        document.getElementById("about").style.display = "none"
-        document.getElementById("main").style.display = "block"
-    }
-}
-
-function init() {
-    window.addEventListener("hashchange", (e) => {
-        let hash = window.location.hash.substr(1);
-        applyHash(hash)
-    })
-    applyHash(window.location.hash.substr(1))
-}
-
+let colors = "WBURG";
 window.onload = () => {
-    init();
-    $('#gallery').find('.gallery-item').hide()
-    $("#gallery").find(".gallery-item").slice(0, 96).show()
+    $(".symbolW").parent()[0].addEventListener("click", (e)=>{
+        if (e.currentTarget.className == "active") {
+            colors = colors.replaceAll("W", "")
+            e.currentTarget.className = "";
+        } else {
+            e.currentTarget.className = "active"
+            colors += "W"
+        }
+        changeColors()
+    })
+    $(".symbolU").parent()[0].addEventListener("click", (e)=>{
+        if (e.currentTarget.className == "active") {
+            colors = colors.replaceAll("U", "")
+            e.currentTarget.className = "";
+        } else {
+            e.currentTarget.className = "active"
+            colors += "U"
+        }
+        changeColors()
+    })
+    $(".symbolB").parent()[0].addEventListener("click", (e)=>{
+        if (e.currentTarget.className == "active") {
+            e.currentTarget.className = "";
+            colors = colors.replaceAll("B", "")
+        } else {
+            e.currentTarget.className = "active"
+            colors += "B"
+        }
+        changeColors()
+    })
+    $(".symbolR").parent()[0].addEventListener("click", (e)=>{
+        if (e.currentTarget.className == "active") {
+            e.currentTarget.className = "";
+            colors = colors.replaceAll("R", "")
+        } else {
+            e.currentTarget.className = "active"
+            colors += "R"
+        }
+        changeColors()
+    })
+    $(".symbolG").parent()[0].addEventListener("click", (e)=>{
+        if (e.currentTarget.className == "active") {
+            e.currentTarget.className = "";
+            colors = colors.replaceAll("G", "")
+        } else {
+            e.currentTarget.className = "active"
+            colors += "G"
+        }
+        changeColors()
+    })
+    changeColors()
 }
+
 
 function changeColors() {
-    // console.log("Called")
     $('#gallery').find('.gallery-item').hide()
-    switch ($("#colors")[0].value) {
-        case "White":
-            $("#gallery").find(".gallery-item[color-identity=W]").slice(0, 96).show()
-            break;
-        case "Black":
-            $('#gallery').find(`.gallery-item[color-identity=B]`).slice(0, 96).show()
-            break;
-        case "Blue":
-            $('#gallery').find(`.gallery-item[color-identity=U]`).slice(0, 96).show()
-            break;
-        case "Red":
-            $('#gallery').find(`.gallery-item[color-identity=R]`).slice(0, 96).show()
-            break;
-        case "Green":
-            $('#gallery').find(`.gallery-item[color-identity=G]`).slice(0, 96).show()
-            break;
-        default:
-            $('#gallery').find('.gallery-item').hide()
-            $('#gallery').find(`.gallery-item`).slice(0, 96).show()
+    let things = $('#gallery').find(".gallery-item");
+    let soFar = [];
+    for (let i = 1; i < things.length; i++){
+        let tempColors = things[i].getAttribute("color-identity");
+        flag = true;
+        tempColors.split("").forEach(color=>{
+            if (colors.indexOf(color) == -1){
+                flag = false;
+            }
+        })
+        if (flag) {
+            soFar.push(things[i])
+        }
     }
+    $("#gallery").find(".gallery-item").first().show()
+    let endSlice = soFar.length - (soFar.length % 12)
+    if (endSlice > 96) {
+        endSlice = 96;
+    }
+    $(soFar).slice(0, endSlice).show()
 }

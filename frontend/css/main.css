@@ -100,16 +100,6 @@ img {
   color: black;
 }
 
-#colors {
-  width: 100%;
-  max-width: 1000px;
-  margin: 20px auto;
-  position: relative;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-}
-
 .pagination {
   display: flex;
   flex-flow: row;
@@ -132,10 +122,53 @@ img {
 }
 
 .pagination a.active {
-  background-color: dodgerblue;
-  color: white;
+  background-color: rgb(30, 144, 255);
+  color: rgb(255, 255, 255);
 }
 
 .pagination a:hover:not(.active) {
-  background-color: #ddd;
+  background-color: rgb(221, 221, 221);
+}
+
+
+.symbolW {
+  width: 100%;
+  padding-bottom: 100%;
+  background-image: url("https://svgs.scryfall.io/card-symbols/W.svg");
+}
+
+.symbolU {
+  width: 100%;
+  padding-bottom: 100%;
+  background-image: url("https://svgs.scryfall.io/card-symbols/U.svg");
+}
+
+.symbolB {
+  width: 100%;
+  padding-bottom: 100%;
+  background-image: url("https://svgs.scryfall.io/card-symbols/B.svg");
+}
+
+.symbolR {
+  width: 100%;
+  padding-bottom: 100%;
+  background-image: url("https://svgs.scryfall.io/card-symbols/R.svg");
+}
+
+.symbolG {
+  width: 100%;
+  padding-bottom: 100%;
+  background-image: url("https://svgs.scryfall.io/card-symbols/G.svg");
+}
+
+.symbols > a {
+  height: auto;
+  min-width: auto;
+  width: 20%;
+
+  padding: 5% 3%;
+}
+
+.symbols > a:hover:is(.active) {
+  background-color: rgb(63, 177, 255);
 }

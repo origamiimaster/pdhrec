@@ -10,16 +10,17 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
   <head>
     <title>
       {% if mycommander.commanders.length == 1 %}
-        {{ mycommander.commanders[0]}} 
+        {{ mycommander.commanders[0] | escape }} 
       {% endif %}
       {% if mycommander.commanders.length == 2 %}
-        {{mycommander.commanders[0]}} // {{mycommander.commanders[1]}}
+        {{mycommander.commanders[0] | escape }} // {{mycommander.commanders[1] | escape }}
       {% endif %} | PDHREC</title>
     <link href="https://fonts.cdnfonts.com/css/cera-round-pro" rel="stylesheet">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
     <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
     <meta property="og:description" content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/nav.css"></link>
@@ -40,20 +41,21 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
 
     <script src="/js/deckdata.js"></script>
     <div id="main" class="main">
-      <div id="gallery" class="gallery">
-        <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
-          {% include 'components/commander_image.liquid', commander: mycommander %}
-          <div class="big-gallery-item">{{mycommander.commanders[0]}} <br> In {{mycommander.count}} decks.</div>
+      <div id="main-wrapper">
+        <div id="gallery" class="gallery">
+          <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
+            {% include 'components/commander_image.liquid', commander: mycommander %}
+            <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.</div>
+          </div>
+          {% for card_data in mycommander.carddata %}
+
+            <a class="gallery-item">
+              <img loading="lazy" alt="{{card_data[0] | escape }}" src="{{card_data[2]}}" class="" data-src="{{card_data[2]}}"/>
+              <div class="info">{{card_data[0] | escape }}: {{card_data[1] | times:100 | round: 2}}%</div>
+            </a>
+
+          {% endfor %}
         </div>
-        {% for card_data in mycommander.carddata %}
-
-          <a class="gallery-item">
-            <img loading="lazy" alt="{{card_data[0]}}" src="{{card_data[2]}}" class="" data-src="{{card_data[2]}}"/>
-            <div class="info">{{card_data[0]}}: {{card_data[1] | times:100 | round: 2}}%</div>
-          </a>
-
-        {% endfor %}
-
       </div>
     </div>
     <footer id="footer">
