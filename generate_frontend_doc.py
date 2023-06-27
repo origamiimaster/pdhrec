@@ -6,50 +6,61 @@ from backend.update import perform_update, get_latest_bulk_file
 
 
 if __name__ == "__main__":
-    # Initialize the database:
+    # Create a connection to the database
     with open("server-token.json") as f:
         connection_string = json.load(f)['connection']
     database = Database(connection_string)
 
-    path = get_latest_bulk_file(database, directory="scryfall_data")
-    with open(path, "r") as f:
-        all_card = json.load(f)
-    lookup = {}
+    # Load all cards from bulk json in database
+    cards_path = get_latest_bulk_file(database, directory="scryfall_data")
+    with open(cards_path, "r") as f:
+        all_cards = json.load(f)
+
+    # Create lookup of card images by name, alongside sets of lands and DFCs
+    image_lookup = {}
     lands = set()
     double_faces = set()
-    for line in all_card:
-        if "Land" in line['type_line']:
-            lands.add(line['name'])
+    for card in all_cards:
+        if "Land" in card['type_line']:
+            lands.add(card['name'])
         try:
-            if "set_type" in line and line['set_type'] == "token":
+            # Skip tokens
+            if "set_type" in card and card['set_type'] == "token":
                 continue
-            if "image_uris" not in line and "card_faces" in line:
-                lookup[line["name"]] = [line["card_faces"][0]["image_uris"]["large"],
-                                        line["card_faces"][1]["image_uris"]["large"]]
-                double_faces.add(line["name"])
+            # Double-faced cards
+            if "image_uris" not in card and "card_faces" in card:
+                image_lookup[card["name"]] = \
+                    [card["card_faces"][0]["image_uris"]["large"],
+                     card["card_faces"][1]["image_uris"]["large"]]
+                double_faces.add(card["name"])
+            # Single-faced cards
             else:
-                lookup[line["name"]] = line["image_uris"]["large"]
-        except KeyError:
+                image_lookup[card["name"]] = card["image_uris"]["large"]
+        # TODO: More robust error handling
+        except KeyError: # Why isn't this handled with other exceptions?
             continue
         except Exception as e:
             print(e)
-            print(json.dumps(line))
+            print(json.dumps(card))
             continue
 
+    # Commit updates to the database
     print("Updating datasbase")
-    # Commit updates to the database:
     perform_update(database)
 
-    # Returns a list of the commanders / commander pairs, along with their image urls and cleaned names.
-    commander_data = {tuple(x['commanders']) for x in database.decks.aggregate(pipeline=[
-        {"$match": {"isLegal": True}},
-        {"$project": {"_id": 0, "commanders": 1}}
-    ])}
-
-    # Sort the names so that we don't double / half count partners
+    # Generate a list of the commanders / commander pairs, along with their 
+    # image urls and cleaned names
+    commander_data = {tuple(deck['commanders']) 
+                      for deck in database.decks.aggregate(pipeline=[
+                          {"$match": {"isLegal": True}}, 
+                          {"$project": {"_id": 0, "commanders": 1}}
+                          ])}
+    # Ensure commanders are unique (sort pairs)
     commander_data = list(set(tuple(sorted(x)) for x in commander_data))
 
+    # Store all updated commander data
     new_commander_data = []
+    # Record commander names and image URLs
     for commanders in commander_data:
         urls = []
         for card in commanders:
@@ -58,58 +69,68 @@ if __name__ == "__main__":
                 urls.append(url)
         # print(urls)
         new_commander_data.append({"commanders": commanders, "urls": urls})
-    all_synergy_scores, popularity_scores, commander_counts, color_popularity = get_all_scores(database)
-    commander_data = new_commander_data
-    total = len(commander_data)
-    count = 0
-    commander_name_data = []
-    for item in commander_data:
-        print(item)
-        commander_name_data.append(" ".join(item["commanders"]))
-        # Convert item['commanders'] to a hashable type?
-        synergy_scores = all_synergy_scores[tuple(item['commanders'])]
+    
+    # Record all other commander statistics
+    all_synergy_scores, popularity_scores, commander_counts, \
+        color_popularity = get_all_scores(database)
+    processed = 0 # Number of commanders processed
+    new_commander_names = []
+    for commander in new_commander_data:
+        print(f"Updating: {commander}")
+        # Store commander name
+        new_commander_names.append(" ".join(commander["commanders"]))
+        # Store commander count
+        commander["count"] = commander_counts[tuple(commander['commanders'])]
+        # Parse commanderstring (for database use)
+        if (len(commander["commanders"]) == 1 
+            and commander["commanders"][0] in double_faces): # Handle DFCs
+            print(commander["commanders"][0])
+            commander["urls"] = image_lookup[commander["commanders"][0]]
+            commander["commanders"] = commander["commanders"][0].split(" // ")
+            commander['commanderstring'] = "--".join(normalize_text(commander['commanders']))
+        else: # Handle single-faced and partner commanders
+            commander['commanderstring'] = "-".join(sorted(normalize_text(commander['commanders'])))
+    
+    # Save commander names to file
+    with open("frontend/commandernames.json", "w") as f:
+        json.dump(new_commander_names, f)
 
-        item["count"] = commander_counts[tuple(item['commanders'])]
-
-        if len(item["commanders"]) == 1 and item["commanders"][0] in double_faces:
-            print(item["commanders"][0])
-            item["urls"] = lookup[item["commanders"][0]]
-            item["commanders"] = [x for x in item["commanders"][0].split(" // ")]
-            item['commanderstring'] = "--".join(normalize_text(item['commanders']))
-        else:
-            item['commanderstring'] = "-".join(sorted(normalize_text(item['commanders'])))
-        item['carddata'] = []
+        # Store synergy scores
+        # TODO: Convert item['commanders'] to a hashable type?
+        synergy_scores = all_synergy_scores[tuple(commander['commanders'])]
+        commander['carddata'] = []
         for card in synergy_scores:
-            if card in lookup:
-                card_image = lookup[card]
-            else:
-                card_image = retrieve_card_image(card)
-                lookup[card] = card_image
-            test = [card, synergy_scores[card], card_image]
-            item['carddata'].append(test)
-        item['carddata'].sort(key=lambda x: -x[1])
-        print(item['commanderstring'])
-        count += 1
-        print(f"{count} / {total}")
+            if card in image_lookup:
+                card_image = image_lookup[card]
+            else: 
+                raise Exception(f"{card} not in image_lookup")
+            card_info = [card, synergy_scores[card], card_image]
+            commander['carddata'].append(card_info)
+        # Sort cards by decreasing synergy scores
+        commander['carddata'].sort(key=lambda x: -x[1])
 
+        # Update user on processing status
+        print(commander['commanderstring'])
+        processed += 1
+        print(f"{processed} / {len(new_commander_data)}")
 
-    commander_data.sort(key=lambda x: -x["count"])
+    # Sort commanders by decreasing count and save to file
+    new_commander_data.sort(key=lambda x: -x["count"])
+    with open("frontend/_data/commanders.json", "w") as f:
+        json.dump(new_commander_data, f)
+
+    # Store color popularity (staple) information
     new_color_popularity = []
     for cardname in color_popularity:
-        if cardname in lands:
+        if cardname in lands: # Skip lands
             continue
         try:
-            item = [cardname, color_popularity[cardname][0], lookup[cardname], color_popularity[cardname][1]]
-            new_color_popularity.append(item)
-        except Exception as e:
+            commander = [cardname, color_popularity[cardname][0], 
+                         image_lookup[cardname], color_popularity[cardname][1]]
+            new_color_popularity.append(commander)
+        except Exception as e: # TODO: More robust?
             print(e)
             print(cardname)
-    color_popularity = new_color_popularity
-
-
-    with open("frontend/_data/commanders.json", "w") as f:
-        json.dump(commander_data, f)
+    # Save color popularity to file
     with open("frontend/_data/staples.json", "w") as f:
-        json.dump(color_popularity, f)
-    with open("frontend/commandernames.json", "w") as f:
-        json.dump(commander_name_data, f)
+        json.dump(new_color_popularity, f)
