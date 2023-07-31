@@ -16,14 +16,14 @@ def check_legality(deck, cards_cache, database) -> bool:
     """
     Check the legality of a deck for pauper commander:
     1. Either 1 or 2 legal uncommon commanders
-    2. 99 or 98 other singleton legal common cards within the commander's 
+    2. 99 or 98 other singleton legal common cards within the commander's
         color identity
     """
     # Check number of commanders
     if not (len(deck['commanders']) == 1 or len(deck['commanders'] == 2)):
         print(f"Wrong number of commanders: {len(deck['commanders'])}")
         return False
-    
+
     # Determine commander legalities and deck's color identities
     # TODO: Does this check if multiple commanders can legally partner?
     deck_color_identity = set()
@@ -55,7 +55,7 @@ def check_legality(deck, cards_cache, database) -> bool:
                    for color in cards_cache[card]['color_identities']):
             print(f"Illegal color identities: {card}, {deck['commanders']}")
             return False
-    
+
     # If commanders and cards are legal, the deck is legal
     return True
 
@@ -66,7 +66,7 @@ def get_latest_bulk_file(directory="../scryfall_data", delete_older = True) -> s
     """
     bulk_data_requests = requests.get("https://api.scryfall.com/bulk-data")
     bulk_data_json = bulk_data_requests.json()
-    newest_version = [card_data for card_data in bulk_data_json['data'] 
+    newest_version = [card_data for card_data in bulk_data_json['data']
                         if card_data['type'] == "oracle_cards"][0]
     newest_filename = newest_version['download_uri'].split('/')[-1]
     newest_filepath = f"{directory}/{newest_filename}"
@@ -93,7 +93,7 @@ def get_latest_bulk_file(directory="../scryfall_data", delete_older = True) -> s
         # database.cards.update_many({}, {"$set": {"needsUpdate": True}})
         # database.decks.update_many({}, {"$set": {"needsLegalityCheck": True}})
         return newest_filepath
-    
+
     # If file is already downloaded, no update needed
     return newest_filepath
 
@@ -102,7 +102,7 @@ def perform_update(database):
     print("Auto updating decks to database")
 
     # Step 1: Update decks.
-    # Find the most recently updated deck in the database, then iterate 
+    # Find the most recently updated deck in the database, then iterate
     # over the full decklist backwards in time until that most recent deck is found
     # forwards in time updating all decks more recent than that.
     latest_updated_deck = database.decks.find_one(sort=[("update_date", -1)])
@@ -115,7 +115,7 @@ def perform_update(database):
     curr_deck_time = newest_time
     curr_page = 1 # Results are paginated
     # Update decks in reverse chronological order until last updated deck
-    while latest_updated_time < curr_deck_time: 
+    while latest_updated_time < curr_deck_time:
         for deck in new_decks:
             if latest_updated_time >= curr_deck_time:
                 break
@@ -126,7 +126,7 @@ def perform_update(database):
             deck_obj['needsLegalityCheck'] = True
             database.insert_deck(deck_obj)
 
-            # Update curr_deck_time and break if older than 
+            # Update curr_deck_time and break if older than
             curr_deck_time = deck_obj['update_date']
         # Wait for 1 second to respect APIs
         time.sleep(1)
