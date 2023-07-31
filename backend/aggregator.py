@@ -1,5 +1,6 @@
 """
-Reads the data from the database and performs aggregations to calculate important statistics.
+Reads the data from the database and performs aggregations to calculate
+important statistics.
 """
 import json
 from bson.son import SON
@@ -12,36 +13,38 @@ def get_all_scores(database):
     1. Popularity
     2. "Synergy"
 
-    Card popularity is split into two metrics, per commander popularity and overall popularity.
+    Card popularity is split into two metrics, per commander popularity and
+    overall popularity.
 
     Overall card popularity can be determined by
     CARD_POPULARITY = NUM_DECKS_WITH_CARD / NUM_DECKS
 
-    Per commander card popularity can be determined by counting only decks with this card:
-    CARD_POPULARITY_WITH_COMMANDER = NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER_TOTAL
+    Per commander card popularity can be determined by counting only decks
+    with this card:
+    CARD_POPULARITY_WITH_COMMANDER = NUM_DECKS_WITH_COMMANDER_AND_CARD / 
+        NUM_DECKS_WITH_COMMANDER_TOTAL
 
-    Card synergy requires card popularity with commander, as well as the overall popularity.
+    Card synergy requires card popularity with commander, as well as the 
+    overall popularity:
     CARD_SYNERGY = CARD_POPULARITY_WITH_COMMANDER - CARD_POPULARITY
 
-    New calculations must also account for only decks that *could* run the card, rather than using
-    the total number of decks as the denominator with cards that can only be run in a few decks.
-
+    New calculations must also account for only decks that *could* run the
+    card, rather than using the total number of decks as the denominator with
+    cards that can only be run in a few decks:
     NEW_CARD_POPULARITY = NUM_DECKS_WITH_CARD / NUM_DECKS_WITH_CORRECT_COLOR_IDENTITY
-
     NEW_CARD_POPULARITY_WITH_COMMANDER = CARD_POPULARITY_WITH_COMMANDER
-    = NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER
-
+        = NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER
     NEW_CARD_SYNERGY = NEW_CARD_POPULARITY_WITH_COMMANDER - NEW_CARD_POPULARITY
     """
     # TODO: Move operations out of memory to take advantage of the database.
     # Initialize statistics to aggregate
     print("Database initialized")
     cards_cached = {} # Cache card information
-    num_color_identity = {} # Count of cards by color identity
+    num_color_identity = {} # Counts of cards by color identity
     commander_color_identities = {} # Cache of commander color identities
-    per_commander_counts = {} # Count of decks by commander
-    all_cards = {} # Count of decks by card
-    deck_counts = {} # Count of decks by commander then card
+    per_commander_counts = {} # Counts of decks by commander
+    all_cards = {} # Counts of decks by card
+    deck_counts = {} # Counts of decks by commander then card
     
     # Initial aggregation of deck counts by color
     for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},

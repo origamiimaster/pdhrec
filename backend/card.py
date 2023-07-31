@@ -5,7 +5,7 @@ Card object representing data needed for the database:
 
 class Card:
     """
-    A card with a particular name.
+    A Magic: The Gathering card.
     """
     name: str
     image_urls: [str]

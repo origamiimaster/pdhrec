@@ -1,7 +1,7 @@
 import json
 from backend.aggregator import get_all_scores
 from backend.database import Database
-from backend.utils import normalize_text
+from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 
 
@@ -87,9 +87,9 @@ if __name__ == "__main__":
             print(commander["commanders"][0])
             commander["urls"] = image_lookup[commander["commanders"][0]]
             commander["commanders"] = commander["commanders"][0].split(" // ")
-            commander['commanderstring'] = "--".join(normalize_text(commander['commanders']))
+            commander['commanderstring'] = "--".join(normalize_cardnames(commander['commanders']))
         else: # Handle single-faced and partner commanders
-            commander['commanderstring'] = "-".join(sorted(normalize_text(commander['commanders'])))
+            commander['commanderstring'] = "-".join(sorted(normalize_cardnames(commander['commanders'])))
     
     # Save commander names to file
     with open("frontend/commandernames.json", "w") as f:
