@@ -1,5 +1,10 @@
-def normalize_text(cards):
-    out_cards = []
-    for card in cards:
-        out_cards.append(''.join(x for x in ["-" if y == " " else y for y in card.lower()] if x.isalnum() or x == "-"))
-    return out_cards
+from typing import List
+
+
+def normalize_cardnames(cards: List[str]) -> List[str]:
+    return map(normalize_cardname, cards)
+
+
+def normalize_cardname(cardname: str, sep="-"):
+    return ''.join(char for char in cardname.lower().replace(' ', sep) 
+                   if char.isalnum() or char == sep)

@@ -9,9 +9,9 @@ Three main collections will be use:
 import time
 import json
 from pymongo import MongoClient
-from backend.utils import normalize_text
+from backend.utils import normalize_cardnames
 # from urllib import quote
-from backend.scryfall import get_card_data
+from backend.scryfall import query_scryfall
 
 client = MongoClient(
     "mongodb://pdhrec:70GCvU3l6BvGBSQKcQcfnuWgG2H4xABMigiJ3CAnYwhVCeWyQrcoRMXHHK3bpgcCn1xVSAa94xZYOfm3IPiUfw==@pdhrec.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@pdhrec@")
@@ -66,7 +66,7 @@ def insert_deck_cards(data):
             card2 = card.replace(".", "")
             info['commanders'][card2] = info['commanders'][card]
             info['commanders'].pop(card)
-    info['commanderstring'] = "-".join(normalize_text([x for x in info['commanders']]))
+    info['commanderstring'] = "-".join(normalize_cardnames([x for x in info['commanders']]))
     mainboard = 0
     for card in info['cards']:
         mainboard += info['cards'][card]
@@ -159,7 +159,7 @@ def save_card_data(card_name):
     try:
         col = db['metadata']
 
-        data = get_card_data(card_name)
+        data = query_scryfall(card_name)
         exists = col.find_one({"_id": data['id'] + "card", "type": "card"})
         if exists is not None and len([x for x in exists]) != 0:
             return
@@ -169,7 +169,7 @@ def save_card_data(card_name):
         to_write["type"] = "card"
         to_write["name"] = data['name']
         to_write["commandername"] = data['name']
-        to_write["normalized"] = normalize_text([data['name']])[0]
+        to_write["normalized"] = normalize_cardnames([data['name']])[0]
         to_write["image"] = data['image_uris']['large'] if 'large' in data['image_uris'] else \
             data['image_uris'][list(data['image_uris'].keys())[0]]
         to_write["colors"] = data['color_identity']
@@ -185,7 +185,7 @@ def save_card_data(card_name):
 
 def get_card_url(card_name):
     try:
-        data = get_card_data(card_name)
+        data = query_scryfall(card_name)
         return data["image_uris"]["large"] if "large" in data["image_uris"] else data["image_uris"][
             list(data['image_uris'].keys())[0]]
     except Exception as e:
@@ -195,7 +195,7 @@ def get_card_url(card_name):
 
 def add_to_scores(deck_data, commander=True):
     if commander:
-        commanders = normalize_text([x for x in deck_data['commanders']])
+        commanders = normalize_cardnames([x for x in deck_data['commanders']])
         commanders.sort()
     else:
         commanders = [""]
@@ -226,7 +226,7 @@ def add_to_scores(deck_data, commander=True):
 
 def subtract_from_scores(deck_data, commander=True):
     if commander:
-        commanders = normalize_text([x for x in deck_data['commanders']])
+        commanders = normalize_cardnames([x for x in deck_data['commanders']])
         commanders.sort()
     else:
         commanders = [""]
@@ -308,7 +308,7 @@ def insert_card(card_name):
     if col.find_one({"type": "card", "name": card_name}) is not None:
         return False
 
-    data = get_card_data(card_name)
+    data = query_scryfall(card_name)
     # only accept exact matches here
     if "name" in data and data["name"] == card_name:
         col.insert_one({"type": "card", "name": data["name"], "data": data})

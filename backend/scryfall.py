@@ -1,23 +1,21 @@
 """
-Accessing scryfall for card images...
+Accessing scryfall for card images.
 """
 import time
-
 import requests
 from dateutil import parser
 from urllib.parse import quote
 import json
 
+from backend.utils import normalize_cardname
 from backend.card import Card
-from backend.legality import check_card_allowed_as_commander, check_card_allowed_in_main
+from backend.legality import card_legal_as_commander, card_legal_in_main
+
 cards = {}
 
-def get_card_data_as_card_object(name):
+def get_card_object(name):
     """
-    Gets the Scryfall card information, and returns the necessary values
-
-    :param name:
-    :return:
+    Query and return card data from Scryfall.
     """
     card = Card()
 
@@ -25,16 +23,16 @@ def get_card_data_as_card_object(name):
         print("Using cached")
         scryfall_card_data = cards[name]
     else:
-        time.sleep(50/1000)
+        time.sleep(50/1000) # Avoid overloading Scryfall API
         print("Searching")
-        with requests.get(f"https://api.scryfall.com/cards/search?q=\""
-                          f"{quote(name)}\"&order=released&dir=asc&unique=prints") as r:
-            if r.status_code == 404:
-                return False
-            else:
-                scryfall_card_data = r.json()['data']
-    scryfall_card_data = [x for x in scryfall_card_data if x["name"] == name]
-    if scryfall_card_data == []:
+        card_request = requests.get(f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints")
+        if card_request.status_code != requests.codes.ok:
+            return False
+        scryfall_card_data = card_request.json()['data']
+
+    # Filter query to only cards exactly matching name
+    scryfall_card_data = [card for card in scryfall_card_data if card["name"] == name]
+    if scryfall_card_data == []: # Create invalid card
         card.name = name
         card.legal_as_commander = False
         card.legal_in_mainboard = False
@@ -42,52 +40,56 @@ def get_card_data_as_card_object(name):
         card.time_first_printed = -1
         card.color_identities = []
         return card
-    else:
-        card.name = name
-        card.legal_as_commander = check_card_allowed_as_commander(scryfall_card_data)
-        card.legal_in_mainboard = check_card_allowed_in_main(scryfall_card_data)
-
+    
+    # Create card object
+    card.name = name
+    card.legal_as_commander = card_legal_as_commander(scryfall_card_data)
+    card.legal_in_mainboard = card_legal_in_main(scryfall_card_data)
     try:
-        possible_cards = [x for x in scryfall_card_data if
-                          not x['digital'] and x['highres_image'] and
-                          "etched" not in x['finishes'] and
-                          ("frame_effects" not in x or "showcase" not in x["frame_effects"]) and x["set"] != "sld"
-                          ]
-        image_index = -1
-        if "image_uris" not in possible_cards[image_index] and "card_faces" in possible_cards[image_index]:
-            for face in possible_cards[image_index]["card_faces"]:
-                card.image_urls.append(face['image_uris']['large'])
-        else:
-            try:
-                card.image_urls.append(possible_cards[image_index]['image_uris']['large'])
-            except KeyError:
-                pass
+        # Find standard card art
+        possible_cards = [card for card in scryfall_card_data if 
+                          (not card['digital'] and card['highres_image'] and 
+                           "etched" not in card['finishes'] and 
+                           ("frame_effects" not in card or 
+                            "showcase" not in card["frame_effects"]) and 
+                            card["set"] != "sld")]
+        card.image_urls = choose_image(possible_cards)
     except Exception as e:
         print(e)
-        image_index = -2 if len(scryfall_card_data) > 1 else -1
-        if "image_uris" not in scryfall_card_data[image_index] and "card_faces" in scryfall_card_data[image_index]:
-            for face in scryfall_card_data[image_index]["card_faces"]:
-                card.image_urls.append(face['image_uris']['large'])
-        else:
+        # Try second most recent image
+        if len(scryfall_card_data) > 1:
             try:
-                card.image_urls.append(scryfall_card_data[image_index]['image_uris']['large'])
+                card.image_urls = choose_image(possible_cards, -2)
             except KeyError:
                 pass
+
     card.time_first_printed = parser.parse(scryfall_card_data[0]['released_at']).timestamp()
     card.color_identities = "".join(scryfall_card_data[0]['color_identity'])
 
     return card
 
 
-def get_card_data(card_name):
-    card_name = ''.join(char for char in ["+" if c == " " else c for c in card_name.lower()] if char.isalnum() or char == "+")
+
+def query_scryfall(card_name):
+    card_name = normalize_cardname(card_name)
     url = f"https://api.scryfall.com/cards/named?exact={card_name}"
     r = requests.get(url)
     return r.json()
 
 
-def choose_good_image(data):
-    pass
+def choose_image(possible_cards, image_index = -1):
+    """
+    Accessing the card at the given index (default -1) in the list of possible 
+    cards, return the best image URL.
+    """
+    images = []
+    if ("image_uris" not in possible_cards[image_index] and 
+        "card_faces" in possible_cards[image_index]):
+        for face in possible_cards[image_index]["card_faces"]:
+            images.append(face['image_uris']['large'])
+    else:
+        images.append(possible_cards[image_index]['image_uris']['large'])
+    return images
 
 
 if __name__ == "__main__":

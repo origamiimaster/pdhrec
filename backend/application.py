@@ -5,7 +5,7 @@ Not for deployment, just development for now
 from flask import Flask, send_file, request, redirect
 from urllib.parse import quote, unquote
 
-from utils import normalize_text
+from utils import normalize_cardnames
 # import database
 from azure_database import get_all_staples, new_get_all_commander_counts, get_new_synergy_scores, \
     check_commander_exists, \
@@ -108,7 +108,7 @@ def search():
         query = request.args.get("q")
         print(query)
         try:
-            clean_name = normalize_text([query])[0]
+            clean_name = normalize_cardnames([query])[0]
             print(clean_name)
             print(check_commander_exists(clean_name))
             if check_commander_exists(clean_name):

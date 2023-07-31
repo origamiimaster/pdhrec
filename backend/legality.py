@@ -1,29 +1,30 @@
 """
-Determines if a deck is a valid or not by applying the rules of PDH.
+Determine if a deck is a valid or not by applying the rules of PDH.
 """
 
-def check_card_allowed_in_main(scryfall_data) -> bool:
+def card_legal_in_main(scryfall_data) -> bool:
+    # Manual name check, as scryfall behaved weirdly before
     if scryfall_data[0]['name'] in ["Mystic Remora", "Rhystic Study"]:
-        return False
-    if scryfall_data[0]['legalities']['paupercommander'] == "legal":
-        return True
-    else:
-        return False
+        return False 
+    return scryfall_data[0]['legalities']['paupercommander'] == "legal"
 
-def check_card_allowed_as_commander(scryfall_data) -> bool:
+
+def card_legal_as_commander(scryfall_data) -> bool:
     try:
         if scryfall_data[0]['legalities']['paupercommander'] == "restricted":
             return True
         elif scryfall_data[0]['legalities']['paupercommander'] == "not_legal":
             return False
         else:
-            # Check if a creature, and was printed at uncommon somewhere?
-            for val in scryfall_data:
-                if "paper" in val["games"] and "Creature" in val['type_line'] and val['rarity'] == "uncommon":
+            # Check if a creature printed common at some point
+            for printing in scryfall_data:
+                if ("paper" in printing["games"] and 
+                    "Creature" in printing['type_line'] and 
+                    printing['rarity'] == "uncommon"):
                     return True
             return False
     except IndexError:
-        print(f"Card Errored Out: {scryfall_data}")
+        print(f"Card Error: {scryfall_data}")
         return False
 
 
