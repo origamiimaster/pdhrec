@@ -10,7 +10,8 @@ Check out the rules at the [PDH Homebase](https://pdhhomebase.com).
 
 
 ## What does this website do?
-PDHREC is based on the website [EDHREC](https://edhrec.com), a website that recommends cards for use in commander decks.  
+[PDHREC](https://pdhrec.com) is based on the website [EDHREC](https://edhrec.com), a website 
+that recommends cards for use in commander decks.  
 
 After collecting deck information from thousands of decks, users can see what the best cards are for any particular deck, or for a particular color.  
 
