@@ -25,6 +25,7 @@ class Deck:
         return {"_id": self.id, "update_date": self.last_updated,
                 "commanders": self.commanders, "cards": self.main_board}
 
+
 if __name__ == "__main__":
     print("Generating default test deck")
     my_deck = Deck()

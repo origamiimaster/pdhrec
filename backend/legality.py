@@ -28,8 +28,6 @@ def card_legal_as_commander(scryfall_data) -> bool:
         return False
 
 
-
-
 # if __name__ == "__main__":
 #     print("Retrieving Color Identity: Tatyova, Benthic Druid")
 #     print(retrieve_color_identity("Tatyova, Benthic Druid"))
