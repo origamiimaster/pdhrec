@@ -3,9 +3,9 @@ Database is a Atlas MongoDB database, intended to be used to periodically
 generate a static website, rather than for immediate use.
 """
 from typing import Any
+from time import time
 import json
 import pymongo
-
 
 class Database:
     """
@@ -43,6 +43,8 @@ class Database:
         Insert a card into the database.
         """
         assert "name" in card_data
+        if not card_data["needsUpdate"]:
+            card_data['updated'] = time()
         self.cards_cache.append(card_data["name"])
         return self.cards.update_one({"name": card_data['name']}, 
                                      {"$set": card_data}, upsert=True)
