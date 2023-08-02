@@ -34,13 +34,11 @@ def check_legality(deck, cards_cache, database) -> bool:
             print(f"Missing commander from database {commander}")
             database.insert_card({"name": commander, "needsUpdate": True})
             return False
-        if not cards_cache[commander][
-            'legal_as_commander']:  # Illegal commander
+        if not cards_cache[commander]['legal_as_commander']:  # Illegal commander
             print(f"Illegal Commander {commander}")
             return False
         # Update deck color identities with commander's color identity
-        deck_color_identity.update(
-            set(cards_cache[commander]['color_identities']))
+        deck_color_identity.update(set(cards_cache[commander]['color_identities']))
 
     # Determine legality of other cards
     # TODO: Does this check if there are the correct number of cards?
@@ -65,7 +63,8 @@ def check_legality(deck, cards_cache, database) -> bool:
 def get_latest_bulk_file(directory="../scryfall_data",
                          delete_older=True) -> str:
     """
-    Gets the latest "oracle-data" cards and then saves them to a file labeled "oracle-data-X.json".
+    Gets the latest "oracle-data" cards and then saves them to a file labeled
+    "oracle-data-X.json".
     """
     bulk_data_requests = requests.get("https://api.scryfall.com/bulk-data")
     bulk_data_json = bulk_data_requests.json()
@@ -109,7 +108,10 @@ def perform_update(database):
     # that most recent deck is found forwards in time updating all decks more
     # recent than that.
     latest_updated_deck = database.decks.find_one(sort=[("update_date", -1)])
-    latest_updated_time = latest_updated_deck['update_date']
+    if latest_updated_deck is None:  # If database starts empty
+        latest_updated_time = 1690828409.017133
+    else:
+        latest_updated_time = latest_updated_deck['update_date']
     new_decks = get_new_decks(1)  # Page 1 of all decks
     newest_deck = new_decks[0]
     newest_time = parser.parse(newest_deck['lastUpdatedAtUtc']).timestamp()
@@ -125,8 +127,10 @@ def perform_update(database):
 
             print(f"Saving deck {deck['name']}")
             # Save the new deck to the database
-            deck_obj = convert_to_deck(
-                get_deck_data(deck['publicId'])).to_dict()
+            queried_deck_data = get_deck_data(deck['publicId'])
+            if not queried_deck_data:
+                continue
+            deck_obj = convert_to_deck(queried_deck_data).to_dict()
             deck_obj['needsLegalityCheck'] = True
             database.insert_deck(deck_obj)
 
@@ -140,10 +144,11 @@ def perform_update(database):
 
     # Step 1.5: Update cards that have been added / modified in the latest set:
     newest_card = database.cards.find_one(sort=[("updated", -1)])
-    new_cards_to_add = get_card_names_for_cards_needing_updates(
-        newest_card['updated'])
-    for card in new_cards_to_add:
-        database.insert_card({"name": card, "needsUpdate": True})
+    if "updated" in newest_card:
+        new_cards_to_add = get_card_names_for_cards_needing_updates(
+            newest_card['updated'])
+        for card in new_cards_to_add:
+            database.insert_card({"name": card, "needsUpdate": True})
 
     # Step 2: Update cards in need of an update
     # Then have the database update any cards in need of an update:
