@@ -83,7 +83,7 @@ def get_latest_bulk_file(directory="../scryfall_data",
         if delete_older:  # Delete older data files
             data_files = os.listdir(f"{directory}")
             for file in data_files:
-                if file == newest_filename:
+                if file == newest_filename or file == ".gitignore":
                     pass
                 else:
                     print(f"Deleting {file}")
