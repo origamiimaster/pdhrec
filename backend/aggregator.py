@@ -21,7 +21,7 @@ def get_all_scores(database):
 
     Per commander card popularity can be determined by counting only decks
     with this card:
-    CARD_POPULARITY_WITH_COMMANDER = NUM_DECKS_WITH_COMMANDER_AND_CARD / 
+    CARD_POPULARITY_WITH_COMMANDER = NUM_DECKS_WITH_COMMANDER_AND_CARD /
         NUM_DECKS_WITH_COMMANDER_TOTAL
 
     Card synergy requires card popularity with commander, as well as the 
@@ -39,16 +39,17 @@ def get_all_scores(database):
     # TODO: Move operations out of memory to take advantage of the database.
     # Initialize statistics to aggregate
     print("Database initialized")
-    cards_cached = {} # Cache card information
-    num_color_identity = {} # Counts of cards by color identity
-    commander_color_identities = {} # Cache of commander color identities
-    per_commander_counts = {} # Counts of decks by commander
-    all_cards = {} # Counts of decks by card
-    deck_counts = {} # Counts of decks by commander then card
-    
+    cards_cached = {}  # Cache card information
+    num_color_identity = {}  # Counts of cards by color identity
+    commander_color_identities = {}  # Cache of commander color identities
+    per_commander_counts = {}  # Counts of decks by commander
+    all_cards = {}  # Counts of decks by card
+    deck_counts = {}  # Counts of decks by commander then card
+
     # Initial aggregation of deck counts by color
-    for deck in database.decks.aggregate(pipeline=[{"$match": {"isLegal": True}},
-                                                   {"$sort": SON([("update_date", -1)])}]):
+    for deck in database.decks.aggregate(
+            pipeline=[{"$match": {"isLegal": True}},
+                      {"$sort": SON([("update_date", -1)])}]):
         # Obtain deck ID and commanders
         deck_id = deck["_id"]
         commanders = tuple(sorted(deck['commanders']))
@@ -57,12 +58,15 @@ def get_all_scores(database):
         deck_color_identities = set()
         for commander in commanders:
             # Update with current commander's color identity
-            if commander not in cards_cached: # Load from database then cache
-                cards_cached[commander] = database.cards.find_one({"name": commander})
+            if commander not in cards_cached:  # Load from database then cache
+                cards_cached[commander] = database.cards.find_one(
+                    {"name": commander})
             if cards_cached[commander] is None:
-                print(f"Exception: card not in database: {commander}, {deck_id}")
+                print(
+                    f"Exception: card not in database: {commander}, {deck_id}")
                 exit(1)
-            deck_color_identities.update(set(cards_cached[commander]['color_identities']))
+            deck_color_identities.update(
+                set(cards_cached[commander]['color_identities']))
         deck_color_identities = sorted(list(deck_color_identities))
         deck_color_identities = "".join(deck_color_identities)
 
@@ -105,16 +109,22 @@ def get_all_scores(database):
 
     # Calculate overall card popularities
     total_popularities = {}
-    color_pipeline = [{"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
-    card_color_identities = {x['name']: x['color_identities'] 
-                             for x in database.cards.aggregate(pipeline=color_pipeline)}
+    color_pipeline = [
+        {"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
+    card_color_identities = {x['name']: x['color_identities']
+                             for x in
+                             database.cards.aggregate(pipeline=color_pipeline)}
     for card in all_cards:
         card_color_identity = card_color_identities[card]
         # TODO: Color identity helper function
-        allowed_colors = [color_id for color_id in set(commander_color_identities.values()) 
-                          if all([color in color_id for color in card_color_identity])]
+        allowed_colors = [color_id for color_id in
+                          set(commander_color_identities.values())
+                          if all([color in color_id for color in
+                                  card_color_identity])]
+        print(card, allowed_colors)
         # TODO: Precalculate denominators for all color ids
-        total_popularities[card] = all_cards[card] / sum([num_color_identity[color_id] for color_id in allowed_colors])
+        total_popularities[card] = all_cards[card] / sum(
+            [num_color_identity[color_id] for color_id in allowed_colors])
     print("Done normalizing general probabilities")
 
     # Calculate per-commander synergy scores for cards
@@ -122,8 +132,9 @@ def get_all_scores(database):
     for commander in per_commander_popularities:
         per_commander_synergies[commander] = {}
         for card in per_commander_popularities[commander]:
-            per_commander_synergies[commander][card] = per_commander_popularities[commander][card] - \
-                                                       total_popularities[card]
+            per_commander_synergies[commander][card] = \
+            per_commander_popularities[commander][card] - \
+            total_popularities[card]
 
     # Calculate card popularities per color
     per_color_popularities = {}
@@ -142,16 +153,16 @@ def get_all_scores(database):
         for color_id in possible_color_identities:
             if card_color_identity.issubset(set(color_id)):
                 possible_decks += num_color_identity[color_id]
-        per_color_popularities[card] /= possible_decks # Normalize
+        per_color_popularities[card] /= possible_decks  # Normalize
     # Order by decreasing card popularity
-    per_color_popularities = dict(sorted(per_color_popularities.items(), 
+    per_color_popularities = dict(sorted(per_color_popularities.items(),
                                          key=lambda item: -item[1]))
-    per_color_popularities = {card: (per_color_popularities[card], 
-                                     card_color_identities[card]) 
+    per_color_popularities = {card: (per_color_popularities[card],
+                                     card_color_identities[card])
                               for card in per_color_popularities}
     print("Done calculating everything")
 
-    return (per_commander_synergies, per_commander_popularities, 
+    return (per_commander_synergies, per_commander_popularities,
             per_commander_counts, per_color_popularities)
 
 
@@ -162,6 +173,6 @@ if __name__ == "__main__":
         connection_string = json.load(f)['connection']
     print("Building database connection")
     database = Database(connection_string)
-    
+
     # Calculate statistics
     synergy, popularity, counts, color_popularity = get_all_scores(database)

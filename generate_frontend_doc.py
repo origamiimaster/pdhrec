@@ -10,13 +10,22 @@ if __name__ == "__main__":
         connection_string = json.load(f)['connection']
     database = Database(connection_string)
 
+    # Commit updates to the database
+    print("Updating database")
+    perform_update(database)
+
     # Load all cards from bulk json in database
     cards_path = get_latest_bulk_file(directory="scryfall_data")
     with open(cards_path, "r") as f:
         all_cards = json.load(f)
 
     # Create lookup of card images by name, alongside sets of lands and DFCs
-    image_lookup = {}
+    # image_lookup = {}
+    new_image_lookup = {}
+    for card in database.cards.aggregate([{"$match": {"$or": [{
+        "legal_in_mainboard": True}, {"legal_as_commander": True}]}},
+        {"$project": {"_id": 0, "image_urls": 1, "name": 1}}]):
+        new_image_lookup[card['name']] = card['image_urls']
     lands = set()
     double_faces = set()
     for card in all_cards:
@@ -30,13 +39,14 @@ if __name__ == "__main__":
                 continue
             # Double-faced cards
             if "image_uris" not in card and "card_faces" in card:
-                image_lookup[card["name"]] = \
-                    [card["card_faces"][0]["image_uris"]["large"],
-                     card["card_faces"][1]["image_uris"]["large"]]
+                # image_lookup[card["name"]] = \
+                #     [card["card_faces"][0]["image_uris"]["large"],
+                #      card["card_faces"][1]["image_uris"]["large"]]
                 double_faces.add(card["name"])
             # Single-faced cards
             else:
-                image_lookup[card["name"]] = card["image_uris"]["large"]
+                pass
+                # image_lookup[card["name"]] = card["image_uris"]["large"]
         # TODO: More robust error handling
         except KeyError:  # Why isn't this handled with other exceptions?
             continue
@@ -45,17 +55,13 @@ if __name__ == "__main__":
             print(json.dumps(card))
             continue
 
-    # Commit updates to the database
-    print("Updating database")
-    perform_update(database)
-
     # Generate a list of the commanders / commander pairs, along with their 
     # image urls and cleaned names
     commander_data = {tuple(deck['commanders'])
-                      for deck in database.decks.aggregate(pipeline=[
-            {"$match": {"isLegal": True}},
-            {"$project": {"_id": 0, "commanders": 1}}
-        ])}
+                      for deck in
+                      database.decks.aggregate(pipeline=[{"$match": {
+                          "isLegal": True}},
+                          {"$project": {"_id": 0, "commanders": 1}}])}
     # Ensure commanders are unique (sort pairs)
     commander_data = list(set(tuple(sorted(x)) for x in commander_data))
 
@@ -86,7 +92,8 @@ if __name__ == "__main__":
         if (len(commander["commanders"]) == 1
                 and commander["commanders"][0] in double_faces):  # Handle DFCs
             print(commander["commanders"][0])
-            commander["urls"] = image_lookup[commander["commanders"][0]]
+            # commander["urls"] = image_lookup[commander["commanders"][0]]
+            commander["urls"] = new_image_lookup[commander["commanders"][0]]
             # commander["commanders"] = commander["commanders"][0].split(" // ")
             commander['commanderstring'] = "--".join(
                 normalize_cardnames(commander['commanders']))
@@ -99,8 +106,10 @@ if __name__ == "__main__":
         synergy_scores = all_synergy_scores[tuple(commander['commanders'])]
         commander['carddata'] = []
         for card in synergy_scores:
-            if card in image_lookup:
-                card_image = image_lookup[card]
+            # if card in image_lookup:
+            #     card_image = image_lookup[card]
+            if card in new_image_lookup:
+                card_image = new_image_lookup[card]
             else:
                 raise Exception(f"{card} not in image_lookup")
             card_info = [card, synergy_scores[card], card_image]
@@ -112,7 +121,8 @@ if __name__ == "__main__":
         if (len(commander["commanders"]) == 1
                 and commander["commanders"][0] in double_faces):  # Handle DFCs
             print(commander["commanders"][0])
-            commander["urls"] = image_lookup[commander["commanders"][0]]
+            # commander["urls"] = image_lookup[commander["commanders"][0]]
+            commander["urls"] = new_image_lookup[commander["commanders"][0]]
             commander["commanders"] = commander["commanders"][0].split(" // ")
             commander['commanderstring'] = "--".join(normalize_cardnames(commander['commanders']))
 
@@ -137,7 +147,8 @@ if __name__ == "__main__":
             continue
         try:
             commander = [cardname, color_popularity[cardname][0],
-                         image_lookup[cardname], color_popularity[cardname][1]]
+                         new_image_lookup[cardname], color_popularity[
+                             cardname][1]]
             new_color_popularity.append(commander)
         except Exception as e:  # TODO: More robust?
             print(e)

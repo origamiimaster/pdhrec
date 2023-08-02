@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Iterable
 
 
 partner_commanders = {"Alena, Kessig Trapper",
@@ -76,7 +76,7 @@ backgrounds = {"Acolyte of Bahamut",
                "Veteran Soldier"}
 
 
-def normalize_cardnames(cards: List[str]) -> List[str]:
+def normalize_cardnames(cards: Iterable[str]) -> List[str]:
     return list(map(normalize_cardname, cards))
 
 
