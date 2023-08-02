@@ -10,54 +10,7 @@ from dateutil import parser
 from backend.database import Database
 from backend.moxfield import convert_to_deck, get_deck_data, get_new_decks
 from backend.scryfall import get_card_object, get_card_names_for_cards_needing_updates
-
-
-def check_legality(deck, cards_cache, database) -> bool:
-    """
-    Check the legality of a deck for pauper commander:
-    1. Either 1 or 2 legal uncommon commanders
-    2. 99 or 98 other singleton legal common cards within the commander's
-        color identity
-    """
-    # Check number of commanders
-    if not (len(deck['commanders']) == 1 or len(deck['commanders']) == 2):
-        print(f"Wrong number of commanders: {len(deck['commanders'])}")
-        return False
-
-    # Determine commander legalities and deck's color identities
-    # TODO: Does this check if multiple commanders can legally partner?
-    deck_color_identity = set()
-    for commander in deck['commanders']:
-        if commander not in cards_cache:  # Update cache if needed
-            cards_cache[commander] = database.get_card(commander)
-        if cards_cache[commander] is None:  # Commander missing from database
-            print(f"Missing commander from database {commander}")
-            database.insert_card({"name": commander, "needsUpdate": True})
-            return False
-        if not cards_cache[commander]['legal_as_commander']:  # Illegal commander
-            print(f"Illegal Commander {commander}")
-            return False
-        # Update deck color identities with commander's color identity
-        deck_color_identity.update(set(cards_cache[commander]['color_identities']))
-
-    # Determine legality of other cards
-    # TODO: Does this check if there are the correct number of cards?
-    for card in deck['cards']:
-        if card not in cards_cache:  # Update cache if needed
-            cards_cache[card] = database.get_card(card)
-        if cards_cache[card] is None:  # Card missing from database
-            print(f"Missing card from database {card}")
-            return False
-        if not cards_cache[card]['legal_in_mainboard']:  # Illegal card
-            print(f"Illegal card: {card}")
-            return False
-        if not all(color in deck_color_identity  # Check color identity
-                   for color in cards_cache[card]['color_identities']):
-            print(f"Illegal color identities: {card}, {deck['commanders']}")
-            return False
-
-    # If commanders and cards are legal, the deck is legal
-    return True
+from backend.legality import check_legality
 
 
 def get_latest_bulk_file(directory="../scryfall_data",
@@ -193,4 +146,4 @@ if __name__ == "__main__":
     database = Database(connection_string)
     # Begin an auto update?
     # get_latest_bulk_file(database)
-    perform_update(database)
+    # perform_update(database)

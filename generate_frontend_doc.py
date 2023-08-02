@@ -116,7 +116,6 @@ if __name__ == "__main__":
             commander["commanders"] = commander["commanders"][0].split(" // ")
             commander['commanderstring'] = "--".join(normalize_cardnames(commander['commanders']))
 
-
         # Update user on processing status
         print(commander['commanderstring'])
         processed += 1

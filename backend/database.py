@@ -7,6 +7,7 @@ from time import time
 import json
 import pymongo
 
+
 class Database:
     """
     Class representing the operations allowed for the database.

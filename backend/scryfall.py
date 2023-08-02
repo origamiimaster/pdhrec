@@ -94,6 +94,7 @@ def choose_image(possible_cards, image_index=-1):
         images.append(possible_cards[image_index]['image_uris']['large'])
     return images
 
+
 def get_card_names_for_cards_needing_updates(most_recent_updated_card_time):
     # Scratch work to get the latest sets that are not spoilers:
     sets_url = """https://api.scryfall.com/sets"""
