@@ -77,6 +77,11 @@ def get_card_object(name):
 
 
 def query_scryfall(card_name):
+    """
+
+    :param card_name:
+    :return:
+    """
     card_name = normalize_cardname(card_name)
     url = f"https://api.scryfall.com/cards/named?exact={card_name}"
     r = requests.get(url)
@@ -98,7 +103,14 @@ def choose_image(possible_cards, image_index=-1):
     return images
 
 
-def card_sort_key(x):
+def card_sort_key(x) -> tuple:
+    """
+    A custom sorting function to order the priority features for card images
+
+    :param x: Scryfall printing data for a single print of a card
+    :return: A tuple of integers and floats, with smaller numbers
+    representing preferred printings.
+    """
     # Do Not Use:
     dont = 1 if 'content_warning' in x and x['content_warning'] else 0
     # Image Status:
@@ -157,6 +169,14 @@ def updated_choose_image(card_data):
 
 
 def get_card_names_for_cards_needing_updates(most_recent_updated_card_time):
+    """
+    Selects all newly released cards since the last printing, and returns
+    their names.
+
+    :param most_recent_updated_card_time: a unix timestamp representing the
+    newest card's update date.
+    :return: a list of card names.
+    """
     # Scratch work to get the latest sets that are not spoilers:
     sets_url = """https://api.scryfall.com/sets"""
     r = requests.get(sets_url)
