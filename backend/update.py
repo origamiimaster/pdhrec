@@ -7,7 +7,7 @@ import time
 import requests
 from dateutil import parser
 
-from backend.database import Database
+from backend.database import MongoDatabase
 from backend.moxfield import convert_to_deck, get_deck_data, get_new_decks
 from backend.scryfall import get_card_object, get_card_names_for_cards_needing_updates
 from backend.legality import check_legality
@@ -143,7 +143,7 @@ def perform_update(database):
 if __name__ == "__main__":
     with open("../server-token.json") as server_token_file:
         connection_string = json.load(server_token_file)['connection']
-    database = Database(connection_string)
+    database = MongoDatabase(connection_string)
     # Begin an auto update?
     # get_latest_bulk_file(database)
     # perform_update(database)

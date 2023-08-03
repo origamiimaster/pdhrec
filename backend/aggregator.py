@@ -4,11 +4,11 @@ important statistics.
 """
 import json
 from bson.son import SON
-from backend.database import Database
+from backend.database import MongoDatabase
 from backend.utils import color_identities
 
 
-def get_all_scores(database: Database) -> tuple[dict, dict, dict, dict]:
+def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     """
     There are 2 main metrics that need to be determined:
     1. Popularity
@@ -53,7 +53,7 @@ def get_all_scores(database: Database) -> tuple[dict, dict, dict, dict]:
             commander_counts, sorted_card_use)
 
 
-def aggregate_counts(database: Database) -> tuple[dict, dict, dict, dict]:
+def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     """
     Query the database for deck information and aggregate the decklists into
     deck counts by color identity, how deck counts by commander,
@@ -158,7 +158,7 @@ def calculate_card_use_per_commander(commander_card_counts: dict,
     return card_use_per_commander
 
 
-def get_card_color_identities(database: Database) -> dict:
+def get_card_color_identities(database: MongoDatabase) -> dict:
     """
     Query the database on the color identity of all cards.
     Return as dictionary of card: color identity.
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     with open("../server-token.json") as f:
         connection_string = json.load(f)['connection']
     print("Building database connection")
-    database = Database(connection_string)
+    database = MongoDatabase(connection_string)
 
     # Calculate statistics
     synergy, popularity, counts, color_popularity = get_all_scores(database)

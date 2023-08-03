@@ -1,6 +1,6 @@
 import json
 from backend.aggregator import get_all_scores
-from backend.database import Database
+from backend.database import MongoDatabase
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 
@@ -8,7 +8,7 @@ if __name__ == "__main__":
     # Create a connection to the database
     with open("server-token.json") as f:
         connection_string = json.load(f)['connection']
-    database = Database(connection_string)
+    database = MongoDatabase(connection_string)
 
     # Commit updates to the database
     print("Updating database")
