@@ -28,7 +28,7 @@ class Card:
 
     def to_dict(self) -> dict:
         """
-        Convert to dictionary for saving to database
+        :return: A dictionary representation for saving to database.
         """
         return {"name": self.name, "image_urls": self.image_urls,
                 "released": self.time_first_printed,

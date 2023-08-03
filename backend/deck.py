@@ -2,18 +2,20 @@
 Defines the deck object that is stored and returned by the database.
 """
 import time
-import typing
 
 
 class Deck:
     """
-    A Pauper Commander Deck.  Describes the contents of the deck, at a particular time.
+    A Pauper Commander Deck.
 
-    Cards are referenced by their card id, which will be unique per card?
+    commander: list of commanders in the deck, by name.
+    main_board: list of mainboard cards in the deck, by name.
+    last_updated: last update time as POSIX time
+    id: Deck ID on Moxfield
     """
-    commanders: typing.List[str]
-    main_board: typing.List[str]
-    last_updated: int
+    commanders: list[str]
+    main_board: list[str]
+    last_updated: float
     id: str
 
     def __init__(self) -> None:
@@ -21,7 +23,9 @@ class Deck:
         self.main_board = []
 
     def to_dict(self) -> dict:
-        """Converts to dictionary representation"""
+        """
+        :return: A dictionary representation for saving to database.
+        """
         return {"_id": self.id, "update_date": self.last_updated,
                 "commanders": self.commanders, "cards": self.main_board}
 
