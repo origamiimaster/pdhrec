@@ -28,6 +28,13 @@ def get_all_scores(database: Database) -> tuple[dict, dict, dict, dict]:
     Card synergy measures a commander's preference for a card through
     card usage with commander and overall usage:
     CARD_SYNERGY = CARD_POPULARITY_WITH_COMMANDER - CARD_POPULARITY
+
+    :param database: A database object containing all card information.
+    :return: Tuple of: synergy scores as a dictionary keyed by commander
+    with value of a dictionary keyed by card with value of score; usage rates
+    in the same format; counts of deck with each commander as a dictionary
+    keyed by commander with value of usage number; and synergy scores sorted
+    in decreasing order, with card color identity in as a second value.
     """
     # Query database for all relevant card counts and color identities
     (color_identity_counts, commander_counts, card_counts,
@@ -51,6 +58,14 @@ def aggregate_counts(database: Database) -> tuple[dict, dict, dict, dict]:
     Query the database for deck information and aggregate the decklists into
     deck counts by color identity, how deck counts by commander,
     deck counts by card, and deck counts by commander by card.
+
+    :param database: A database object containing all card information.
+    :return: Tuple of: count of decks in each color identity as a dictionary
+    keyed by color identity with value of count; count of decks with each
+    commander in same format, but keyed by commander; count of decks with each
+    card in same format, but keyed by card; count of decks with a commander
+    and a card, as dictionary keyed by commander with value of a dictionary
+    keyed by card with value of deck count.
     """
     # TODO: Move operations out of memory to take advantage of the database.
     # Initialize statistics to aggregate
@@ -123,6 +138,13 @@ def calculate_card_use_per_commander(commander_card_counts: dict,
     """
     NEW_CARD_POPULARITY_WITH_COMMANDER = CARD_POPULARITY_WITH_COMMANDER
         = NUM_DECKS_WITH_COMMANDER_AND_CARD / NUM_DECKS_WITH_COMMANDER
+
+    :param commander_card_counts: count of decks with a commander
+    and a card, in above format.
+    :param commander_counts: count of decks with each commander, in above
+    format.
+    :return: statistics on for each commander, the frequency of decks using
+    any given card. As dictionary with format of commander_card_counts.
     """
     # For each commander, calculate popularity of each card played with it
     card_use_per_commander = {}
@@ -140,6 +162,10 @@ def get_card_color_identities(database: Database) -> dict:
     """
     Query the database on the color identity of all cards.
     Return as dictionary of card: color identity.
+
+    :param database: A database object containing all card information,.
+    :return: card color identities as a dictionary keyed by cards with value
+    of color identity.
     """
     # Cache card color identities
     color_pipeline = [{"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
@@ -151,6 +177,13 @@ def calculate_card_use(card_counts: dict, card_color_identities: dict,
                        color_identity_counts: dict) -> dict:
     """
     NEW_CARD_POPULARITY = NUM_DECKS_WITH_CARD / NUM_DECKS_WITH_CORRECT_COLOR_IDENTITY
+
+    :param card_counts: count of decks with each card, in above format.
+    :param card_color_identities: card color identities, in above format.
+    :param color_identity_counts: count of decks in each color identity as a
+    dictionary keyed by color identity with value of count
+    :return: statistics on for the frequency of decks using each card. As
+    dictionary with format of card_counts.
     """
     # Calculate total number of decks which can run a card of a given
     # color identity
@@ -174,6 +207,11 @@ def calculate_color_superset_counts(color_identity_counts: dict) -> dict:
     of that color identity.
     A deck with a color identity which is a superset of a card's color
     identity can run that card.
+
+    :param color_identity_counts: count of decks in each color identity in
+    above format.
+    :return: count of decks able to run each color identity in same format as
+    color_identity_counts.
     """
     color_superset_counts = {}
     for key_color_id in color_identities:
@@ -188,6 +226,13 @@ def calculate_color_superset_counts(color_identity_counts: dict) -> dict:
 def calculate_card_synergy(per_commander_use: dict, card_use: dict) -> dict:
     """
     NEW_CARD_SYNERGY = NEW_CARD_POPULARITY_WITH_COMMANDER - NEW_CARD_POPULARITY
+
+    :param per_commander_use: statistics on for each commander, the frequency
+    of decks using any given card. In above format.
+    :param card_use: statistics on for the frequency of decks using each card.
+    In above format
+    :return: synergy scores for each card in each commander. In same format as
+    arguments.
     """
     per_commander_synergy = {}
     for commander in per_commander_use:
@@ -202,6 +247,13 @@ def sort_cards_by_use(card_use: dict, card_color_identities: dict) -> dict:
     """
     Sort the use rate of cards in decreasing order, to create the staples page.
     Include color identity in the value for easier sorting.
+
+    :param card_use: statistics on for the frequency of decks using each card.
+    In above format.
+    :param card_color_identities: card color identities in above format.
+    :return: statistics on for the frequency of decks using each card, sorted
+    by decreasing use frequency. As dictionary keyed by card with value of
+    usage frequency and card color identity.
     """
     sorted_card_use = dict(sorted(card_use.items(),
                                   key=lambda item: -item[1]))
