@@ -1,6 +1,8 @@
 from typing import List, Iterable
 
 
+
+# Useful lists related to all pair commanders
 partner_commanders = {"Alena, Kessig Trapper",
                       "Alharu, Solemn Ritualist",
                       "Anara, Wolvid Familiar",
@@ -75,6 +77,23 @@ backgrounds = {"Acolyte of Bahamut",
                "Sword Coast Sailor",
                "Veteran Soldier"}
 
+# Useful constants related to colors
+color_identities = ['', 'B', 'G', 'R', 'U', 'W', 'BG', 'BR', 'BU', 'BW',
+                    'GR', 'GU', 'GW', 'RU', 'RW', 'UW', 'BGR', 'BGU', 'BGW',
+                    'BRU', 'BRW', 'BUW', 'GRU', 'GRW', 'GUW', 'RUW', 'BGRU',
+                    'BGRW', 'BGUW', 'BRUW', 'GRUW', 'BGRUW']
+
+color_names = {'': 'Colorless', 'B': 'Black', 'G': 'Green', 'R': 'Red',
+               'U': 'Blue', 'W': 'White',
+               'BG': 'Golgari', 'BR': 'Rakdos', 'BU': 'Dimir', 'BW': 'Orzhov',
+               'GR': 'Gruul', 'GU': 'Simic', 'GW': 'Selesnya', 'RU': 'Izzet',
+               'RW': 'Boros', 'UW': 'Azorius',
+               'BGR': 'Jund', 'BGU': 'Sultai', 'BGW': 'Abzan',
+               'BRU': 'Grixis', 'BRW': 'Mardu', 'BUW': 'Esper',
+               'GRU': 'Temur', 'GRW': 'Naya', 'GUW': 'Bant', 'RUW': 'Jeskai',
+               'BGRU': 'Glint-Eye (No White)', 'BGRW': 'Dune-Brood (No Blue)',
+               'BGUW': 'Witch-Maw (No Red)', 'BRUW': 'Yore-Tiller (No Green)',
+               'GRUW': 'Ink-Treader (No Black)', 'BGRUW': '5 Color'}
 
 def normalize_cardnames(cards: Iterable[str]) -> List[str]:
     return list(map(normalize_cardname, cards))
