@@ -12,9 +12,9 @@ class MongoDatabase:
     Class representing the operations allowed for the database.
 
     client: MongoClient to a Mongo database
-    database: PDHrec database in MongoClient
-    cards: cards table in PDHrec database
-    decks: decks table in PDHrec database
+    database: PDHREC database in MongoClient
+    cards: cards table in PDHREC database
+    decks: decks table in PDHREC database
     cards_cache: In-memory cache of card names in database
     """
 

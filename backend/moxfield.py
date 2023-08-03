@@ -18,7 +18,7 @@ def get_deck_data(deck_id: str) -> Optional[dict]:
     """
     url = f"https://api.moxfield.com/v2/decks/all/{deck_id}"
     deck_request = requests.get(url)
-    if deck_request.status_code != 200:
+    if deck_request.status_code != requests.codes.ok:
         return None
     return deck_request.json()
 
@@ -51,7 +51,8 @@ def convert_to_deck(moxfield_deck_data: dict) -> Deck:
         for _ in range(moxfield_deck_data['mainboard'][card_name]['quantity']):
             deck_obj.main_board.append(card_name)
     deck_obj.id = moxfield_deck_data['publicId']
-    deck_obj.last_updated = parser.parse(moxfield_deck_data['lastUpdatedAtUtc']).timestamp()
+    deck_last_updated = moxfield_deck_data['lastUpdatedAtUtc']
+    deck_obj.last_updated = parser.parse(deck_last_updated).timestamp()
     return deck_obj
 
 

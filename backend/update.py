@@ -9,7 +9,7 @@ from dateutil import parser
 
 from backend.database import MongoDatabase
 from backend.moxfield import convert_to_deck, get_deck_data, get_new_decks
-from backend.scryfall import get_card_object, get_card_names_for_cards_needing_updates
+from backend.scryfall import get_card_from_scryfall, get_card_names_needing_update
 from backend.legality import is_legal
 
 
@@ -98,7 +98,7 @@ def perform_update(database):
     # Step 1.5: Update cards that have been added / modified in the latest set:
     newest_card = database.cards.find_one(sort=[("updated", -1)])
     if "updated" in newest_card:
-        new_cards_to_add = get_card_names_for_cards_needing_updates(
+        new_cards_to_add = get_card_names_needing_update(
             newest_card['updated'])
         for card in new_cards_to_add:
             database.insert_card({"name": card, "needsUpdate": True})
@@ -108,11 +108,13 @@ def perform_update(database):
     # cursor = database.cards.find({"needsUpdate": True})
     # entries_in_mem = [x for x in cursor]
     # entries_in_mem = database.cards.find({})
+    scryfall_cache = {}
+
     cards_needing_update = [x for x in database.cards.find({"needsUpdate": True})]
     for card in cards_needing_update:
         print(f"Updating card {card['name']}")
         start_time = time.time()
-        card_data = get_card_object(card['name'])
+        card_data = get_card_from_scryfall(card['name'], scryfall_cache)
         if card_data is False:  # No data for card
             card_data = card
             card_data['needsUpdate'] = False

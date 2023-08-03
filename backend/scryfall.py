@@ -1,247 +1,223 @@
 """
-Accessing scryfall for card images.
+Accessing Scryfall for card images.
 """
+from typing import  Optional
 import time
 import requests
 from dateutil import parser
 from urllib.parse import quote
-from backend.utils import normalize_cardname
 from backend.card import Card
 
-cards = {}
 
-
-def get_card_object(name):
+def get_card_from_scryfall(name: str, scryfall_cache: dict) -> Optional[Card]:
     """
     Query and return card data from Scryfall.
-    """
-    card = Card()
 
-    if name in cards:
+    :param name: Card name to query
+    :param scryfall_cache: Cache of cards previously queried on Scryfall
+    :return: Card object with data from Scryfall
+    """
+    card_obj = Card()
+
+    # Obtain raw scryfall information, from cache or by query
+    if name in scryfall_cache:
         print("Using cached")
-        scryfall_card_data = cards[name]
+        scryfall_card_data = scryfall_cache[name]
     else:
         time.sleep(50 / 1000)  # Avoid overloading Scryfall API
         print("Searching")
-        card_request = requests.get(
-            f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints")
+        scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
+        card_request = requests.get(scryfall_card_url)
         if card_request.status_code != requests.codes.ok:
-            return False
+            return None
         scryfall_card_data = card_request.json()['data']
+        scryfall_cache[name] = scryfall_card_data
 
     # Filter query to only cards exactly matching name
-    scryfall_card_data = [card for card in scryfall_card_data if
-                          card["name"] == name]
-    if scryfall_card_data == []:  # Create invalid card
-        card.name = name
-        card.legal_as_commander = False
-        card.legal_in_mainboard = False
-        card.image_urls = []
-        card.time_first_printed = -1
-        card.color_identities = []
-        return card
+    scryfall_card_data = [card for card in scryfall_card_data
+                          if card["name"] == name]
+    if not scryfall_card_data:  # No matches, create empty card
+        card_obj.name = name
+        card_obj.legal_as_commander = False
+        card_obj.legal_in_mainboard = False
+        card_obj.image_urls = []
+        card_obj.time_first_printed = -1
+        card_obj.color_identities = []
+        return card_obj
 
     # Create card object
-    card.name = name
-    card.legal_as_commander = card_legal_as_commander(scryfall_card_data)
-    card.legal_in_mainboard = card_legal_in_main(scryfall_card_data)
-
-    card.image_urls = updated_choose_image(scryfall_card_data)
-    # try:
-    #     # Find standard card art
-    #     possible_cards = [card for card in scryfall_card_data if
-    #                       (not card['digital'] and card['highres_image'] and
-    #                        "etched" not in card['finishes'] and
-    #                        ("frame_effects" not in card or
-    #                         "showcase" not in card["frame_effects"]) and
-    #                        card["set"] != "sld")]
-    #     card.image_urls = choose_image(possible_cards)
-    # except Exception as e:
-    #     print(e)
-    #     # Try second most recent image
-    #     if len(scryfall_card_data) > 1:
-    #         try:
-    #             card.image_urls = choose_image(possible_cards, -2)
-    #         except Exception as e:
-    #             print(e)
-    #             possible_cards = [card for card in scryfall_card_data if
-    #                               (not card['digital'])]
-    #             card.image_urls = choose_image(possible_cards)
-
-    card.time_first_printed = parser.parse(
-        scryfall_card_data[0]['released_at']).timestamp()
-    card.color_identities = "".join(scryfall_card_data[0]['color_identity'])
-
-    return card
+    card_obj.name = name
+    card_obj.legal_as_commander = legal_as_commander(scryfall_card_data)
+    card_obj.legal_in_mainboard = legal_in_main(scryfall_card_data)
+    card_obj.image_urls = choose_image(scryfall_card_data)
+    card_released_at = scryfall_card_data[0]['released_at']
+    card_obj.time_first_printed = parser.parse(card_released_at).timestamp()
+    card_obj.color_identities = "".join(scryfall_card_data[0]['color_identity'])
+    return card_obj
 
 
-def query_scryfall(card_name):
+def choose_image(card_data: list[dict]) -> list[str]:
     """
+    Given a list of card objects from Scryfall for a single card, select the
+    best one for use in PDHREC according to a variety of factors.
 
-    :param card_name:
-    :return:
+    :param card_data: A list of card objects from Scryfall
+    :return: a list of urls for the image.
     """
-    card_name = normalize_cardname(card_name)
-    url = f"https://api.scryfall.com/cards/named?exact={card_name}"
-    r = requests.get(url)
-    return r.json()
+    card_data.sort(key=card_sort_key, reverse=False)
+    if 'image_uris' in card_data[0]:  # Single sided
+        return [card_data[0]['image_uris']['large']]
+    # Double sided
+    return [card_data[0]['card_faces'][0]['image_uris']['large'],
+            card_data[0]['card_faces'][1]['image_uris']['large']]
 
 
-def choose_image(possible_cards, image_index=-1):
+def card_sort_key(printing: dict) -> tuple:
     """
-    Accessing the card at the given index (default -1) in the list of possible 
-    cards, return the best image URL.
-    """
-    images = []
-    if ("image_uris" not in possible_cards[image_index] and
-            "card_faces" in possible_cards[image_index]):
-        for face in possible_cards[image_index]["card_faces"]:
-            images.append(face['image_uris']['large'])
-    else:
-        images.append(possible_cards[image_index]['image_uris']['large'])
-    return images
+    A custom sorting function to order the priority features for card images.
+    Priorities (high to low): not content warning, English language, not
+    digital card, high resolution, large image, has text, has black border,
+    has modern frame, not a promo, no frame effects, not a secret layer, newest.
 
-
-def card_sort_key(x) -> tuple:
-    """
-    A custom sorting function to order the priority features for card images
-
-    :param x: Scryfall printing data for a single print of a card
+    :param printing: Scryfall printing data for a single print of a card
     :return: A tuple of integers and floats, with smaller numbers
     representing preferred printings.
     """
-    # Do Not Use:
-    dont = 1 if 'content_warning' in x and x['content_warning'] else 0
-    # Image Status:
-    img_status = 0 if x['image_status'] == "highres_scan" else (1 if x['image_status'] == "lowres" else 2)
-    # # Has any image:
-    # has_images = 0 if 'image_uris' in x and len(x['image_uris']) != 0 else 1
-    # Card language:
-    lang = 0 if 'lang' in x and x['lang'] == 'en' else 1
-    # Is digital?
-    digital = 0 if not x['digital'] else 1
-    # Has large image:
-    has_large = (
-        0 if "large" in x['image_uris'] else 1) if 'image_uris' in x \
-        else (0 if "large" in x['card_faces'][0]['image_uris'] else 1)
+    content_warning = int('content_warning' in printing and printing['content_warning'])
+    language = int(not ('lang' in printing and printing['lang'] == 'en'))
+    digital = int(printing['digital'])
 
-    # After these key choices, the next top qualities are for the sake of
-    # legibility and appearance.
+    # High res > low res > Anything else
+    if printing['image_status'] == "highres_scan":
+        img_status = 0
+    elif printing['image_status'] == "lowres":
+        img_status = 1
+    else:
+        img_status = 2
 
-    # Has text?
-    textless = 0 if not x['textless'] else 1
-    # Is it a promo?
-    promo = 0 if not x['promo'] else 1
-    # Has a standard border?
-    border_color = 0 if x['border_color'] == "black" else 1
-    # Modern frame?
-    frame = ["2015", "future", "2003", "1997", "1993"].index(x['frame'])
-    # frame effects:
-    num_effects = len([y for y in x['frame_effects'] if y != "snow"]) if \
-        'frame_effects' in x else 0
-    # Release Date
-    date = -parser.parse(x['released_at']).timestamp()
-    # Is Secret Lair Drop?
-    sld = 1 if x['set'] == 'sld' else 0
+    # Size for single face cards
+    if 'image_uris' in printing:
+        has_large = int('large' not in printing['image_uris'])
+    else: # Double faced cards
+        has_large = int('large' not in printing['card_faces'][0]['image_uris'])
 
-    return (dont, lang, digital, img_status, has_large,
-            textless, border_color, frame, promo, num_effects, sld, date)
+    textless = int(printing['textless'])
+    border_color = int(printing['border_color'] != 'black')
+    frame = ["2015", "future", "2003", "1997", "1993"].index(printing['frame'])
+    promo = int(printing['promo'])
+
+    if 'frame_effects' in printing:
+        num_effects = len([effect for effect in printing['frame_effects']
+                           if effect != 'snow'])
+    else:
+        num_effects = 0
+
+    secret_lair = int(printing['set'] == 'sld')
+    date = -parser.parse(printing['released_at']).timestamp()
+
+    return (content_warning, language, digital, img_status, has_large,
+            textless, border_color, frame, promo, num_effects, secret_lair,
+            date)
 
 
-def updated_choose_image(card_data):
+def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     """
-    Given a list of card objects from scryfall for a single card, select the
-    best one for use in PDHREC according to a variety of factors.
+    Queries Scryfall for the name of all cards newly released since the most
+    recent update.
 
-    :param card_data: A list of card objects from scryfall
-    :return: a list of urls for the image.
-    """
-
-    # Only works for single sided cards so far, hopefully we don't have many
-    # double sided ones
-
-    card_data.sort(key=card_sort_key, reverse=False)
-    return [card_data[0]['image_uris']['large']] if 'image_uris' in \
-                                                    card_data[0] \
-        else [card_data[0]['card_faces'][0]['image_uris']['large'],
-              card_data[0]['card_faces'][1]['image_uris']['large']]
-
-
-def get_card_names_for_cards_needing_updates(most_recent_updated_card_time):
-    """
-    Selects all newly released cards since the last printing, and returns
-    their names.
-
-    :param most_recent_updated_card_time: a unix timestamp representing the
-    newest card's update date.
+    :param most_recent_update: a unix timestamp representing the newest
+    card's update date.
     :return: a list of card names.
     """
-    # Scratch work to get the latest sets that are not spoilers:
     sets_url = """https://api.scryfall.com/sets"""
-    r = requests.get(sets_url)
-    set_data = r.json()['data']
+    sets_request = requests.get(sets_url)
+    if sets_request.status_code != requests.codes.ok:
+        return None
+    set_data = sets_request.json()['data']
+    # Sort sets from newest to oldest
     set_data = sorted(set_data,
                       key=lambda x: -parser.parse(x['released_at']).timestamp())
 
-    # Select out the ones that are in the future:
-    start = 0
-    while start < len(set_data) - 1:
-        if parser.parse(
-                set_data[start]['released_at']).timestamp() < time.time():
+    # Find the index of the most recently released set
+    most_recent_index = 0  # Index of most recently released set
+    while most_recent_index < (len(set_data) - 1):
+        set_release = set_data[most_recent_index]['released_at']
+        # If this set was already released, break the loop
+        if parser.parse(set_release).timestamp() < time.time():
             break
-        start += 1
+        most_recent_index += 1
 
-    # Find the end based on the database
-    end = start
-    while end < len(set_data) - 1:
-        if parser.parse(set_data[end]['released_at']).timestamp() < \
-                most_recent_updated_card_time:
+    # Find the index of the most recent set during the last update
+    last_update_index = most_recent_index
+    while last_update_index < (len(set_data) - 1):
+        set_release = set_data[last_update_index]['released_at']
+        # If this set was released in the last update, break the loop
+        if parser.parse(set_release).timestamp() < most_recent_update:
             break
-        end += 1
+        last_update_index += 1
 
-    print(set_data[start:end])
+    print(f"Sets to update: {set_data[most_recent_index:last_update_index]}")
 
     # Filter out art cards:
-    set_data = [x for x in set_data[start:end] if x['set_type']
-                not in ("memorabilia", "token")]
+    set_data = [card_set
+                for card_set in set_data[most_recent_index:last_update_index]
+                if card_set['set_type'] not in ("memorabilia", "token")]
 
+    # If no sets need update, return early
     if len(set_data) == 0:
         return []
 
-    query = "(game:paper or game:mtgo)(" + " or ".join(["e:" + x['code'] for
-                                                        x in
-                                                        set_data]) + ")"
+    query = ' or '.join([f'e:{card_set["code"]}' for card_set in set_data])
+    query = f'(game:paper or game:mtgo)({query})'
+    sets_request = requests.get(f'https://api.scryfall.com/cards/search?q={query}')
+    if sets_request.status_code != requests.codes.ok:
+        return None
+    sets_request_data = sets_request.json()
 
-    r = requests.get(f"https://api.scryfall.com/cards/search?q={query}")
-    decoded = r.json()
-    data = []
-    for item in decoded['data']:
-        data.append(item)
-    while decoded['has_more']:
-        print(len(data))
-        r = requests.get(decoded['next_page'])
-        decoded = r.json()
-        for item in decoded['data']:
-            data.append(item)
+    names_needing_update = []
+    # Add first page of cards
+    for card_data in sets_request_data['data']:
+        names_needing_update.append(card_data['name'])
+    # Add subsequent pages of cards
+    while sets_request_data['has_more']:
+        sets_request = requests.get(sets_request_data['next_page'])
+        if sets_request.status_code != requests.codes.ok:
+            return None
+        sets_request_data = sets_request.json()
+        for card_data in sets_request_data['data']:
+            names_needing_update.append(card_data['name'])
 
-    return [x['name'] for x in data]
+    return names_needing_update
 
 
-def card_legal_in_main(scryfall_data) -> bool:
+def legal_in_main(scryfall_data: list[dict]) -> bool:
+    """
+    Return if a card is legal in PDH mainboard.
+
+    :param scryfall_data: Scryfall data on card, as a list of dictionaries
+        each describing one printing
+    :return: Card legality in mainboard
+    """
     # Manual name check, as scryfall behaved weirdly before
     if scryfall_data[0]['name'] in ["Mystic Remora", "Rhystic Study"]:
         return False
     return scryfall_data[0]['legalities']['paupercommander'] == "legal"
 
 
-def card_legal_as_commander(scryfall_data) -> bool:
+def legal_as_commander(scryfall_data: list[dict]) -> bool:
+    """
+    Return if a card is legal as a PDH commander or in a commander pair.
+
+    :param scryfall_data: Scryfall data on card, as a list of dictionaries
+        each describing one printing
+    :return: Card legality as commander
+    """
     try:
         if scryfall_data[0]['legalities']['paupercommander'] == "restricted":
             return True
         elif scryfall_data[0]['legalities']['paupercommander'] == "not_legal":
             return False
-        else:
-            # Check if a creature printed common at some point
+        else:  # Check if a creature printed as uncommon then downshifted
             for printing in scryfall_data:
                 if ("paper" in printing["games"] and
                         "Creature" in printing['type_line'] and
@@ -266,4 +242,4 @@ if __name__ == "__main__":
         if card_request.status_code != requests.codes.ok:
             exit(1)
         scryfall_card_data = card_request.json()['data']
-        print(updated_choose_image(scryfall_card_data))
+        print(choose_image(scryfall_card_data))
