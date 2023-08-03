@@ -10,7 +10,7 @@ from dateutil import parser
 from backend.database import MongoDatabase
 from backend.moxfield import convert_to_deck, get_deck_data, get_new_decks
 from backend.scryfall import get_card_object, get_card_names_for_cards_needing_updates
-from backend.legality import check_legality
+from backend.legality import is_legal
 
 
 def get_latest_bulk_file(directory="../scryfall_data",
@@ -131,7 +131,7 @@ def perform_update(database):
     cards_cache = {}
     for deck in database.decks.find({"needsLegalityCheck": True}):
         print(deck)
-        legal = check_legality(deck, cards_cache, database)
+        legal = is_legal(deck, cards_cache, database)
         deck['needsLegalityCheck'] = False
         # TODO: Should the database contain illegal decks?
         deck['isLegal'] = legal

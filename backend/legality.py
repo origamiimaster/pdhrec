@@ -1,60 +1,48 @@
 """
 Determine if a deck is a valid or not by applying the rules of PDH.
 """
-
+from backend.database import MongoDatabase
 from backend.utils import (partner_commanders, partner_pairs,
                            background_commanders, backgrounds)
 
 
-def card_legal_in_main(scryfall_data) -> bool:
-    # Manual name check, as scryfall behaved weirdly before
-    if scryfall_data[0]['name'] in ["Mystic Remora", "Rhystic Study"]:
-        return False
-    return scryfall_data[0]['legalities']['paupercommander'] == "legal"
-
-
-def card_legal_as_commander(scryfall_data) -> bool:
-    try:
-        if scryfall_data[0]['legalities']['paupercommander'] == "restricted":
-            return True
-        elif scryfall_data[0]['legalities']['paupercommander'] == "not_legal":
-            return False
-        else:
-            # Check if a creature printed common at some point
-            for printing in scryfall_data:
-                if ("paper" in printing["games"] and
-                        "Creature" in printing['type_line'] and
-                        printing['rarity'] == "uncommon"):
-                    return True
-            return False
-    except IndexError:
-        print(f"Card Error: {scryfall_data}")
-        return False
-
-
-def pair_legal_as_commander(cardname1: str, cardname2: str) -> bool:
+def pair_legal_as_commander(commander1: str, commander2: str) -> bool:
     """
     Provided a pair of cards both legal as commanders, return whether their
     combination is a legal commander pairing.
+
+    :param commander1: First commander
+    :param commander2: Second commander
+    :return: Whether the provided commanders can be legally paired
     """
-    return (({cardname1, cardname2} in partner_pairs) or  # Partners
-            (cardname1 in partner_commanders and
-             cardname2 in partner_commanders and
-             cardname1 != cardname2) or  # Parner with commanders
-            (cardname1 in background_commanders and
-             cardname2 in backgrounds) or  # Background commander, Background
-            (cardname2 in background_commanders and
-             cardname1 in backgrounds))  # Background, Background commander
+    return (({commander1, commander2} in partner_pairs) or  # Partners
+            (commander1 in partner_commanders and
+             commander2 in partner_commanders and
+             commander1 != commander2) or  # Partner with commanders
+            (commander1 in background_commanders and
+             commander2 in backgrounds) or  # Background commander, Background
+            (commander2 in background_commanders and
+             commander1 in backgrounds))  # Background, Background commander
 
 
-def check_legality(deck, cards_cache, database) -> bool:
+def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
     """
     Check the legality of a deck for pauper commander:
     1. Either 1 or 2 legal uncommon commanders
     2. 99 or 98 other singleton legal common cards within the commander's
         color identity
+
+    :param deck: Deck as a dictionary produced from a Deck object
+    :param cards_cache: In-memory cache of card data
+    :param database: MongoDatabase of card information
+    :return: PDH legality of the provided deck
     """
-    # Check number of commanders
+    # Verify deck size
+    if (len(deck['commanders']) + len(deck['cards'])) != 100:
+        print(f"Illegal deck size: {len(deck['commanders']) + len(deck['cards'])}")
+        return False
+
+    # Verify number of commanders
     if not (len(deck['commanders']) == 1 or len(deck['commanders']) == 2):
         print(f"Wrong number of commanders: {len(deck['commanders'])}")
         return False
@@ -81,8 +69,7 @@ def check_legality(deck, cards_cache, database) -> bool:
         print(f"Illegal Commander pair: {deck['commanders'][0]} with {deck['commanders'][1]}")
         return False
 
-    # Determine legality of other cards
-    # TODO: Does this check if there are the correct number of cards?
+    # Determine legality of mainboard cards
     for card in deck['cards']:
         if card not in cards_cache:  # Update cache if needed
             cards_cache[card] = database.get_card(card)
@@ -92,8 +79,8 @@ def check_legality(deck, cards_cache, database) -> bool:
         if not cards_cache[card]['legal_in_mainboard']:  # Illegal card
             print(f"Illegal card: {card}")
             return False
-        if not all(color in deck_color_identity  # Check color identity
-                   for color in cards_cache[card]['color_identities']):
+        card_color_identity = set(cards_cache[card]['color_identities'])
+        if not card_color_identity.issubset(deck_color_identity):
             print(f"Illegal color identities: {card}, {deck['commanders']}")
             return False
 
