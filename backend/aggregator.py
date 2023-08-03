@@ -187,21 +187,21 @@ def calculate_card_use(card_counts: dict, card_color_identities: dict,
     """
     # Calculate total number of decks which can run a card of a given
     # color identity
-    color_superset_counts = \
-        calculate_color_superset_counts(color_identity_counts)
+    color_runnable_counts = \
+        calculate_color_runnable_counts(color_identity_counts)
 
     # Calculate overall card usage rate in decks able to run card
     card_use = {}
     for card in card_counts:
         card_color_identity = card_color_identities[card]
         card_use[card] = (card_counts[card] /
-                          color_superset_counts[card_color_identity])
+                          color_runnable_counts[card_color_identity])
 
     print("Calculated card general use frequencies")
     return card_use
 
 
-def calculate_color_superset_counts(color_identity_counts: dict) -> dict:
+def calculate_color_runnable_counts(color_identity_counts: dict) -> dict:
     """
     For each color identity, determine the number of decks able to run cards
     of that color identity.
@@ -213,14 +213,14 @@ def calculate_color_superset_counts(color_identity_counts: dict) -> dict:
     :return: count of decks able to run each color identity in same format as
     color_identity_counts.
     """
-    color_superset_counts = {}
+    color_runnable_counts = {}
     for key_color_id in color_identities:
-        color_superset_counts[key_color_id] = 0
+        color_runnable_counts[key_color_id] = 0
         for deck_color_id in color_identity_counts:
             if set(key_color_id).issubset(deck_color_id):
-                color_superset_counts[key_color_id] += \
+                color_runnable_counts[key_color_id] += \
                     color_identity_counts[deck_color_id]
-    return color_superset_counts
+    return color_runnable_counts
 
 
 def calculate_card_synergy(per_commander_use: dict, card_use: dict) -> dict:
