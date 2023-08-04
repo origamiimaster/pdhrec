@@ -6,8 +6,8 @@ from backend.update import perform_update, get_latest_bulk_file
 
 if __name__ == "__main__":
     # Create a connection to the database
-    with open("server-token.json") as f:
-        connection_string = json.load(f)['connection']
+    with open("server-token.json") as server_token_file:
+        connection_string = json.load(server_token_file)['connection']
     database = MongoDatabase(connection_string)
 
     # Commit updates to the database
@@ -15,144 +15,108 @@ if __name__ == "__main__":
     perform_update(database)
 
     # Load all cards from bulk json in database
-    cards_path = get_latest_bulk_file(directory="scryfall_data")
-    with open(cards_path, "r") as f:
-        all_cards = json.load(f)
+    bulk_filepath = get_latest_bulk_file(directory="scryfall_data")
+    with open(bulk_filepath, "r") as bulk_file:
+        all_card_data = json.load(bulk_file)
 
     # Create lookup of card images by name, alongside sets of lands and DFCs
-    # image_lookup = {}
-    new_image_lookup = {}
-    for card in database.cards.aggregate([{"$match": {"$or": [{
-        "legal_in_mainboard": True}, {"legal_as_commander": True}]}},
-        {"$project": {"_id": 0, "image_urls": 1, "name": 1}}]):
-        new_image_lookup[card['name']] = card['image_urls']
+    image_lookup = {}
+    image_pipeline = [{"$match": {"$or": [{"legal_in_mainboard": True},
+                                          {"legal_as_commander": True}]}},
+                      {"$project": {"_id": 0, "image_urls": 1, "name": 1}}]
+    for card in database.cards.aggregate(image_pipeline):
+        image_lookup[card['name']] = card['image_urls']
     lands = set()
-    double_faces = set()
-    for card in all_cards:
+    double_faced = set()
+    for card in all_card_data:
         if "type_line" not in card:
             continue
         if "Land" in card['type_line']:
             lands.add(card['name'])
-        try:
-            # Skip tokens
-            if "set_type" in card and card['set_type'] == "token":
-                continue
-            # Double-faced cards
-            if "image_uris" not in card and "card_faces" in card:
-                # image_lookup[card["name"]] = \
-                #     [card["card_faces"][0]["image_uris"]["large"],
-                #      card["card_faces"][1]["image_uris"]["large"]]
-                double_faces.add(card["name"])
-            # Single-faced cards
-            else:
-                pass
-                # image_lookup[card["name"]] = card["image_uris"]["large"]
-        # TODO: More robust error handling
-        except KeyError:  # Why isn't this handled with other exceptions?
+        # Skip tokens
+        if "set_type" in card and card['set_type'] == "token":
             continue
-        except Exception as e:
-            print(e)
-            print(json.dumps(card))
-            continue
+        # Double-faced cards
+        if "image_uris" not in card and "card_faces" in card:
+            double_faced.add(card["name"])
 
     # Generate a list of the commanders / commander pairs, along with their 
     # image urls and cleaned names
-    commander_data = {tuple(deck['commanders'])
-                      for deck in
-                      database.decks.aggregate(pipeline=[{"$match": {
-                          "isLegal": True}},
-                          {"$project": {"_id": 0, "commanders": 1}}])}
+    commander_pipeline = [{"$match": {"isLegal": True}},
+                          {"$project": {"_id": 0, "commanders": 1}}]
+    commanders_list = {tuple(deck['commanders'])
+                       for deck in database.decks.aggregate(commander_pipeline)}
     # Ensure commanders are unique (sort pairs)
-    commander_data = list(set(tuple(sorted(x)) for x in commander_data))
+    commanders_list = list(set(tuple(sorted(commanders))
+                               for commanders in commanders_list))
 
     # Store all updated commander data
-    new_commander_data = []
+    commander_data = []
     # Record commander names and image URLs
-    for commanders in commander_data:
+    for commanders in commanders_list:
         urls = []
         for card in commanders:
-            new_url = database.cards.find_one({"name": card})['image_urls']
-            for url in new_url:
-                urls.append(url)
-        # print(urls)
-        new_commander_data.append({"commanders": commanders, "urls": urls})
+            urls.extend(database.cards.find_one({"name": card})['image_urls'])
+        commander_data.append({"commanders": commanders, "urls": urls})
 
     # Record all other commander statistics
     all_synergy_scores, popularity_scores, commander_counts, \
         color_popularity = get_all_scores(database)
     processed = 0  # Number of commanders processed
-    new_commander_names = []
-    for commander in new_commander_data:
+    commander_names = []
+    for commander in commander_data:
         print(f"Updating: {commander}")
         # Store commander name
-        new_commander_names.append(" ".join(commander["commanders"]))
-        # Store commander count
-        commander["count"] = commander_counts[tuple(commander['commanders'])]
-        # Parse commanderstring (for database use)
-        if (len(commander["commanders"]) == 1
-                and commander["commanders"][0] in double_faces):  # Handle DFCs
-            print(commander["commanders"][0])
-            # commander["urls"] = image_lookup[commander["commanders"][0]]
-            commander["urls"] = new_image_lookup[commander["commanders"][0]]
-            # commander["commanders"] = commander["commanders"][0].split(" // ")
-            commander['commanderstring'] = "--".join(
-                normalize_cardnames(commander['commanders']))
-        else:  # Handle single-faced and partner commanders
-            commander['commanderstring'] = "-".join(
-                sorted(normalize_cardnames(commander['commanders'])))
+        commander_names.append(" ".join(commander['commanders']))
+        # Store count of decks with commander
+        commander['count'] = commander_counts[tuple(commander['commanders'])]
 
         # Store synergy scores
-        # TODO: Convert item['commanders'] to a hashable type?
-        synergy_scores = all_synergy_scores[tuple(commander['commanders'])]
         commander['carddata'] = []
+        synergy_scores = all_synergy_scores[tuple(commander['commanders'])]
         for card in synergy_scores:
-            # if card in image_lookup:
-            #     card_image = image_lookup[card]
-            if card in new_image_lookup:
-                card_image = new_image_lookup[card]
+            if card in image_lookup:
+                card_image = image_lookup[card]
             else:
-                raise Exception(f"{card} not in image_lookup")
+                raise Exception(f'{card} not in image_lookup')
             card_info = [card, synergy_scores[card], card_image]
             commander['carddata'].append(card_info)
         # Sort cards by decreasing synergy scores
-        commander['carddata'].sort(key=lambda x: -x[1])
+        commander['carddata'].sort(key=lambda info: -info[1])
 
-        # TODO: Fix this, as a duplicate for the code at the top
+        # Parse commanders and commanderstring (for database use)
+        # Double faced commanders separated by '--'
         if (len(commander["commanders"]) == 1
-                and commander["commanders"][0] in double_faces):  # Handle DFCs
+                and commander["commanders"][0] in double_faced):  # Handle DFCs
             print(commander["commanders"][0])
-            # commander["urls"] = image_lookup[commander["commanders"][0]]
-            commander["urls"] = new_image_lookup[commander["commanders"][0]]
+            commander["urls"] = image_lookup[commander["commanders"][0]]
             commander["commanders"] = commander["commanders"][0].split(" // ")
-            commander['commanderstring'] = "--".join(normalize_cardnames(commander['commanders']))
+            commander['commanderstring'] = \
+                "--".join(normalize_cardnames(commander['commanders']))
+        else:
+            commander['commanderstring'] = \
+                "-".join(sorted(normalize_cardnames(commander['commanders'])))
 
         # Update user on processing status
         print(commander['commanderstring'])
         processed += 1
-        print(f"{processed} / {len(new_commander_data)}")
+        print(f"{processed} / {len(commander_data)}")
 
     # Save commander names to file
-    with open("frontend/commandernames.json", "w") as f:
-        json.dump(new_commander_names, f)
+    with open("frontend/commandernames.json", "w") as commandernames_file:
+        json.dump(commander_names, commandernames_file)
 
     # Sort commanders by decreasing count and save to file
-    new_commander_data.sort(key=lambda x: -x["count"])
-    with open("frontend/_data/commanders.json", "w") as f:
-        json.dump(new_commander_data, f)
+    commander_data.sort(key=lambda commander: -commander["count"])
+    with open("frontend/_data/commanders.json", "w") as commanders_file:
+        json.dump(commander_data, commanders_file)
 
     # Store color popularity (staple) information
-    new_color_popularity = []
-    for cardname in color_popularity:
-        if cardname in lands:  # Skip lands
-            continue
-        try:
-            commander = [cardname, color_popularity[cardname][0],
-                         new_image_lookup[cardname], color_popularity[
-                             cardname][1]]
-            new_color_popularity.append(commander)
-        except Exception as e:  # TODO: More robust?
-            print(e)
-            print(cardname)
+    staples = []
+    for card in color_popularity:
+        if card not in lands:  # Skip lands
+            staples.append([card, color_popularity[card][0],
+                            image_lookup[card], color_popularity[card][1]])
     # Save color popularity to file
-    with open("frontend/_data/staples.json", "w") as f:
-        json.dump(new_color_popularity, f)
+    with open("frontend/_data/staples.json", "w") as staples_file:
+        json.dump(staples, staples_file)
