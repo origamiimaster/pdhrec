@@ -168,7 +168,9 @@ def get_card_color_identities(database: MongoDatabase) -> dict:
     of color identity.
     """
     # Cache card color identities
-    color_pipeline = [{"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
+    color_pipeline = [{"$match": {"$or": [{"legal_in_mainboard": True},
+                                          {"legal_as_commander": True}]}},
+                      {"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
     return {card['name']: card['color_identities']
             for card in database.cards.aggregate(pipeline=color_pipeline)}
 
