@@ -29,7 +29,7 @@ def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     card usage with commander and overall usage:
     CARD_SYNERGY = CARD_POPULARITY_WITH_COMMANDER - CARD_POPULARITY
 
-    :param database: A database object containing all card information.
+    :param database: A Database object containing all card information.
     :return: Tuple of: synergy scores as a dictionary keyed by commander
     with value of a dictionary keyed by card with value of score; usage rates
     in the same format; counts of deck with each commander as a dictionary

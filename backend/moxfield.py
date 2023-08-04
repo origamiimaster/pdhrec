@@ -5,6 +5,8 @@ Access moxfield and query decks for inclusion in the database.
 from typing import Optional
 import requests
 from dateutil import parser
+from time import sleep
+from backend.database import MongoDatabase
 from backend.deck import Deck
 
 
@@ -19,11 +21,12 @@ def get_deck_data(deck_id: str) -> Optional[dict]:
     url = f"https://api.moxfield.com/v2/decks/all/{deck_id}"
     deck_request = requests.get(url)
     if deck_request.status_code != requests.codes.ok:
+        print(f"Request failed: Get deck data from Moxfield: {deck_id}")
         return None
     return deck_request.json()
 
 
-def get_new_decks(page: int = 1) -> list[dict]:
+def get_new_decks(page: int = 1) -> Optional[list[dict]]:
     """
     Query the given page in the moxfield list of new decks (in reverse
     chronological order). If page not given, return the first page.
@@ -33,6 +36,9 @@ def get_new_decks(page: int = 1) -> list[dict]:
     """
     url = f"""https://api.moxfield.com/v2/decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
     decks_request = requests.get(url)
+    if decks_request.status_code != requests.codes.ok:
+        print(f"Request failed: Get new decks: page {page}")
+        return None
     return decks_request.json()['data']
 
 
@@ -54,6 +60,59 @@ def convert_to_deck(moxfield_deck_data: dict) -> Deck:
     deck_last_updated = moxfield_deck_data['lastUpdatedAtUtc']
     deck_obj.last_updated = parser.parse(deck_last_updated).timestamp()
     return deck_obj
+
+
+def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
+    """
+    Add new decks on Moxfield to the database. Query Moxfield for the list of
+    all PDH decks, then iterate backwards in time over this list (updating the
+    database) until the most recent deck in the database is found.
+
+    :param database: Database object containing all deck and card information
+    :return: Status of updating decks from Moxfield
+    """
+    print("Auto updating decks to database")
+    latest_updated_deck = database.decks.find_one(sort=[("update_date", -1)])
+    if latest_updated_deck is None:  # If database starts empty
+        latest_updated_time = 1690828409.017133
+    else:
+        latest_updated_time = latest_updated_deck['update_date']
+    new_decks = get_new_decks(1)  # Page 1 of all decks
+    if new_decks is None:  # Catch request error
+        return False
+    newest_deck = new_decks[0]
+    newest_time = parser.parse(newest_deck['lastUpdatedAtUtc']).timestamp()
+
+    print("Updating decks")
+    curr_deck_time = newest_time
+    curr_page = 1  # Results are paginated
+    # Update decks in reverse chronological order until last updated deck
+    while latest_updated_time < curr_deck_time:
+        for deck in new_decks:
+            # Last updated deck found, break
+            if latest_updated_time >= curr_deck_time:
+                break
+
+            # Save the new deck to the database
+            print(f"Saving deck {deck['name']}")
+            queried_deck_data = get_deck_data(deck['publicId'])
+            if queried_deck_data is None:  # Catch request error
+                print(f"Deck skipped: {deck['name']}")
+                continue
+            deck_obj = convert_to_deck(queried_deck_data).to_dict()
+            deck_obj['needsLegalityCheck'] = True
+            database.insert_deck(deck_obj)
+
+            # Update curr_deck_time and break if older than
+            curr_deck_time = deck_obj['update_date']
+        # Wait for 1 second to respect APIs
+        sleep(1)
+        # Page fully processed so progress to next page
+        curr_page += 1
+        new_decks = get_new_decks(curr_page)
+        if new_decks is None:  # Catch request error
+            return False
+    return True
 
 
 if __name__ == "__main__":

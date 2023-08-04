@@ -1,7 +1,6 @@
 from typing import List, Iterable
 
 
-
 # Useful lists related to all pair commanders
 partner_commanders = {"Alena, Kessig Trapper",
                       "Alharu, Solemn Ritualist",
@@ -94,6 +93,7 @@ color_names = {'': 'Colorless', 'B': 'Black', 'G': 'Green', 'R': 'Red',
                'BGRU': 'Glint-Eye (No White)', 'BGRW': 'Dune-Brood (No Blue)',
                'BGUW': 'Witch-Maw (No Red)', 'BRUW': 'Yore-Tiller (No Green)',
                'GRUW': 'Ink-Treader (No Black)', 'BGRUW': '5 Color'}
+
 
 def normalize_cardnames(cards: Iterable[str]) -> List[str]:
     return list(map(normalize_cardname, cards))

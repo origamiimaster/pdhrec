@@ -1,7 +1,7 @@
 """
 Accessing Scryfall for card images.
 """
-from typing import  Optional
+from typing import Optional
 import time
 import requests
 from dateutil import parser
@@ -29,6 +29,7 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> Optional[Card]:
         scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
         card_request = requests.get(scryfall_card_url)
         if card_request.status_code != requests.codes.ok:
+            print(f"Request failed: Get card from Scryfall: {name}")
             return None
         scryfall_card_data = card_request.json()['data']
         scryfall_cache[name] = scryfall_card_data
@@ -132,6 +133,7 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     sets_url = """https://api.scryfall.com/sets"""
     sets_request = requests.get(sets_url)
     if sets_request.status_code != requests.codes.ok:
+        print(f"Request failed: Get sets to get cards needing update")
         return None
     set_data = sets_request.json()['data']
     # Sort sets from newest to oldest
@@ -171,6 +173,7 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     query = f'(game:paper or game:mtgo)({query})'
     sets_request = requests.get(f'https://api.scryfall.com/cards/search?q={query}')
     if sets_request.status_code != requests.codes.ok:
+        print("Request failed: Get cards needing update")
         return None
     sets_request_data = sets_request.json()
 
@@ -182,6 +185,7 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     while sets_request_data['has_more']:
         sets_request = requests.get(sets_request_data['next_page'])
         if sets_request.status_code != requests.codes.ok:
+            print("Request failed: Get next page of cards needing update")
             return None
         sets_request_data = sets_request.json()
         for card_data in sets_request_data['data']:
