@@ -269,7 +269,8 @@ if __name__ == "__main__":
     with open("../server-token.json") as f:
         connection_string = json.load(f)['connection']
     print("Building database connection")
-    database = MongoDatabase(connection_string)
+    test_database = MongoDatabase(connection_string)
 
     # Calculate statistics
-    synergy, popularity, counts, color_popularity = get_all_scores(database)
+    synergy, popularity, counts, color_popularity = \
+        get_all_scores(test_database)

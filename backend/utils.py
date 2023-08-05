@@ -1,4 +1,5 @@
 from typing import List, Iterable
+from dateutil.parser import parse
 
 
 # Useful lists related to all pair commanders
@@ -96,9 +97,32 @@ color_names = {'': 'Colorless', 'B': 'Black', 'G': 'Green', 'R': 'Red',
 
 
 def normalize_cardnames(cards: Iterable[str]) -> List[str]:
+    """
+    Normalize a list of cardnames using normalize_cardname.
+
+    :param cards: List of cardnames
+    :return: List of normalized cardnames
+    """
     return list(map(normalize_cardname, cards))
 
 
-def normalize_cardname(cardname: str, sep="-"):
+def normalize_cardname(cardname: str, sep: str = "-") -> str:
+    """
+    Normalize a cardname by converting to lowercase, replacing spaces with
+    the provided separator, then removing all characters which are not
+    alphanumberic or that separator.
+
+    :param cardname: Cardname to normalize
+    :param sep: Separator string to replace period
+    :return: Normalized cardname
+    """
     return ''.join(char for char in cardname.lower().replace(' ', sep) 
                    if char.isalnum() or char == sep)
+
+
+def posix_time(time: str) -> float:
+    """
+    :param: Time as string
+    :return: Time in POSIX format
+    """
+    return parse(time).timestamp()

@@ -1,5 +1,5 @@
 """
-Database is a Atlas MongoDB database, intended to be used to periodically
+Database is an Atlas MongoDB database, intended to be used to periodically
 generate a static website, rather than for immediate use.
 """
 from time import time
@@ -48,11 +48,12 @@ class MongoDatabase:
         :param card_data: Card to insert, as a dictionary from a Card object
         """
         assert "name" in card_data
-        if not card_data["needsUpdate"]:
-            card_data['updated'] = time()
-        self.cards.update_one(filter={"name": card_data['name']},
-                              update={"$set": card_data}, upsert=True)
-        self.cards_cache.append(card_data["name"])
+        if card_data['name'] not in self.cards_cache:  # Update if not cached.
+            if not card_data["needsUpdate"]:
+                card_data['updated'] = time()
+            self.cards.update_one(filter={"name": card_data['name']},
+                                  update={"$set": card_data}, upsert=True)
+            self.cards_cache.append(card_data["name"])
 
     def get_card(self, card: str) -> dict:
         """
@@ -67,6 +68,5 @@ class MongoDatabase:
 if __name__ == "__main__":
     print("Starting")
     with open("../server-token.json") as server_token_file:
-        connection_string = json.load(server_token_file)['connection']
-    database = MongoDatabase(connection_string)
-
+        test_connection_string = json.load(server_token_file)['connection']
+    test_database = MongoDatabase(test_connection_string)

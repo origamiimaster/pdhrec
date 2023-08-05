@@ -75,26 +75,24 @@ def perform_update(database: MongoDatabase) -> None:
     # Step 3: Update cards in need of an update
     # Then have the database update any cards in need of an update:
     scryfall_cache = {}
+    # Save all names to close cursor
+    cards_needing_update = []
     for card in database.cards.find({"needsUpdate": True}):
-        print(f"Updating card {card['name']}")
+        cards_needing_update.append(card['name'])
+    for card in cards_needing_update:
+        print(f"Updating card {card}")
         start_time = time.time()
-        card_data = get_card_from_scryfall(card['name'], scryfall_cache)
-        if card_data is None:  # No data for card
-            print(f"Error in Scryfall card data: {card_data}")
-            card_data = card
-            card_data['needsUpdate'] = False
-            card_data['legal_in_mainboard'] = False
-            card_data['legal_as_commander'] = False
-            card_data['error'] = True
-        else:
-            card_data = card_data.to_dict()
-
+        card_data = get_card_from_scryfall(card, scryfall_cache)
         database.insert_card(card_data)
         print(f"Processing time: {time.time() - start_time}")
 
     # Step 4: Check each deck for illegal cards
     cards_cache = {}
+    # Save all decks to close cursor
+    decks_needing_check = []
     for deck in database.decks.find({"needsLegalityCheck": True}):
+        decks_needing_check.append(deck)
+    for deck in decks_needing_check:
         print(deck)
         legal = is_legal(deck, cards_cache, database)
         deck['needsLegalityCheck'] = False
@@ -108,7 +106,4 @@ def perform_update(database: MongoDatabase) -> None:
 if __name__ == "__main__":
     with open("../server-token.json") as server_token_file:
         connection_string = json.load(server_token_file)['connection']
-    database = MongoDatabase(connection_string)
-    # Begin an auto update?
-    # get_latest_bulk_file(database)
-    # perform_update(database)
+    test_database = MongoDatabase(connection_string)

@@ -4,10 +4,9 @@ Access moxfield and query decks for inclusion in the database.
 
 from typing import Optional
 import requests
-from dateutil import parser
 from time import sleep
 from backend.database import MongoDatabase
-from backend.deck import Deck
+from backend.utils import posix_time
 
 
 def get_deck_data(deck_id: str) -> Optional[dict]:
@@ -42,24 +41,23 @@ def get_new_decks(page: int = 1) -> Optional[list[dict]]:
     return decks_request.json()['data']
 
 
-def convert_to_deck(moxfield_deck_data: dict) -> Deck:
+def convert_for_database(moxfield_deck_data: dict) -> dict:
     """
     Convert the Moxfield deck dictionary format (eg from get_deck_data)
-    to a Deck object.
+    to the format for database insertion
 
     :param moxfield_deck_data: Moxfield deck data, as a dictionary
-    :return: Deck object with the same information
+    :return: Dictionary with same information in database format
     """
-    deck_obj = Deck()
-    for commander_name in moxfield_deck_data['commanders']:
-        deck_obj.commanders.append(commander_name)
+    mainboard = []
     for card_name in moxfield_deck_data['mainboard']:
         for _ in range(moxfield_deck_data['mainboard'][card_name]['quantity']):
-            deck_obj.main_board.append(card_name)
-    deck_obj.id = moxfield_deck_data['publicId']
-    deck_last_updated = moxfield_deck_data['lastUpdatedAtUtc']
-    deck_obj.last_updated = parser.parse(deck_last_updated).timestamp()
-    return deck_obj
+            mainboard.append(card_name)
+    commanders = [commander_name for commander_name in moxfield_deck_data['commanders']]
+    return {'_id': moxfield_deck_data['publicId'],
+            'update_date': posix_time(moxfield_deck_data['lastUpdatedAtUtc']),
+            'commanders': commanders,
+            'cards': mainboard}
 
 
 def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
@@ -81,7 +79,7 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
     if new_decks is None:  # Catch request error
         return False
     newest_deck = new_decks[0]
-    newest_time = parser.parse(newest_deck['lastUpdatedAtUtc']).timestamp()
+    newest_time = posix_time(newest_deck['lastUpdatedAtUtc'])
 
     print("Updating decks")
     curr_deck_time = newest_time
@@ -99,7 +97,7 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
             if queried_deck_data is None:  # Catch request error
                 print(f"Deck skipped: {deck['name']}")
                 continue
-            deck_obj = convert_to_deck(queried_deck_data).to_dict()
+            deck_obj = convert_for_database(queried_deck_data)
             deck_obj['needsLegalityCheck'] = True
             database.insert_deck(deck_obj)
 
@@ -116,9 +114,5 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
 
 
 if __name__ == "__main__":
-    deck = get_deck_data("LXiuz3D1DkO8m4mxBKVNGg")
-    parsed = convert_to_deck(deck)
-    # new_decks = get_new_decks()
-    # for deck in new_decks:
-    #     db.update_deck(deck)
-    #     time.sleep(1)
+    test_deck = get_deck_data("LXiuz3D1DkO8m4mxBKVNGg")
+    parsed = convert_for_database(test_deck)
