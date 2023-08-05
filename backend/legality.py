@@ -56,9 +56,13 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
             print(f"Missing commander from database: {commander}")
             database.insert_card({"name": commander, "needsUpdate": True})
             return False
-        if not cards_cache[commander]['legal_as_commander']:  # Illegal commander
-            print(f"Illegal Commander: {commander}")
-            return False
+        try:
+            if not cards_cache[commander]['legal_as_commander']:  # Illegal commander
+                print(f"Illegal Commander: {commander}")
+                return False
+        except:
+            print(cards_cache[commander])
+            raise Exception()
         # Update deck color identities with commander's color identity
         deck_color_identity.update(set(cards_cache[commander]['color_identities']))
 

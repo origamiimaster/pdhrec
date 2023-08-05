@@ -72,7 +72,7 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
     print("Auto updating decks to database")
     latest_updated_deck = database.decks.find_one(sort=[("update_date", -1)])
     if latest_updated_deck is None:  # If database starts empty
-        latest_updated_time = 1690828409.017133
+        latest_updated_time = 1691118970.0622232
     else:
         latest_updated_time = latest_updated_deck['update_date']
     new_decks = get_new_decks(1)  # Page 1 of all decks

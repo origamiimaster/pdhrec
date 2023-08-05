@@ -15,7 +15,7 @@ class MongoDatabase:
     database: PDHREC database in MongoClient
     cards: cards table in PDHREC database
     decks: decks table in PDHREC database
-    cards_cache: In-memory cache of card names in database
+    cards_cache: In-memory cache of named of updated cards in database
     """
 
     def __init__(self, connection_string: str):
@@ -23,7 +23,8 @@ class MongoDatabase:
         self.database = self.client["pdhrec"]
         self.cards = self.database["cards"]
         self.decks = self.database["decks"]
-        cache_pipeline = [{"$project": {"_id": 0, "name": 1}}]
+        cache_pipeline = [{'$match': {'needsUpdate': False}},
+                          {"$project": {"_id": 0, "name": 1}}]
         self.cards_cache = [card['name'] for card in
                             self.cards.aggregate(pipeline=cache_pipeline)]
 
@@ -49,11 +50,11 @@ class MongoDatabase:
         """
         assert "name" in card_data
         if card_data['name'] not in self.cards_cache:  # Update if not cached.
-            if not card_data["needsUpdate"]:
-                card_data['updated'] = time()
             self.cards.update_one(filter={"name": card_data['name']},
                                   update={"$set": card_data}, upsert=True)
-            self.cards_cache.append(card_data["name"])
+            if not card_data["needsUpdate"]:
+                card_data['updated'] = time()
+                self.cards_cache.append(card_data["name"])
 
     def get_card(self, card: str) -> dict:
         """
