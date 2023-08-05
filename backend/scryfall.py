@@ -230,7 +230,6 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 
 if __name__ == "__main__":
-    # print(len(get_card_names_for_cards_needing_updates(1687492800)))
     # Test if the image function is working:
     test_cards = ["Binding Geist // Spectral Binding", "Composite Golem",
                   "Snow-Covered Forest", "Blessed Hippogriff // Tyr's Blessing"]
