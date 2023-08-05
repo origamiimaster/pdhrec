@@ -36,7 +36,7 @@ def get_new_decks(page: int = 1) -> Optional[list[dict]]:
     url = f"""https://api.moxfield.com/v2/decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
     decks_request = requests.get(url)
     if decks_request.status_code != requests.codes.ok:
-        print(f"Request failed: Get new decks: page {page}")
+        print(f'Request failed: Get new decks: page {page}')
         return None
     return decks_request.json()['data']
 
@@ -69,8 +69,8 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
     :param database: Database object containing all deck and card information
     :return: Status of updating decks from Moxfield
     """
-    print("Auto updating decks to database")
-    latest_updated_deck = database.decks.find_one(sort=[("update_date", -1)])
+    print('Auto updating decks to database')
+    latest_updated_deck = database.decks.find_one(sort=[('update_date', -1)])
     if latest_updated_deck is None:  # If database starts empty
         latest_updated_time = 1691118970.0622232
     else:
@@ -81,7 +81,7 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
     newest_deck = new_decks[0]
     newest_time = posix_time(newest_deck['lastUpdatedAtUtc'])
 
-    print("Updating decks")
+    print('Updating decks')
     curr_deck_time = newest_time
     curr_page = 1  # Results are paginated
     # Update decks in reverse chronological order until last updated deck
@@ -113,6 +113,6 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
     return True
 
 
-if __name__ == "__main__":
-    test_deck = get_deck_data("LXiuz3D1DkO8m4mxBKVNGg")
+if __name__ == '__main__':
+    test_deck = get_deck_data('LXiuz3D1DkO8m4mxBKVNGg')
     parsed = convert_for_database(test_deck)

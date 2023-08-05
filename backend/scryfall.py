@@ -18,15 +18,15 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
     """
     # Obtain raw scryfall information, from cache or by query
     if name in scryfall_cache:
-        print("Using cached")
+        print('Using cached')
         scryfall_card_data = scryfall_cache[name]
     else:
         time.sleep(50 / 1000)  # Avoid overloading Scryfall API
-        print("Searching")
+        print('Searching')
         scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
         card_request = requests.get(scryfall_card_url)
         if card_request.status_code != requests.codes.ok:
-            print(f"Request failed: Get card from Scryfall: {name}")
+            print(f'Request failed: Get card from Scryfall: {name}')
             return {'name': name, 'image_urls': [], 'released': -1,
                     'color_identities': '', 'legal_in_mainboard': False,
                     'legal_as_commander': False, 'needsUpdate': False,
@@ -36,7 +36,7 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
 
     # Filter query to only cards exactly matching name
     scryfall_card_data = [card for card in scryfall_card_data
-                          if card["name"] == name]
+                          if card['name'] == name]
 
     if not scryfall_card_data:  # No matches, create empty card
         return {'name': name, 'image_urls': [], 'released': -1,
@@ -85,9 +85,9 @@ def card_sort_key(printing: dict) -> tuple:
     digital = int(printing['digital'])
 
     # High res > low res > Anything else
-    if printing['image_status'] == "highres_scan":
+    if printing['image_status'] == 'highres_scan':
         img_status = 0
-    elif printing['image_status'] == "lowres":
+    elif printing['image_status'] == 'lowres':
         img_status = 1
     else:
         img_status = 2
@@ -100,7 +100,7 @@ def card_sort_key(printing: dict) -> tuple:
 
     textless = int(printing['textless'])
     border_color = int(printing['border_color'] != 'black')
-    frame = ["2015", "future", "2003", "1997", "1993"].index(printing['frame'])
+    frame = ['2015', 'future', '2003', '1997', '1993'].index(printing['frame'])
     promo = int(printing['promo'])
 
     if 'frame_effects' in printing:
@@ -129,7 +129,7 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     sets_url = """https://api.scryfall.com/sets"""
     sets_request = requests.get(sets_url)
     if sets_request.status_code != requests.codes.ok:
-        print(f"Request failed: Get sets to get cards needing update")
+        print('Request failed: Get sets to get cards needing update')
         return None
     set_data = sets_request.json()['data']
     # Sort sets from newest to oldest
@@ -154,22 +154,22 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
             break
         last_update_index += 1
 
-    print(f"Sets to update: {set_data[most_recent_index:last_update_index]}")
+    print(f'Sets to update: {set_data[most_recent_index:last_update_index]}')
 
     # Filter out art cards:
     set_data = [card_set
                 for card_set in set_data[most_recent_index:last_update_index]
-                if card_set['set_type'] not in ("memorabilia", "token")]
+                if card_set['set_type'] not in ('memorabilia', 'token')]
 
     # If no sets need update, return early
     if len(set_data) == 0:
         return []
 
-    query = ' or '.join([f'e:{card_set["code"]}' for card_set in set_data])
+    query = ' or '.join([f"e:{card_set['code']}" for card_set in set_data])
     query = f'(game:paper or game:mtgo)({query})'
     sets_request = requests.get(f'https://api.scryfall.com/cards/search?q={query}')
     if sets_request.status_code != requests.codes.ok:
-        print("Request failed: Get cards needing update")
+        print('Request failed: Get cards needing update')
         return None
     sets_request_data = sets_request.json()
 
@@ -181,7 +181,7 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
     while sets_request_data['has_more']:
         sets_request = requests.get(sets_request_data['next_page'])
         if sets_request.status_code != requests.codes.ok:
-            print("Request failed: Get next page of cards needing update")
+            print('Request failed: Get next page of cards needing update')
             return None
         sets_request_data = sets_request.json()
         for card_data in sets_request_data['data']:
@@ -199,9 +199,9 @@ def legal_in_main(scryfall_data: list[dict]) -> bool:
     :return: Card legality in mainboard
     """
     # Manual name check, as scryfall behaved weirdly before
-    if scryfall_data[0]['name'] in ["Mystic Remora", "Rhystic Study"]:
+    if scryfall_data[0]['name'] in ['Mystic Remora', 'Rhystic Study']:
         return False
-    return scryfall_data[0]['legalities']['paupercommander'] == "legal"
+    return scryfall_data[0]['legalities']['paupercommander'] == 'legal'
 
 
 def legal_as_commander(scryfall_data: list[dict]) -> bool:
@@ -213,26 +213,26 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
     :return: Card legality as commander
     """
     try:
-        if scryfall_data[0]['legalities']['paupercommander'] == "restricted":
+        if scryfall_data[0]['legalities']['paupercommander'] == 'restricted':
             return True
-        elif scryfall_data[0]['legalities']['paupercommander'] == "not_legal":
+        elif scryfall_data[0]['legalities']['paupercommander'] == 'not_legal':
             return False
         else:  # Check if a creature printed as uncommon then downshifted
             for printing in scryfall_data:
-                if ("paper" in printing["games"] and
-                        "Creature" in printing['type_line'] and
-                        printing['rarity'] == "uncommon"):
+                if ('paper' in printing['games'] and
+                        'Creature' in printing['type_line'] and
+                        printing['rarity'] == 'uncommon'):
                     return True
             return False
     except IndexError:
-        print(f"Card Error: {scryfall_data}")
+        print(f'Card Error: {scryfall_data}')
         return False
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ["Binding Geist // Spectral Binding", "Composite Golem",
-                  "Snow-Covered Forest", "Blessed Hippogriff // Tyr's Blessing"]
+    test_cards = ['Binding Geist // Spectral Binding', 'Composite Golem',
+                  'Snow-Covered Forest', "Blessed Hippogriff // Tyr's Blessing"]
     for test_card in test_cards:
         time.sleep(100 / 1000)
         test_card_request = requests.get(

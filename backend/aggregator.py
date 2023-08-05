@@ -69,7 +69,7 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     """
     # TODO: Move operations out of memory to take advantage of the database.
     # Initialize statistics to aggregate
-    print("Database initialized")
+    print('Database initialized')
     # Create card and color identity caches
     cards_cached = {}  # Cache card information
     commander_color_identities = {}  # Cache of commander color identities
@@ -81,11 +81,11 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     commander_card_counts = {}  # Commander: {Card: Count of Decks}
 
     # Initial aggregation of deck counts by color
-    aggregate_pipeline = [{"$match": {"isLegal": True}},
-                          {"$sort": SON([("update_date", -1)])}]
+    aggregate_pipeline = [{'$match': {'isLegal': True}},
+                          {'$sort': SON([('update_date', -1)])}]
     for deck in database.decks.aggregate(pipeline=aggregate_pipeline):
         # Obtain deck ID and commanders
-        deck_id = deck["_id"]
+        deck_id = deck['_id']
         commanders = tuple(sorted(deck['commanders']))
 
         # Obtain deck color identity (as commanders' color identity)
@@ -96,7 +96,7 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
                 if commander not in cards_cached:  # Load from database then cache
                     cards_cached[commander] = database.cards.find_one({"name": commander})
                 if cards_cached[commander] is None:
-                    print(f"Exception: card not in database: {commander}, {deck_id}")
+                    print(f'Exception: card not in database: {commander}, {deck_id}')
                     exit(1)
                 commander_color_identity = set(cards_cached[commander]['color_identities'])
                 deck_color_identities.update(commander_color_identity)
@@ -128,7 +128,7 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
             card_counts[card] += 1
 
     # Update user on progress
-    print("Aggregated count data")
+    print('Aggregated count data')
     return (color_identity_counts, commander_counts, card_counts,
             commander_card_counts)
 
@@ -154,7 +154,7 @@ def calculate_card_use_per_commander(commander_card_counts: dict,
             card_use_per_commander[commander][card] = \
                 commander_card_counts[commander][card] / commander_counts[commander]
 
-    print("Calculated card per commander use frequencies")
+    print('Calculated card per commander use frequencies')
     return card_use_per_commander
 
 
@@ -168,9 +168,9 @@ def get_card_color_identities(database: MongoDatabase) -> dict:
     of color identity.
     """
     # Cache card color identities
-    color_pipeline = [{"$match": {"$or": [{"legal_in_mainboard": True},
-                                          {"legal_as_commander": True}]}},
-                      {"$project": {"_id": 0, "name": 1, "color_identities": 1}}]
+    color_pipeline = [{'$match': {'$or': [{'legal_in_mainboard': True},
+                                          {'legal_as_commander': True}]}},
+                      {'$project': {'_id': 0, 'name': 1, 'color_identities': 1}}]
     return {card['name']: card['color_identities']
             for card in database.cards.aggregate(pipeline=color_pipeline)}
 
@@ -199,7 +199,7 @@ def calculate_card_use(card_counts: dict, card_color_identities: dict,
         card_use[card] = (card_counts[card] /
                           color_runnable_counts[card_color_identity])
 
-    print("Calculated card general use frequencies")
+    print('Calculated card general use frequencies')
     return card_use
 
 
@@ -263,12 +263,12 @@ def sort_cards_by_use(card_use: dict, card_color_identities: dict) -> dict:
             for card in sorted_card_use}
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # Test aggregator function, not storing the produced results
     # Connect to database
-    with open("../server-token.json") as f:
+    with open('../server-token.json') as f:
         connection_string = json.load(f)['connection']
-    print("Building database connection")
+    print('Building database connection')
     test_database = MongoDatabase(connection_string)
 
     # Calculate statistics

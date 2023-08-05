@@ -53,12 +53,12 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
         if commander not in cards_cache:  # Update cache if needed
             cards_cache[commander] = database.get_card(commander)
         if cards_cache[commander] is None:  # Commander missing from database
-            print(f"Missing commander from database: {commander}")
-            database.insert_card({"name": commander, "needsUpdate": True})
+            print(f'Missing commander from database: {commander}')
+            database.insert_card({'name': commander, 'needsUpdate': True})
             return False
         try:
             if not cards_cache[commander]['legal_as_commander']:  # Illegal commander
-                print(f"Illegal Commander: {commander}")
+                print(f'Illegal Commander: {commander}')
                 return False
         except:
             print(cards_cache[commander])
@@ -78,10 +78,10 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
         if card not in cards_cache:  # Update cache if needed
             cards_cache[card] = database.get_card(card)
         if cards_cache[card] is None:  # Card missing from database
-            print(f"Missing card from database {card}")
+            print(f'Missing card from database {card}')
             return False
         if not cards_cache[card]['legal_in_mainboard']:  # Illegal card
-            print(f"Illegal card: {card}")
+            print(f'Illegal card: {card}')
             return False
         card_color_identity = set(cards_cache[card]['color_identities'])
         if not card_color_identity.issubset(deck_color_identity):
