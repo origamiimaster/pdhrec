@@ -1,3 +1,7 @@
+"""
+A set of utilities used throughout the codebase.
+"""
+
 from typing import List, Iterable
 from dateutil.parser import parse
 

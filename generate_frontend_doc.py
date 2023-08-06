@@ -1,3 +1,7 @@
+"""
+Generates files to build the frontend.
+"""
+
 import json
 from backend.aggregator import get_all_scores
 from backend.database import MongoDatabase
