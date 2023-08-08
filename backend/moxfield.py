@@ -169,42 +169,52 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
         latest_updated_time = 1691118970.0622232
     else:
         latest_updated_time = latest_updated_deck['update_date']
-    new_decks = get_new_decks(1)  # Page 1 of all decks
-    if new_decks is None:  # Catch request error
-        return False
-    newest_deck = new_decks[0]
-    newest_time = posix_time(newest_deck['lastUpdatedAtUtc'])
 
-    print('Updating decks')
-    curr_deck_time = newest_time
-    curr_page = 1  # Results are paginated
-    # Update decks in reverse chronological order until last updated deck
-    while latest_updated_time < curr_deck_time:
-        for deck in new_decks:
-            # Last updated deck found, break
-            if latest_updated_time >= curr_deck_time:
-                break
+    decks_to_update = MoxfieldDeckSource().get_new_decks(latest_updated_time)
 
-            # Save the new deck to the database
-            print(f"Saving deck {deck['name']}")
-            queried_deck_data = get_deck_data(deck['publicId'])
-            if queried_deck_data is None:  # Catch request error
-                print(f"Deck skipped: {deck['name']}")
-                continue
-            deck_obj = convert_for_database(queried_deck_data)
-            deck_obj['needsLegalityCheck'] = True
-            database.insert_deck(deck_obj)
+    for deck in decks_to_update:
+        print(f"Inserting {deck['_id']}")
+        deck['needsLegalityCheck'] = True
+        database.insert_deck(deck)
 
-            # Update curr_deck_time and break if older than
-            curr_deck_time = deck_obj['update_date']
-        # Wait for 1 second to respect APIs
-        sleep(1)
-        # Page fully processed so progress to next page
-        curr_page += 1
-        new_decks = get_new_decks(curr_page)
-        if new_decks is None:  # Catch request error
-            return False
     return True
+
+    # new_decks = get_new_decks(1)  # Page 1 of all decks
+    # if new_decks is None:  # Catch request error
+    #     return False
+    # newest_deck = new_decks[0]
+    # newest_time = posix_time(newest_deck['lastUpdatedAtUtc'])
+    #
+    # print('Updating decks')
+    # curr_deck_time = newest_time
+    # curr_page = 1  # Results are paginated
+    # # Update decks in reverse chronological order until last updated deck
+    # while latest_updated_time < curr_deck_time:
+    #     for deck in new_decks:
+    #         # Last updated deck found, break
+    #         if latest_updated_time >= curr_deck_time:
+    #             break
+    #
+    #         # Save the new deck to the database
+    #         print(f"Saving deck {deck['name']}")
+    #         queried_deck_data = get_deck_data(deck['publicId'])
+    #         if queried_deck_data is None:  # Catch request error
+    #             print(f"Deck skipped: {deck['name']}")
+    #             continue
+    #         deck_obj = convert_for_database(queried_deck_data)
+    #         deck_obj['needsLegalityCheck'] = True
+    #         database.insert_deck(deck_obj)
+    #
+    #         # Update curr_deck_time and break if older than
+    #         curr_deck_time = deck_obj['update_date']
+    #     # Wait for 1 second to respect APIs
+    #     sleep(1)
+    #     # Page fully processed so progress to next page
+    #     curr_page += 1
+    #     new_decks = get_new_decks(curr_page)
+    #     if new_decks is None:  # Catch request error
+    #         return False
+    # return True
 
 
 if __name__ == '__main__':
