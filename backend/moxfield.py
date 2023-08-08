@@ -4,7 +4,7 @@ Access moxfield and query decks for inclusion in the database.
 
 from typing import Optional
 import requests
-from time import sleep
+from time import sleep, time
 from backend.database import MongoDatabase
 from backend.utils import posix_time
 from backend.decksource import DeckSource
@@ -64,8 +64,8 @@ class MoxfieldDeckSource(DeckSource):
         if paged_decks is None:
             raise ValueError
 
-        while (min([posix_time(x['lastUpdatedAtUtc']) for x in paged_decks]) >
-               newest_deck_time):
+        while all([posix_time(x['lastUpdatedAtUtc']) > newest_deck_time for x
+                   in paged_decks]):
             for deck in paged_decks:
                 collected_deck_ids.append(deck['publicId'])
 
@@ -76,7 +76,7 @@ class MoxfieldDeckSource(DeckSource):
             sleep(0.5)
 
         for deck in paged_decks:
-            if deck['lastUpdatedAtUtc'] > newest_deck_time:
+            if posix_time(deck['lastUpdatedAtUtc']) <= newest_deck_time:
                 break
             collected_deck_ids.append(deck['publicId'])
 
@@ -210,3 +210,8 @@ def add_moxfield_decks_to_database(database: MongoDatabase) -> bool:
 if __name__ == '__main__':
     test_deck = get_deck_data('LXiuz3D1DkO8m4mxBKVNGg')
     parsed = convert_for_database(test_deck)
+    source = MoxfieldDeckSource()
+    print(source.get_deck('LXiuz3D1DkO8m4mxBKVNGg') == parsed)
+    decks = source.get_new_decks(1691440000)
+    print(len(decks))
+    assert all([x['update_date'] > 1691440000 for x in decks])
