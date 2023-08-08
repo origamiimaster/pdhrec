@@ -56,7 +56,34 @@ class MoxfieldDeckSource(DeckSource):
             # There is no limit to the search, not yet supported?
             # Use a fixed stop time instead:
             newest_deck_time = 1691118970
-            
+
+        collected_deck_ids = []
+
+        index = 1
+        paged_decks = self.get_new_decks_paginated(index)
+        if paged_decks is None:
+            raise ValueError
+
+        while (min([posix_time(x['lastUpdatedAtUtc']) for x in paged_decks]) >
+               newest_deck_time):
+            for deck in paged_decks:
+                collected_deck_ids.append(deck['publicId'])
+
+            index += 1
+            paged_decks = self.get_new_decks_paginated(index)
+            if paged_decks is None:
+                raise ValueError
+
+        for deck in paged_decks:
+            if deck['lastUpdatedAtUtc'] > newest_deck_time:
+                break
+            collected_deck_ids.append(deck['publicId'])
+
+        collected_decks = []
+        for deck_id in collected_deck_ids:
+            collected_decks.append(self.get_deck(deck_id))
+
+        return collected_decks
 
     def get_new_decks_paginated(self, page: int = 1) -> Optional[list[dict]]:
         """
@@ -66,7 +93,7 @@ class MoxfieldDeckSource(DeckSource):
         :param page: Page of the list of new decks to return
         :return: metadata on most recent decks, as list of dictionaries
         """
-        url = f"""https://api.moxfield.com/v2/decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
+        url = f"""{self.api_url}decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
         decks_request = requests.get(url)
         if decks_request.status_code != requests.codes.ok:
             print(f'Request failed: Get new decks: page {page}')
