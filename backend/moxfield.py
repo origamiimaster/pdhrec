@@ -73,6 +73,7 @@ class MoxfieldDeckSource(DeckSource):
             paged_decks = self.get_new_decks_paginated(index)
             if paged_decks is None:
                 raise ValueError
+            sleep(0.5)
 
         for deck in paged_decks:
             if deck['lastUpdatedAtUtc'] > newest_deck_time:
