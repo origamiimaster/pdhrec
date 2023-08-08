@@ -7,6 +7,71 @@ import requests
 from time import sleep
 from backend.database import MongoDatabase
 from backend.utils import posix_time
+from backend.decksource import DeckSource
+
+
+class MoxfieldDeckSource(DeckSource):
+    def __init__(self) -> None:
+        """
+        Instantiates a moxfield deck source client.
+        """
+        super().__init__()
+        self.api_url = "https://api.moxfield.com/v2/"
+
+    def get_deck(self, identifier) -> Optional[dict]:
+        # Send a get request to the moxfield decks API.
+        request = requests.get(self.api_url + f"decks/all/{identifier}")
+        # Check if the API responsed successfully
+        if request.status_code != requests.codes.ok:
+            print(f"Request failed: Get deck from Moxfield with identifier "
+                  f"{identifier}")
+            return None
+        # Convert the deck data to our database format:
+        deck_data = request.json()
+        formatted_deck_data = self.convert_to_standard_format(deck_data)
+        # Return the deck data.
+        return formatted_deck_data
+
+    def convert_to_standard_format(self, deck_data: dict) -> dict:
+        """
+        Convert the Moxfield deck dictionary format (eg from get_deck_data)
+        to the format for database insertion
+
+        :param deck_data: Moxfield deck data, as a dictionary
+        :return: Dictionary with same information in database format
+        """
+        mainboard = []
+        for card_name in deck_data['mainboard']:
+            for _ in range(deck_data['mainboard'][card_name]['quantity']):
+                mainboard.append(card_name)
+        commanders = [commander_name for commander_name in
+                      deck_data['commanders']]
+        return {'_id': deck_data['publicId'],
+                'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
+                'commanders': commanders,
+                'cards': mainboard}
+
+    def get_new_decks(self, newest_deck_time: float = None) -> list:
+        if newest_deck_time is None:
+            # There is no limit to the search, not yet supported?
+            # Use a fixed stop time instead:
+            newest_deck_time = 1691118970
+            
+
+    def get_new_decks_paginated(self, page: int = 1) -> Optional[list[dict]]:
+        """
+        Query the given page in the moxfield list of new decks (in reverse
+        chronological order). If page not given, return the first page.
+
+        :param page: Page of the list of new decks to return
+        :return: metadata on most recent decks, as list of dictionaries
+        """
+        url = f"""https://api.moxfield.com/v2/decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
+        decks_request = requests.get(url)
+        if decks_request.status_code != requests.codes.ok:
+            print(f'Request failed: Get new decks: page {page}')
+            return None
+        return decks_request.json()['data']
 
 
 def get_deck_data(deck_id: str) -> Optional[dict]:
@@ -53,7 +118,8 @@ def convert_for_database(moxfield_deck_data: dict) -> dict:
     for card_name in moxfield_deck_data['mainboard']:
         for _ in range(moxfield_deck_data['mainboard'][card_name]['quantity']):
             mainboard.append(card_name)
-    commanders = [commander_name for commander_name in moxfield_deck_data['commanders']]
+    commanders = [commander_name for commander_name in
+                  moxfield_deck_data['commanders']]
     return {'_id': moxfield_deck_data['publicId'],
             'update_date': posix_time(moxfield_deck_data['lastUpdatedAtUtc']),
             'commanders': commanders,

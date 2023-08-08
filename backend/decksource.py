@@ -21,7 +21,7 @@ class DeckSource:
         """
         pass
 
-    def get_new_decks(self, newest_deck_time: object = None) -> list:
+    def get_new_decks(self, newest_deck_time: float = None) -> list:
         """
         Returns a set of new decks from the source that are newer than
         parameter newest_deck_time.
