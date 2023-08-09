@@ -1,13 +1,14 @@
 """
 Periodically update the deck data.
 """
-from typing import Optional
+from typing import Optional, List
 import json
 import os
 import time
 import requests
 from backend.database import MongoDatabase
-from backend.moxfield import add_moxfield_decks_to_database
+from backend.decksource import DeckSource
+from backend.moxfield import MoxfieldDeckSource
 from backend.scryfall import get_card_from_scryfall, get_card_names_needing_update
 from backend.legality import is_legal
 
@@ -53,17 +54,19 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
     return newest_filepath
 
 
-def perform_update(database: MongoDatabase) -> None:
+def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
+        None:
     """
     Insert new decks from Moxfield and new cards into database. Then update
     cards needing updates and check the legality of unconfirmed decks.
 
+    :param deck_sources: A list of DeckSources to load decks from.
     :param database: A Database object containing all card information
     """
-    # Step 1: Add decks from Moxfield to the database
-    if not add_moxfield_decks_to_database(database):
-        print('Error adding decks from Moxfield')
-        return
+    # Step 1: Add decks from Decksources to the database
+    for source in deck_sources:
+        if not add_source_to_database(source, database):
+            print(f"Error adding decks from {source.__class__.__name__}")
 
     # Step 2: Update cards that have been added / modified in the latest set
     newest_card = database.cards.find_one(sort=[('updated', -1)])
@@ -103,7 +106,37 @@ def perform_update(database: MongoDatabase) -> None:
             print(f"Illegal deck: https://moxfield.com/decks/{deck['_id']}")
 
 
+def add_source_to_database(source: DeckSource, database) -> bool:
+    """
+    Gets new decks from the source and inserts them into the database,
+    only newer decks than the most recently updated database deck.
+
+    :param source: A DeckSource object to collect decks from.
+    :param database: A Database object to insert decks into.
+    :return: True if all decks updated, False if an error occurred.
+    """
+    print(f"Inserting decks from {source.__class__.__name__} into"
+          f" {database.__class__.__name__}")
+    latest_updated_deck = database.decks.find_one(sort=[('update_date', -1)])
+    # If the database starts empty, we pick an arbitrary amount of time.
+    if latest_updated_deck is None:
+        latest_updated_time = 1691118970.0
+    else:
+        latest_updated_time = latest_updated_deck['update_date']
+
+    decks_to_update = source.get_new_decks(latest_updated_time)
+
+    for deck in decks_to_update:
+        print(f"Inserting {deck['_id']}")
+        deck['needsLegalityCheck'] = True
+        database.insert_deck(deck)
+
+    return True
+
+
 if __name__ == '__main__':
     with open('../server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     test_database = MongoDatabase(connection_string)
+    source = MoxfieldDeckSource()
+    perform_update(test_database, [source])
