@@ -4,8 +4,7 @@ Access moxfield and query decks for inclusion in the database.
 
 from typing import Optional
 import requests
-from time import sleep, time
-from backend.database import MongoDatabase
+from time import sleep
 from backend.utils import posix_time
 from backend.decksource import DeckSource
 
@@ -46,10 +45,11 @@ class MoxfieldDeckSource(DeckSource):
                 mainboard.append(card_name)
         commanders = [commander_name for commander_name in
                       deck_data['commanders']]
-        return {'_id': deck_data['publicId'],
-                'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
-                'commanders': commanders,
-                'cards': mainboard}
+        return {
+            '_id': "moxfield:" + deck_data['publicId'],
+            'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
+            'commanders': commanders, 'cards': mainboard, 'source': "moxfield"
+                }
 
     def get_new_decks(self, newest_deck_time: float = None) -> list:
         if newest_deck_time is None:
