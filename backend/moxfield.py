@@ -20,7 +20,7 @@ class MoxfieldDeckSource(DeckSource):
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the moxfield decks API.
         request = requests.get(self.api_url + f"decks/all/{identifier}")
-        # Check if the API responsed successfully
+        # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             print(f"Request failed: Get deck from Moxfield with identifier "
                   f"{identifier}")
