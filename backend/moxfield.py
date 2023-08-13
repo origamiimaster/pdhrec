@@ -16,6 +16,7 @@ class MoxfieldDeckSource(DeckSource):
         """
         super().__init__()
         self.api_url = "https://api.moxfield.com/v2/"
+        self.name = "moxfield"
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the moxfield decks API.

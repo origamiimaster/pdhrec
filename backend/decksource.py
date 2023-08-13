@@ -9,6 +9,7 @@ class DeckSource:
     A source for deck data.
     Examples include Moxfield.com, Archidekt.com, ...
     """
+    name: str
 
     def __init__(self) -> None:
         pass
