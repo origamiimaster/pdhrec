@@ -16,7 +16,7 @@ class ArchidektDeckSource(DeckSource):
         """
         super().__init__()
         self.api_url = "https://archidekt.com/api/decks/"
-        self.name = "moxfield"
+        self.name = "archidekt"
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the archidekt decks API.
