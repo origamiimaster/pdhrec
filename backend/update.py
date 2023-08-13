@@ -103,7 +103,10 @@ def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
         # Always insert so future checks can see if future downshifts make legal
         database.insert_deck(deck)
         if not legal:
-            print(f"Illegal deck: https://moxfield.com/decks/{deck['_id']}")
+            if deck['source'] == "moxfield":
+                print(f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
+            else:
+                print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
 
 def add_source_to_database(source: DeckSource, database) -> bool:
