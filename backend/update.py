@@ -6,10 +6,12 @@ import json
 import os
 import time
 import requests
+import re
 from backend.database import MongoDatabase
 from backend.decksource import DeckSource
 from backend.moxfield import MoxfieldDeckSource
-from backend.scryfall import get_card_from_scryfall, get_card_names_needing_update
+from backend.scryfall import get_card_from_scryfall, \
+    get_card_names_needing_update
 from backend.legality import is_legal
 
 
@@ -104,7 +106,8 @@ def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
         database.insert_deck(deck)
         if not legal:
             if deck['source'] == "moxfield":
-                print(f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
+                print(
+                    f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
             else:
                 print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
@@ -120,10 +123,14 @@ def add_source_to_database(source: DeckSource, database) -> bool:
     """
     print(f"Inserting decks from {source.__class__.__name__} into"
           f" {database.__class__.__name__}")
-    latest_updated_deck = database.decks.find_one(sort=[('update_date', -1)])
+    latest_updated_deck = database.decks.find_one(
+        {
+            "_id": {"$regex": re.compile(f"^{source.name}")}
+        }, sort=[('update_date', -1)]
+    )
     # If the database starts empty, we pick an arbitrary amount of time.
     if latest_updated_deck is None:
-        latest_updated_time = 1691118970.0
+        latest_updated_time = None
     else:
         latest_updated_time = latest_updated_deck['update_date']
 

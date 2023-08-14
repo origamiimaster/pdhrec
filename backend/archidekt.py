@@ -25,7 +25,7 @@ class ArchidektDeckSource(DeckSource):
         # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             if request.status_code == requests.codes.too_many_requests:
-                delay = 30
+                delay = 60
                 print(f"Request ratelimited for deck {identifier}, retrying in"
                       f" {delay} seconds.")
                 sleep(delay)
@@ -51,9 +51,11 @@ class ArchidektDeckSource(DeckSource):
         commanders = []
         for card in deck_data['cards']:
             if "Commander" in card['categories']:
-                commanders.append(card['card']['oracleCard']['name'])
+                for _ in range(card['quantity']):
+                    commanders.append(card['card']['oracleCard']['name'])
             else:
-                mainboard.append(card['card']['oracleCard']['name'])
+                for _ in range(card['quantity']):
+                    mainboard.append(card['card']['oracleCard']['name'])
 
         return {
             '_id': "archidekt:" + str(deck_data['id']),
@@ -93,7 +95,7 @@ class ArchidektDeckSource(DeckSource):
         collected_decks = []
         for deck_id in collected_deck_ids:
             collected_decks.append(self.get_deck(deck_id))
-            sleep(1.0)
+            sleep(1)
 
         return collected_decks
 
@@ -108,6 +110,12 @@ class ArchidektDeckSource(DeckSource):
         url = self.api_url + f"?formats=17&orderBy=-updatedAt&page={page}"
         decks_request = requests.get(url)
         if decks_request.status_code != requests.codes.ok:
+            if decks_request.status_code == requests.codes.too_many_requests:
+                delay = 30
+                print(f"Request ratelimited for page {page}, retrying in"
+                      f" {delay} seconds.")
+                sleep(delay)
+                return self.get_new_decks_paginated(page)
             print(f'Request failed: Get new decks: page {page}')
             return None
         return decks_request.json()
@@ -117,6 +125,6 @@ if __name__ == "__main__":
     source = ArchidektDeckSource()
     temp = source.get_deck('5018222')
     print(temp)
-    temp = source.get_new_decks(newest_deck_time=1691750188.0)
-    print(len(temp))
+    # temp = source.get_new_decks(newest_deck_time=1691750188.0)
+    # print(len(temp))
 
