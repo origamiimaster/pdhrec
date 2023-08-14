@@ -30,3 +30,4 @@ def test_get_deck_invalid_id() -> None:
 if __name__ == "__main__":
     test_get_deck_empty()
     test_get_deck_invalid_id()
+    print("Tests Passed")
