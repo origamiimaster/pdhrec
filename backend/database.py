@@ -65,17 +65,6 @@ class MongoDatabase:
         """
         return self.cards.find_one({'name': card})
 
-    def get_last_updated_time(self) -> float:
-        """
-        Return the time of the last update to the database, or the time of
-        the most recent deck.
-        """
-        latest_updated_deck = self.decks.find_one(sort=[('update_date', -1)])
-        # If the database starts empty, we pick an arbitrary time in the past
-        if latest_updated_deck is None:
-            return 1691118970.0
-        return latest_updated_deck['update_date']
-
 
 if __name__ == '__main__':
     print('Starting')
