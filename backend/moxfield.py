@@ -9,25 +9,6 @@ from backend.utils import posix_time
 from backend.decksource import _DeckSource
 
 
-def moxfield_to_standard_format(deck_data: dict) -> dict:
-    """
-    Convert the Moxfield deck dictionary format (eg from get_deck_data)
-    to the format for database insertion
-
-    :param deck_data: Moxfield deck data, as a dictionary
-    :return: Dictionary with same information in database format
-    """
-    mainboard = []
-    for card_name in deck_data['mainboard']:
-        for _ in range(deck_data['mainboard'][card_name]['quantity']):
-            mainboard.append(card_name)
-    commanders = [commander_name for commander_name in
-                  deck_data['commanders']]
-    return {'_id': f"moxfield:{deck_data['publicId']}",
-            'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
-            'commanders': commanders, 'cards': mainboard, 'source': "moxfield"}
-
-
 class MoxfieldDeckSource(_DeckSource):
     def __init__(self) -> None:
         """
@@ -46,7 +27,7 @@ class MoxfieldDeckSource(_DeckSource):
             return None
         # Convert the deck data to our database format:
         deck_data = request.json()
-        formatted_deck_data = moxfield_to_standard_format(deck_data)
+        formatted_deck_data = MoxfieldDeckSource.to_standard_format(deck_data)
         # Return the deck data.
         return formatted_deck_data
 
@@ -99,6 +80,26 @@ class MoxfieldDeckSource(_DeckSource):
             print(f'Request failed: Get new decks: page {page}')
             return None
         return decks_request.json()['data']
+
+    @staticmethod
+    def to_standard_format(deck_data: dict) -> dict:
+        """
+        Convert the Moxfield deck dictionary format (eg from get_deck_data)
+        to the format for database insertion
+
+        :param deck_data: Moxfield deck data, as a dictionary
+        :return: Dictionary with same information in database format
+        """
+        mainboard = []
+        for card_name in deck_data['mainboard']:
+            for _ in range(deck_data['mainboard'][card_name]['quantity']):
+                mainboard.append(card_name)
+        commanders = [commander_name for commander_name in
+                      deck_data['commanders']]
+        return {'_id': f"moxfield:{deck_data['publicId']}",
+                'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
+                'commanders': commanders, 'cards': mainboard,
+                'source': "moxfield"}
 
 
 if __name__ == '__main__':
