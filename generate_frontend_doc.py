@@ -14,11 +14,11 @@ if __name__ == '__main__':
     with open('server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     database = MongoDatabase(connection_string)
-    source = MoxfieldDeckSource()
+    sources = [MoxfieldDeckSource()]
 
     # Commit updates to the database
     print('Updating database')
-    perform_update(database, [source])
+    perform_update(database, sources)
 
     # Load all cards from bulk json in database
     bulk_filepath = get_latest_bulk_file(directory='scryfall_data')

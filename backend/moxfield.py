@@ -6,10 +6,29 @@ from typing import Optional
 import requests
 from time import sleep
 from backend.utils import posix_time
-from backend.decksource import DeckSource
+from backend.decksource import _DeckSource
 
 
-class MoxfieldDeckSource(DeckSource):
+def moxfield_to_standard_format(deck_data: dict) -> dict:
+    """
+    Convert the Moxfield deck dictionary format (eg from get_deck_data)
+    to the format for database insertion
+
+    :param deck_data: Moxfield deck data, as a dictionary
+    :return: Dictionary with same information in database format
+    """
+    mainboard = []
+    for card_name in deck_data['mainboard']:
+        for _ in range(deck_data['mainboard'][card_name]['quantity']):
+            mainboard.append(card_name)
+    commanders = [commander_name for commander_name in
+                  deck_data['commanders']]
+    return {'_id': f"moxfield:{deck_data['publicId']}",
+            'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
+            'commanders': commanders, 'cards': mainboard, 'source': "moxfield"}
+
+
+class MoxfieldDeckSource(_DeckSource):
     def __init__(self) -> None:
         """
         Instantiates a moxfield deck source client.
@@ -19,7 +38,7 @@ class MoxfieldDeckSource(DeckSource):
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the moxfield decks API.
-        request = requests.get(self.api_url + f"decks/all/{identifier}")
+        request = requests.get(self.api_url + f'decks/all/{identifier}')
         # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             print(f"Request failed: Get deck from Moxfield with identifier "
@@ -27,29 +46,9 @@ class MoxfieldDeckSource(DeckSource):
             return None
         # Convert the deck data to our database format:
         deck_data = request.json()
-        formatted_deck_data = self.convert_to_standard_format(deck_data)
+        formatted_deck_data = moxfield_to_standard_format(deck_data)
         # Return the deck data.
         return formatted_deck_data
-
-    def convert_to_standard_format(self, deck_data: dict) -> dict:
-        """
-        Convert the Moxfield deck dictionary format (eg from get_deck_data)
-        to the format for database insertion
-
-        :param deck_data: Moxfield deck data, as a dictionary
-        :return: Dictionary with same information in database format
-        """
-        mainboard = []
-        for card_name in deck_data['mainboard']:
-            for _ in range(deck_data['mainboard'][card_name]['quantity']):
-                mainboard.append(card_name)
-        commanders = [commander_name for commander_name in
-                      deck_data['commanders']]
-        return {
-            '_id': "moxfield:" + deck_data['publicId'],
-            'update_date': posix_time(deck_data['lastUpdatedAtUtc']),
-            'commanders': commanders, 'cards': mainboard, 'source': "moxfield"
-                }
 
     def get_new_decks(self, newest_deck_time: float = None) -> list:
         if newest_deck_time is None:
@@ -64,8 +63,8 @@ class MoxfieldDeckSource(DeckSource):
         if paged_decks is None:
             raise ValueError
 
-        while all([posix_time(x['lastUpdatedAtUtc']) > newest_deck_time for x
-                   in paged_decks]):
+        while all((posix_time(deck['lastUpdatedAtUtc']) > newest_deck_time)
+                  for deck in paged_decks):
             for deck in paged_decks:
                 collected_deck_ids.append(deck['publicId'])
 
