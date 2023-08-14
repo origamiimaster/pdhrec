@@ -64,9 +64,8 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     :param database: A Database object containing all card information
     """
     # Step 1: Add new decks from all sources to the database
-    last_updated = database.get_last_updated_time()
     for source in deck_sources:
-        if not add_source_to_database(source, database, last_updated):
+        if not add_source_to_database(source, database):
             print(f"Error adding decks from {source.__class__.__name__}")
 
     # Step 2: Update cards that have been added / modified in the latest set
@@ -110,25 +109,25 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
                 print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
 
-def add_source_to_database(source: _DeckSource, database: MongoDatabase,
-                           last_updated: float = None) -> bool:
+def add_source_to_database(source: _DeckSource, database) -> bool:
     """
-    Gets decks newer than the last update time from the source and inserts
-    them into the database.
-    If last_updated is not provided, calculates the last update time as the
-    most recently updated deck in the database and gets all newer decks.
+    Gets new decks from the source and inserts them into the database,
+    only newer decks than the most recently updated database deck.
 
     :param source: A _DeckSource object to collect decks from.
     :param database: A Database object to insert decks into.
-    :param last_updated: POSIX time of last update
     :return: True if all decks updated, False if an error occurred.
     """
-    print(f'Inserting decks from {source.__class__.__name__} into'
-          f' {database.__class__.__name__}')
-    if last_updated is None:
-        last_updated = database.get_last_updated_time()
+    print(f"Inserting decks from {source.__class__.__name__} into"
+          f" {database.__class__.__name__}")
+    latest_updated_deck = database.decks.find_one(sort=[('update_date', -1)])
+    # If the database starts empty, we pick an arbitrary amount of time.
+    if latest_updated_deck is None:
+        latest_updated_time = 1691118970.0
+    else:
+        latest_updated_time = latest_updated_deck['update_date']
 
-    decks_to_update = source.get_new_decks(last_updated)
+    decks_to_update = source.get_new_decks(latest_updated_time)
 
     for deck in decks_to_update:
         print(f"Inserting {deck['_id']}")
