@@ -6,6 +6,7 @@ import json
 from backend.aggregator import get_all_scores
 from backend.database import MongoDatabase
 from backend.moxfield import MoxfieldDeckSource
+from backend.tappedout import TappedOutDeckSource
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 
@@ -14,7 +15,7 @@ if __name__ == '__main__':
     with open('server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     database = MongoDatabase(connection_string)
-    sources = [MoxfieldDeckSource()]
+    sources = [MoxfieldDeckSource(), TappedOutDeckSource()]
 
     # Commit updates to the database
     print('Updating database')
