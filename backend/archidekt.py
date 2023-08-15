@@ -35,6 +35,9 @@ class ArchidektDeckSource(DeckSource):
             return None
         # Convert the deck data to our database format:
         deck_data = request.json()
+        if "error" in deck_data:
+            print(f"Error: {deck_data['error']}")
+            return None
         formatted_deck_data = self.convert_to_standard_format(deck_data)
         # Return the deck data.
         return formatted_deck_data
@@ -47,6 +50,8 @@ class ArchidektDeckSource(DeckSource):
         :param deck_data: Moxfield deck data, as a dictionary
         :return: Dictionary with same information in database format
         """
+        category_included_lookup = {x["name"]: x["includedInDeck"] for x in
+                                    deck_data['categories']}
         mainboard = []
         commanders = []
         for card in deck_data['cards']:
@@ -54,9 +59,9 @@ class ArchidektDeckSource(DeckSource):
                 for _ in range(card['quantity']):
                     commanders.append(card['card']['oracleCard']['name'])
             else:
-                for _ in range(card['quantity']):
-                    mainboard.append(card['card']['oracleCard']['name'])
-
+                if len(card['categories']) == 0 or category_included_lookup[card['categories'][0]]:
+                    for _ in range(card['quantity']):
+                        mainboard.append(card['card']['oracleCard']['name'])
         return {
             '_id': "archidekt:" + str(deck_data['id']),
             'update_date': posix_time(deck_data['updatedAt']),
@@ -123,7 +128,7 @@ class ArchidektDeckSource(DeckSource):
 
 if __name__ == "__main__":
     source = ArchidektDeckSource()
-    temp = source.get_deck('5018222')
+    temp = source.get_deck('5045556')
     print(temp)
     # temp = source.get_new_decks(newest_deck_time=1691750188.0)
     # print(len(temp))
