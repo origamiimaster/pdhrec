@@ -108,6 +108,8 @@ def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
             if deck['source'] == "moxfield":
                 print(
                     f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
+            elif deck['source'] == 'archidekt':
+                print(f"Illegal deck: https://archidekt.com/decks/{deck['_id'][10:]}")
             else:
                 print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
@@ -124,9 +126,7 @@ def add_source_to_database(source: DeckSource, database) -> bool:
     print(f"Inserting decks from {source.__class__.__name__} into"
           f" {database.__class__.__name__}")
     latest_updated_deck = database.decks.find_one(
-        {
-            "_id": {"$regex": re.compile(f"^{source.name}")}
-        }, sort=[('update_date', -1)]
+        {'source': source.name}, sort=[('update_date', -1)]
     )
     # If the database starts empty, we pick an arbitrary amount of time.
     if latest_updated_deck is None:

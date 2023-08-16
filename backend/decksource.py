@@ -11,8 +11,8 @@ class DeckSource:
     """
     name: str
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, name: str) -> None:
+        self.name = name
 
     def get_deck(self, identifier) -> Optional[dict]:
         """

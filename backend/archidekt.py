@@ -14,28 +14,27 @@ class ArchidektDeckSource(DeckSource):
         """
         Instantiates an archidekt deck source client.
         """
-        super().__init__()
-        self.api_url = "https://archidekt.com/api/decks/"
-        self.name = "archidekt"
+        super().__init__('archidekt')
+        self.api_url = 'https://archidekt.com/api/decks/'
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the archidekt decks API.
-        request = requests.get(self.api_url + f"{identifier}/?format=json")
+        request = requests.get(self.api_url + f'{identifier}/?format=json')
 
         # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             if request.status_code == requests.codes.too_many_requests:
                 delay = 60
-                print(f"Request ratelimited for deck {identifier}, retrying in"
-                      f" {delay} seconds.")
+                print(f'Request ratelimited for deck {identifier}, retrying in'
+                      f' {delay} seconds.')
                 sleep(delay)
                 return self.get_deck(identifier)
-            print(f"Request failed: Get deck from Archidekt with identifier "
-                  f"{identifier}")
+            print(f'Request failed: Get deck from Archidekt with identifier '
+                  f'{identifier}')
             return None
         # Convert the deck data to our database format:
         deck_data = request.json()
-        if "error" in deck_data:
+        if 'error' in deck_data:
             print(f"Error: {deck_data['error']}")
             return None
         formatted_deck_data = self.convert_to_standard_format(deck_data)
@@ -50,7 +49,7 @@ class ArchidektDeckSource(DeckSource):
         :param deck_data: Moxfield deck data, as a dictionary
         :return: Dictionary with same information in database format
         """
-        category_included_lookup = {x["name"]: x["includedInDeck"] for x in
+        category_included_lookup = {x['name']: x['includedInDeck'] for x in
                                     deck_data['categories']}
         # Manually disinclude sideboard from counting:
         category_included_lookup['Sideboard'] = False
@@ -65,9 +64,9 @@ class ArchidektDeckSource(DeckSource):
                     for _ in range(card['quantity']):
                         mainboard.append(card['card']['oracleCard']['name'])
         return {
-            '_id': "archidekt:" + str(deck_data['id']),
+            '_id': f"archidekt:{deck_data['id']}",
             'update_date': posix_time(deck_data['updatedAt']),
-            'commanders': commanders, 'cards': mainboard, 'source': "archidekt"
+            'commanders': commanders, 'cards': mainboard, 'source': 'archidekt'
                 }
 
     def get_new_decks(self, newest_deck_time: float = None) -> list:
@@ -81,9 +80,9 @@ class ArchidektDeckSource(DeckSource):
         if paged_decks is None:
             raise ValueError
 
-        while (all([posix_time(x['updatedAt']) > newest_deck_time for x
-                   in paged_decks["results"]]) and paged_decks['next'] is not
-               None):
+        while (all(posix_time(deck['updatedAt']) > newest_deck_time
+                   for deck in paged_decks['results']) and
+               paged_decks['next'] is not None):
             for deck in paged_decks["results"]:
                 collected_deck_ids.append(deck['id'])
 
@@ -94,7 +93,7 @@ class ArchidektDeckSource(DeckSource):
                 raise ValueError
             sleep(0.5)
 
-        for deck in paged_decks["results"]:
+        for deck in paged_decks['results']:
             if posix_time(deck['updatedAt']) <= newest_deck_time:
                 break
             collected_deck_ids.append(deck['id'])
@@ -114,13 +113,13 @@ class ArchidektDeckSource(DeckSource):
         :param page: Page of the list of new decks to return
         :return: metadata on most recent decks, as list of dictionaries
         """
-        url = self.api_url + f"?formats=17&orderBy=-updatedAt&page={page}"
+        url = self.api_url + f'?formats=17&orderBy=-updatedAt&page={page}'
         decks_request = requests.get(url)
         if decks_request.status_code != requests.codes.ok:
             if decks_request.status_code == requests.codes.too_many_requests:
                 delay = 30
-                print(f"Request ratelimited for page {page}, retrying in"
-                      f" {delay} seconds.")
+                print(f'Request ratelimited for page {page}, retrying in'
+                      f' {delay} seconds.')
                 sleep(delay)
                 return self.get_new_decks_paginated(page)
             print(f'Request failed: Get new decks: page {page}')
