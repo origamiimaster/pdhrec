@@ -52,6 +52,8 @@ class ArchidektDeckSource(DeckSource):
         """
         category_included_lookup = {x["name"]: x["includedInDeck"] for x in
                                     deck_data['categories']}
+        # Manually disinclude sideboard from counting:
+        category_included_lookup['Sideboard'] = False
         mainboard = []
         commanders = []
         for card in deck_data['cards']:
