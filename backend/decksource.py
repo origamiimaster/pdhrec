@@ -9,8 +9,12 @@ class _DeckSource:
     A source for deck data.
     Examples include Moxfield.com, Archidekt.com, ...
     """
+    name: str
 
-    def get_deck(self, identifier: str) -> Optional[dict]:
+    def __init__(self, name: str) -> None:
+        self.name = name
+
+    def get_deck(self, identifier) -> Optional[dict]:
         """
         Gets a particular deck from the source.
         :param identifier: A public ID for the deck requested.

@@ -81,8 +81,8 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     commander_card_counts = {}  # Commander: {Card: Count of Decks}
 
     # Initial aggregation of deck counts by color
-    aggregate_pipeline = [{'$match': {'isLegal': True}},
-                          {'$sort': SON([('update_date', -1)])}]
+    aggregate_pipeline = [{'$match': {'isLegal': True}}]
+
     for deck in database.decks.aggregate(pipeline=aggregate_pipeline):
         # Obtain deck ID and commanders
         deck_id = deck['_id']
