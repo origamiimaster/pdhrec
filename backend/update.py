@@ -1,14 +1,14 @@
 """
 Periodically update the deck data.
 """
-from typing import Optional, List
+from typing import Optional
 import json
 import os
 import time
 import requests
 import re
 from backend.database import MongoDatabase
-from backend.decksource import DeckSource
+from backend.decksource import _DeckSource
 from backend.moxfield import MoxfieldDeckSource
 from backend.scryfall import get_card_from_scryfall, \
     get_card_names_needing_update
@@ -56,7 +56,7 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
     return newest_filepath
 
 
-def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
+def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> \
         None:
     """
     Insert new decks from Moxfield and new cards into database. Then update
@@ -65,7 +65,7 @@ def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
     :param deck_sources: A list of DeckSources to load decks from.
     :param database: A Database object containing all card information
     """
-    # Step 1: Add decks from Decksources to the database
+    # Step 1: Add new decks from all sources to the database
     for source in deck_sources:
         if not add_source_to_database(source, database):
             print(f"Error adding decks from {source.__class__.__name__}")
@@ -114,12 +114,12 @@ def perform_update(database: MongoDatabase, deck_sources: List[DeckSource]) -> \
                 print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
 
-def add_source_to_database(source: DeckSource, database) -> bool:
+def add_source_to_database(source: _DeckSource, database) -> bool:
     """
     Gets new decks from the source and inserts them into the database,
     only newer decks than the most recently updated database deck.
 
-    :param source: A DeckSource object to collect decks from.
+    :param source: A _DeckSource object to collect decks from.
     :param database: A Database object to insert decks into.
     :return: True if all decks updated, False if an error occurred.
     """
@@ -148,5 +148,5 @@ if __name__ == '__main__':
     with open('../server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     test_database = MongoDatabase(connection_string)
-    source = MoxfieldDeckSource()
-    perform_update(test_database, [source])
+    test_source = MoxfieldDeckSource()
+    perform_update(test_database, [test_source])

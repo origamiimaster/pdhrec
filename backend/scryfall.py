@@ -7,6 +7,32 @@ import requests
 from urllib.parse import quote
 from backend.utils import posix_time
 
+def make_scryfall_request(name) -> list:
+    print('Searching')
+    scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
+    card_request = requests.get(scryfall_card_url)
+    if card_request.status_code != requests.codes.ok:
+        print(f'Request failed: Get card from Scryfall: {name}')
+        return [{'name': name, 'image_urls': [], 'released': -1,
+                 'color_identities': '', 'legal_in_mainboard': False,
+                 'legal_as_commander': False, 'needsUpdate': False,
+                 'error': True}]
+    scryfall_card_data = []
+    resp_data = card_request.json()
+    scryfall_card_data += resp_data['data']
+    while resp_data["has_more"]:
+        scryfall_card_url = resp_data["next_page"]
+        card_request = requests.get(scryfall_card_url)
+        if card_request.status_code != requests.codes.ok:
+            print(f'Request failed: Get card from Scryfall: {name}')
+            return [{'name': name, 'image_urls': [], 'released': -1,
+                     'color_identities': '', 'legal_in_mainboard': False,
+                     'legal_as_commander': False, 'needsUpdate': False,
+                     'error': True}]
+        resp_data = card_request.json()
+        scryfall_card_data += resp_data['data']
+    return scryfall_card_data
+
 
 def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
     """
@@ -22,16 +48,7 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
         scryfall_card_data = scryfall_cache[name]
     else:
         time.sleep(50 / 1000)  # Avoid overloading Scryfall API
-        print('Searching')
-        scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
-        card_request = requests.get(scryfall_card_url)
-        if card_request.status_code != requests.codes.ok:
-            print(f'Request failed: Get card from Scryfall: {name}')
-            return {'name': name, 'image_urls': [], 'released': -1,
-                    'color_identities': '', 'legal_in_mainboard': False,
-                    'legal_as_commander': False, 'needsUpdate': False,
-                    'error': True}
-        scryfall_card_data = card_request.json()['data']
+        scryfall_card_data = make_scryfall_request(name)
         scryfall_cache[name] = scryfall_card_data
 
     # Filter query to only cards exactly matching name
@@ -231,14 +248,16 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ['Binding Geist // Spectral Binding', 'Composite Golem',
-                  'Snow-Covered Forest', "Blessed Hippogriff // Tyr's Blessing"]
+    test_cards = ['Binding Geist // Spectral Binding',
+                  'Snow-Covered Forest', "Blessed Hippogriff // Tyr's "
+                                         "Blessing", 'Island']
     for test_card in test_cards:
         time.sleep(100 / 1000)
-        test_card_request = requests.get(
-            f"https://api.scryfall.com/cards/search?q=\""
-            f"{quote(test_card)}\"&order=released&dir=asc&unique=prints")
-        if test_card_request.status_code != requests.codes.ok:
-            exit(1)
-        test_card_data = test_card_request.json()['data']
+        # test_card_request = requests.get(
+        #     f"https://api.scryfall.com/cards/search?q=\""
+        #     f"{quote(test_card)}\"&order=released&dir=asc&unique=prints")
+        # if test_card_request.status_code != requests.codes.ok:
+        #     exit(1)
+        test_card_data = make_scryfall_request(test_card)
+        # test_card_data = test_card_request.json()['data']
         print(choose_image(test_card_data))

@@ -4,7 +4,7 @@ A deck source represents a collection of decks, like moxfield / archidekt.
 from typing import Optional
 
 
-class DeckSource:
+class _DeckSource:
     """
     A source for deck data.
     Examples include Moxfield.com, Archidekt.com, ...
@@ -20,7 +20,7 @@ class DeckSource:
         :param identifier: A public ID for the deck requested.
         :return: The deck object.
         """
-        pass
+        raise NotImplementedError
 
     def get_new_decks(self, newest_deck_time: float = None) -> list:
         """
@@ -29,4 +29,4 @@ class DeckSource:
         :param newest_deck_time: A unix timestamp for the most recent deck.
         :return:
         """
-        pass
+        raise NotImplementedError
