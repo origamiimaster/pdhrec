@@ -5,11 +5,11 @@ from typing import Optional
 
 import requests
 from time import sleep
-from backend.decksource import DeckSource
+from backend.decksource import _DeckSource
 from backend.utils import posix_time
 
 
-class ArchidektDeckSource(DeckSource):
+class ArchidektDeckSource(_DeckSource):
     def __init__(self) -> None:
         """
         Instantiates an archidekt deck source client.
