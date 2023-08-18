@@ -13,10 +13,10 @@ def test_get_deck_empty() -> None:
     deck = source.get_deck(deck_id)
     assert len(deck['commanders']) == 0
     assert len(deck['cards']) == 0
-    assert deck_id == deck['_id']
+    assert "moxfield:" + deck_id == deck['_id']
     assert deck == {
-        '_id': 'yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
-        'commanders': [], 'cards': []
+        '_id': 'moxfield:yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
+        'commanders': [], 'cards': [], 'source': 'moxfield'
     }
 
 

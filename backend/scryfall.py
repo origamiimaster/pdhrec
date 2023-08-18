@@ -7,6 +7,7 @@ import requests
 from urllib.parse import quote
 from backend.utils import posix_time
 
+
 def make_scryfall_request(name) -> list:
     print('Searching')
     scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
@@ -55,7 +56,10 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
     scryfall_card_data = [card for card in scryfall_card_data
                           if card['name'] == name]
 
-    if not scryfall_card_data:  # No matches, create empty card
+    # No matches, create empty card
+    if (len(scryfall_card_data) == 0 or
+            ('error' in scryfall_card_data[0] and
+             scryfall_card_data[0]['error'])):
         return {'name': name, 'image_urls': [], 'released': -1,
                 'color_identities': '', 'legal_in_mainboard': False,
                 'legal_as_commander': False, 'needsUpdate': False,
