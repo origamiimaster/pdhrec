@@ -23,7 +23,7 @@ def placeFiles(ftp, path, verbose=False):
 
             print("CWD", name) if verbose else None
             ftp.cwd(name)
-            placeFiles(ftp, localpath)
+            placeFiles(ftp, localpath, verbose=verbose)
             print("CWD", "..") if verbose else None
             ftp.cwd("..")
 
