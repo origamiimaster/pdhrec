@@ -7,6 +7,7 @@ import requests
 from urllib.parse import quote
 from backend.utils import posix_time
 
+
 def make_scryfall_request(name) -> list:
     print('Searching')
     scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
@@ -55,7 +56,10 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
     scryfall_card_data = [card for card in scryfall_card_data
                           if card['name'] == name]
 
-    if not scryfall_card_data:  # No matches, create empty card
+    # No matches, create empty card
+    if (len(scryfall_card_data) == 0 or
+            ('error' in scryfall_card_data[0] and
+             scryfall_card_data[0]['error'])):
         return {'name': name, 'image_urls': [], 'released': -1,
                 'color_identities': '', 'legal_in_mainboard': False,
                 'legal_as_commander': False, 'needsUpdate': False,
@@ -129,9 +133,14 @@ def card_sort_key(printing: dict) -> tuple:
     secret_lair = int(printing['set'] == 'sld')
     date = -posix_time(printing['released_at'])
 
+    triangle = int("security_stamp" in printing and printing[
+        "security_stamp"] == "triangle")
+
+    masterpiece = int(printing["set_type"] == "masterpiece")
+
     return (content_warning, language, digital, img_status, has_large,
-            textless, border_color, frame, promo, num_effects, secret_lair,
-            date)
+            textless, border_color, secret_lair, masterpiece, promo,
+            triangle, num_effects, date, frame)
 
 
 def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
@@ -248,9 +257,7 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ['Binding Geist // Spectral Binding',
-                  'Snow-Covered Forest', "Blessed Hippogriff // Tyr's "
-                                         "Blessing", 'Island']
+    test_cards = ["Muddle the Mixture"]
     for test_card in test_cards:
         time.sleep(100 / 1000)
         # test_card_request = requests.get(
@@ -261,3 +268,5 @@ if __name__ == '__main__':
         test_card_data = make_scryfall_request(test_card)
         # test_card_data = test_card_request.json()['data']
         print(choose_image(test_card_data))
+        for data in test_card_data:
+            print(card_sort_key(data), data['scryfall_uri'])
