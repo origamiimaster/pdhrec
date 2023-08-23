@@ -133,9 +133,14 @@ def card_sort_key(printing: dict) -> tuple:
     secret_lair = int(printing['set'] == 'sld')
     date = -posix_time(printing['released_at'])
 
+    triangle = int("security_stamp" in printing and printing[
+        "security_stamp"] == "triangle")
+
+    masterpiece = int(printing["set_type"] == "masterpiece")
+
     return (content_warning, language, digital, img_status, has_large,
-            textless, border_color, frame, promo, num_effects, secret_lair,
-            date)
+            textless, border_color, secret_lair, masterpiece, promo,
+            triangle, num_effects, date, frame)
 
 
 def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
@@ -252,9 +257,7 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ['Binding Geist // Spectral Binding',
-                  'Snow-Covered Forest', "Blessed Hippogriff // Tyr's "
-                                         "Blessing", 'Island']
+    test_cards = ["Muddle the Mixture"]
     for test_card in test_cards:
         time.sleep(100 / 1000)
         # test_card_request = requests.get(
@@ -265,3 +268,5 @@ if __name__ == '__main__':
         test_card_data = make_scryfall_request(test_card)
         # test_card_data = test_card_request.json()['data']
         print(choose_image(test_card_data))
+        for data in test_card_data:
+            print(card_sort_key(data), data['scryfall_uri'])
