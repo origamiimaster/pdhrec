@@ -98,7 +98,7 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     for deck in database.decks.find({'needsLegalityCheck': True}):
         decks_needing_check.append(deck)
     for deck in decks_needing_check:
-        print(deck)
+        # print(deck)
         legal = is_legal(deck, cards_cache, database)
         deck['needsLegalityCheck'] = False
         deck['isLegal'] = legal
