@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     # Record all other commander statistics
     all_synergy_scores, popularity_scores, commander_counts, \
-        color_popularity = get_all_scores(database)
+        color_popularity, commander_card_counts = get_all_scores(database)
     processed = 0  # Number of commanders processed
     commander_names = []
     for commander in commander_data:
@@ -86,7 +86,9 @@ if __name__ == '__main__':
                 card_image = image_lookup[card]
             else:
                 raise Exception(f'{card} not in image_lookup')
-            card_info = [card, synergy_scores[card], card_image]
+            card_popularity = commander_card_counts[tuple(commander[
+                                                              'commanders'])][card]
+            card_info = [card, synergy_scores[card], card_image, card_popularity]
             commander['carddata'].append(card_info)
         # Sort cards by decreasing synergy scores
         commander['carddata'].sort(key=lambda info: -info[1])
