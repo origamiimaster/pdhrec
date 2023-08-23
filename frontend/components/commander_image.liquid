@@ -4,7 +4,11 @@
       loading="lazy"
       alt="{{commander.commanders[0] | escape}}"
       src="{{commander.urls[0]}}">
-    <div class="info">In {{ commander.count }} decks</div>
+    {% if commander.count == 1 %}
+      <div class="info">In {{ commander.count }} deck</div>
+    {% else %}
+      <div class="info">In {{ commander.count }} decks</div>
+    {% endif %}
   </a>
 {% endif %}
 {% if commander.commanders.length == 2 %}
@@ -26,7 +30,11 @@
         class="partner2"
         src="{{commander.urls[1]}}"
         data-src="{{commander.urls[1]}}">
-      <div class="info">In {{ commander.count }} decks</div>
+      {% if commander.count == 1 %}
+        <div class="info">In {{ commander.count }} deck</div>
+      {% else %}
+        <div class="info">In {{ commander.count }} decks</div>
+      {% endif %}
     </div>
   </a>
 {% endif %}

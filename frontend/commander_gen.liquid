@@ -43,7 +43,11 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
         <div id="gallery" class="gallery">
           <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
             {% include 'components/commander_image.liquid', commander: mycommander %}
-            <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.</div>
+            {% if mycommander.count == 1 %} 
+            <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} deck.</div>
+            {% else %}
+              <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.</div>
+            {% endif %}
           </div>
           {% for card_data in mycommander.carddata %}
 
