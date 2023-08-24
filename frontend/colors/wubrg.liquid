@@ -1,0 +1,85 @@
+---js
+{
+    title: "WUBRG Commanders | PDHREC",
+    layout: "base.liquid", 
+    color: "WUBRG",
+    pagination: {
+        data: "commanders",
+        size: 24,
+        before: function(paginationData, fullData) {
+            return paginationData.filter((entry)=>{ 
+                return entry.coloridentity == "BGRUW"
+            });
+        }
+    }
+}
+---
+<div id="gallery" class="gallery">
+  <div class="gallery-item" style="width: 100%; display: flex; justify-content: center;">
+    <div class="symbolW" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolU" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolB" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolR" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolG" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <h2>
+      {{ color }}
+    </h2>
+    <div class="symbolG" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolR" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolB" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolU" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+    <div class="symbolW" style="width: 20px; height: 20px; padding: 0; margin: 10px;"></div>
+  </div>
+
+  {% for commanderdata in pagination.items %}
+    {% include 'components/commander_image.liquid', commander: commanderdata %}
+  {% endfor %}
+  <div class="pagination">
+    {% for item in pagination.hrefs %}
+      {% if item == page.url %}
+        {% assign curpage = forloop.index0 %}
+      {% endif %}
+    {% endfor %}
+    <a href="{{ pagination.href.first }}">
+      &laquo;
+    </a>
+    <a href="{{ pagination.href.previous }}">
+      &#8249;
+    </a>
+
+    {% assign temp = curpage | minus: 2 %}
+    {% if curpage >= 2 %}
+      <a href="{{ pagination.hrefs[temp] }}">
+        {{ temp | plus: 1 }}
+      </a>
+    {% endif %}
+    {% assign temp = curpage | minus: 1 %}
+    {% if curpage >= 1 %}
+      <a href="{{ pagination.hrefs[temp] }}">
+        {{ temp | plus: 1 }}
+      </a>
+    {% endif %}
+    {% assign temp = curpage | minus: 0 %}
+    <a href="{{ pagination.hrefs[temp] }}" class="active">
+      {{ temp | plus: 1 }}
+    </a>
+    {% assign temp = curpage | plus: 1 %}
+    {% if temp < pagination.hrefs.size %}
+      <a href="{{ pagination.hrefs[temp] }}">
+        {{ temp | plus: 1 }}
+      </a>
+    {% endif %}
+    {% assign temp = curpage | plus: 2 %}
+    {% if temp < pagination.hrefs.size %}
+      <a href="{{ pagination.hrefs[temp] }}">
+        {{ temp | plus: 1 }}
+      </a>
+    {% endif %}
+    <a href="{{ pagination.href.next }}">
+      &#8250;
+    </a>
+    <a href="{{ pagination.href.last }}">
+      &raquo;
+    </a>
+  </div>
+</div>
