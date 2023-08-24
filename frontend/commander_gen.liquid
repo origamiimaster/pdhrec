@@ -18,7 +18,7 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
     <link href="https://fonts.cdnfonts.com/css/cera-round-pro" rel="stylesheet">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://pdhrec-api.azurewebsites.net/">
-    <meta property="og:title" content="PDHREC | Pauper Commander Card Recommendations">
+    <meta property="og:title" content="{% if mycommander.commanders.length == 1 %}{{ mycommander.commanders[0] | escape }} {% endif %}{% if mycommander.commanders.length == 2 %}{{mycommander.commanders[0] | escape }} // {{mycommander.commanders[1] | escape }}{% endif %} | Pauper Commander Card Recommendations">
     <meta property="og:description" content="PDHREC collects thousands of decks, and analyzes them so you can build the best possible deck.">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
@@ -50,11 +50,14 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
             {% endif %}
           </div>
           {% for card_data in mycommander.carddata %}
-
+          {% capture innerText %}{{card_data[0] | escape }}: {{card_data[1] | times:100 | round: 2}}%{% endcapture %}
+            {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText %}
+            {% comment %}
             <a class="gallery-item">
               <img loading="lazy" alt="{{card_data[0] | escape }}" src="{{card_data[2]}}" class="" data-src="{{card_data[2]}}"/>
               <div class="info">{{card_data[0] | escape }}: {{card_data[1] | times:100 | round: 2}}%</div>
             </a>
+            {% endcomment %}
 
           {% endfor %}
         </div>
