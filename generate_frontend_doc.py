@@ -3,7 +3,7 @@ Generates files to build the frontend.
 """
 
 import json
-from backend.aggregator import get_all_scores
+from backend.aggregator import get_all_scores, get_card_color_identities
 from backend.database import MongoDatabase
 from backend.moxfield import MoxfieldDeckSource
 from backend.archidekt import ArchidektDeckSource
@@ -68,7 +68,11 @@ if __name__ == '__main__':
 
     # Record all other commander statistics
     all_synergy_scores, popularity_scores, commander_counts, \
-        color_popularity = get_all_scores(database)
+        color_popularity, commander_card_counts = get_all_scores(database)
+
+    # Get color identities for commander filtering by color
+    card_color_identities = get_card_color_identities(database)
+
     processed = 0  # Number of commanders processed
     commander_names = []
     for commander in commander_data:
@@ -86,10 +90,20 @@ if __name__ == '__main__':
                 card_image = image_lookup[card]
             else:
                 raise Exception(f'{card} not in image_lookup')
-            card_info = [card, synergy_scores[card], card_image]
+            card_popularity = commander_card_counts[tuple(commander[
+                                                              'commanders'])][card]
+            card_info = [card, synergy_scores[card], card_image, card_popularity]
             commander['carddata'].append(card_info)
         # Sort cards by decreasing synergy scores
         commander['carddata'].sort(key=lambda info: -info[1])
+
+        if len(commander['commanders']) == 1:
+            commander['coloridentity'] = card_color_identities[commander[
+                'commanders'][0]]
+        else:
+            commander['coloridentity'] = "".join(sorted(set(
+                card_color_identities[commander['commanders'][0]] +
+                card_color_identities[commander['commanders'][1]])))
 
         # Parse commanders and commanderstring (for database use)
         # Double faced commanders separated by '--'

@@ -8,7 +8,7 @@ from backend.database import MongoDatabase
 from backend.utils import color_identities
 
 
-def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
+def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict, dict]:
     """
     There are 2 main metrics that need to be determined:
     1. Popularity
@@ -33,8 +33,9 @@ def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     :return: Tuple of: synergy scores as a dictionary keyed by commander
     with value of a dictionary keyed by card with value of score; usage rates
     in the same format; counts of deck with each commander as a dictionary
-    keyed by commander with value of usage number; and synergy scores sorted
-    in decreasing order, with card color identity in as a second value.
+    keyed by commander with value of usage number; synergy scores sorted
+    in decreasing order, with card color identity in as a second value,
+    and card popularity per commander.
     """
     # Query database for all relevant card counts and color identities
     (color_identity_counts, commander_counts, card_counts,
@@ -50,7 +51,7 @@ def get_all_scores(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     sorted_card_use = sort_cards_by_use(card_use, card_color_identities)
 
     return (per_commander_synergy, per_commander_use,
-            commander_counts, sorted_card_use)
+            commander_counts, sorted_card_use, commander_card_counts)
 
 
 def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
@@ -272,5 +273,5 @@ if __name__ == '__main__':
     test_database = MongoDatabase(connection_string)
 
     # Calculate statistics
-    synergy, popularity, counts, color_popularity = \
+    synergy, popularity, counts, color_popularity, commander_card_counts = \
         get_all_scores(test_database)
