@@ -34,6 +34,7 @@ p {
   width: 49.5%;
 }
 
+
 .gallery-item {
   display: block;
   margin: 0 0 9px 0;
@@ -44,12 +45,19 @@ p {
   .gallery-item {
     width: 32.75%;
   }
+  .big-gallery-item {
+    width: 65.5%;
+  }
 }
 
 @media screen and (min-width: 920px) {
   .gallery-item {
     width: 24.5%;
   }
+  .big-gallery-item {
+    width: 75%;
+  }
+
 }
 
 img {
@@ -65,10 +73,10 @@ img {
 .partners .partner1 {
   z-index: 2;
   position: absolute;
-  height: 80%;
+  height: 85%;
   width: auto;
   left: 0;
-  bottom: 32px;
+  bottom: 8px;
 }
 
 .partners .partner2 {
@@ -76,7 +84,7 @@ img {
   position: absolute;
   bottom: 0;
   width: auto;
-  height: 80%;
+  height: 85%;
   right: 0;
   top: 0;
 }
@@ -187,3 +195,33 @@ img {
   width: 20%;
   display: flex;
 }
+
+.sort-button {
+  display: flex;
+  flex-flow: row nowrap;
+  height: 32px;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #063953;
+  transition: background-color .5s, color .5s;
+}
+
+.sort-button:hover {
+  background-color: #e9e9e9;
+  color: black;
+  text-decoration: underline;
+}
+
+.sort-button.active {
+  background-color: #063953;
+  color: #dcdcdc;
+}
+
+.sort-button.active:hover {
+  background-color: #063953;
+  color: white;
+  text-decoration: underline;
+}
+

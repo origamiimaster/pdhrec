@@ -1,20 +1,32 @@
-{% if commander.commanders.length == 1 %}
-  <a href="/commander/{{ commander.commanderstring }}" class="gallery-item">
+{% comment %}
+This code creates the image for a particular card.  
+Variables:
+- imgs: A list of images, either 1 or 2 of them to render.  
+- names: A list of names, same length as imgs to label alts.  
+- text: The text to include with the images.
+- synergy: The score to put in the attribute synergy.
+- popularity: The score to put in the attribute popularity.
+{% endcomment %}
+{% if imgs.length == 1 %}
+  <a
+    class="gallery-item"
+    synergy="{{synergy}}"
+    popularity="{{popularity}}">
     <img
       loading="lazy"
-      alt="{{commander.commanders[0] | escape}}"
-      src="{{commander.urls[0]}}">
-    {% if commander.count == 1 %}
-      <div class="info">In {{ commander.count }} deck</div>
-    {% else %}
-      <div class="info">In {{ commander.count }} decks</div>
-    {% endif %}
+      alt="{{names[0] | escape}}"
+      src="{{imgs[0]}}">
+    <div class="info">{{ text }}</div>
   </a>
-{% endif %}
-{% if commander.commanders.length == 2 %}
-  <a href="/commander/{{commander.commanderstring}}" class="gallery-item">
+
+{% elsif imgs.length == 2 %}
+  <a
+    class="gallery-item"
+    synergy="{{synergy}}"
+    popularity="{{popularity}}">
     <div class="partners">
       <div style="position: relative;">
+
         <img
           alt="spacer"
           src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
@@ -22,22 +34,28 @@
           style="position: relative;">
         <img
           loading="lazy"
-          alt="{{commander.commanders[0] | escape }}"
+          alt="{{names[0] | escape }}"
           class="partner1"
-          src="{{commander.urls[0]}}"
-          data-src="{{commander.urls[0]}}">
+          src="{{imgs[0]}}"
+          data-src="{{imgs[0]}}">
         <img
           loading="lazy"
-          alt="{{commander.commanders[1] | escape }}"
+          alt="{{names[1] | escape }}"
           class="partner2"
-          src="{{commander.urls[1]}}"
-          data-src="{{commander.urls[1]}}">
+          src="{{imgs[1]}}"
+          data-src="{{imgs[1]}}">
       </div>
-      {% if commander.count == 1 %}
-        <div class="info" style="position: relative;">In {{ commander.count }} deck</div>
-      {% else %}
-        <div class="info" style="position: relative;">In {{ commander.count }} decks</div>
-      {% endif %}
+      <div class="info" style="position: relative;">{{ text }}</div>
+    </div>
+  </a>
+{% else %}
+  <a class="gallery-item">
+    <img
+      loading="lazy"
+      alt="{{Error}}"
+      src="{{'https://cards.scryfall.io/large/front/7/6/76ac5b70-47db-4cdb-91e7-e5c18c42e516.jpg?1562558297'}}">
+    <div class="info">
+      Something went wrong with this image.
     </div>
   </a>
 {% endif %}
