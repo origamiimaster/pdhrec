@@ -4,10 +4,14 @@ Variables:
 - imgs: A list of images, either 1 or 2 of them to render.  
 - names: A list of names, same length as imgs to label alts.  
 - text: The text to include with the images.
-
+- synergy: The score to put in the attribute synergy.
+- popularity: The score to put in the attribute popularity.
 {% endcomment %}
 {% if imgs.length == 1 %}
-  <a class="gallery-item">
+  <a
+    class="gallery-item"
+    synergy="{{synergy}}"
+    popularity="{{popularity}}">
     <img
       loading="lazy"
       alt="{{names[0] | escape}}"
@@ -16,7 +20,10 @@ Variables:
   </a>
 
 {% elsif imgs.length == 2 %}
-  <a class="gallery-item">
+  <a
+    class="gallery-item"
+    synergy="{{synergy}}"
+    popularity="{{popularity}}">
     <div class="partners">
       <div style="position: relative;">
 

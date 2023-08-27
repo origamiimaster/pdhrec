@@ -43,22 +43,44 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
         <div id="gallery" class="gallery">
           <div id="commander-information" class="gallery-item" style="width: 100%; display: flex;">
             {% include 'components/commander_image.liquid', commander: mycommander %}
+            <div class="big-gallery-item" style="position: relative;">
             {% if mycommander.count == 1 %} 
-            <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} deck.</div>
+              {{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} deck.
             {% else %}
-              <div class="big-gallery-item">{{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.</div>
+              {{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.
             {% endif %}
+              <div style="position: absolute; bottom: 0px; right: 0px; display: flex; flex-direction: row;">
+                <div class="sort-button active" onclick="sortSynergy()">Synergy</div>
+                <div class="sort-button" onclick="sortPopularity()">Popularity</div>
+              </div>
+            </div>
           </div>
-          {% for card_data in mycommander.carddata %}
-          {% capture innerText %}{{card_data[0] | escape }}: {{card_data[1] | times:100 | round: 2}}%{% endcapture %}
-            {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText %}
-            {% comment %}
-            <a class="gallery-item">
-              <img loading="lazy" alt="{{card_data[0] | escape }}" src="{{card_data[2]}}" class="" data-src="{{card_data[2]}}"/>
-              <div class="info">{{card_data[0] | escape }}: {{card_data[1] | times:100 | round: 2}}%</div>
-            </a>
-            {% endcomment %}
+          <script>
+            function sortSynergy(){ 
+              let itemsToSort = $(".gallery-item:not(:first-child)").get()
+              itemsToSort.sort((a, b) => {
+                return parseFloat(a.getAttribute("synergy")) < parseFloat(b.getAttribute("synergy")) ? 1: -1
+              })
+              $(".sort-button:first-child").addClass("active")
+              $(".sort-button:last-child").removeClass("active")
+              let $sortedDivs = $(itemsToSort);
+              $("#gallery").append($sortedDivs)
+            }
 
+            function sortPopularity() {
+              let itemsToSort = $(".gallery-item:not(:first-child)").get()
+              itemsToSort.sort((a, b) => {
+                return parseFloat(a.getAttribute("popularity")) < parseFloat(b.getAttribute("popularity")) ? 1: -1
+              })
+              $(".sort-button:last-child").addClass("active")
+              $(".sort-button:first-child").removeClass("active")
+              let $sortedDivs = $(itemsToSort);
+              $("#gallery").append($sortedDivs)
+            }
+          </script>
+          {% for card_data in mycommander.carddata %}
+          {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+            {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy:card_data[1], popularity: card_data[3] %}
           {% endfor %}
         </div>
       </div>
