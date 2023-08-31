@@ -80,8 +80,53 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
           </script>
           {% for card_data in mycommander.carddata %}
           {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+          {% if card_data[2].length == 1 %}
+ 
+            <a
+            class="gallery-item"
+            synergy="{{card_data[1]}}"
+            popularity="{{card_data[3]}}">
+            <img
+            loading="lazy"
+            alt="{{card_data[0] | escape}}"
+            src="{{card_data[2][0]}}">
+            <div class="info">{{ innerText }}</div>
+            </a>
+          {% else %}
+          <a
+          class="gallery-item"
+          synergy="{{card_data[1]}}"
+          popularity="{{card_data[3]}}">
+          <div class="partners">
+          <div style="position: relative;">
+
+          <img
+          alt="spacer"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
+          class="partner3"
+          style="position: relative;">
+          <img
+          loading="lazy"
+          alt="{{card_data[0] | escape }}"
+          class="partner1"
+          src="{{card_data[2][0]}}"
+          data-src="{{card_data[2][0]}}">
+          <img
+          loading="lazy"
+          alt="{{card_data[0] | escape }}"
+          class="partner2"
+          src="{{card_data[2][1]}}"
+          data-src="{{card_data[2][1]}}">
+          </div>
+          <div class="info" style="position: relative;">{{ innerText }}</div>
+          </div>
+          </a>
+          {% endif %}
+          
+          {% comment %}
             {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy:card_data[1], popularity: card_data[3] %}
-          {% endfor %}
+          {% endcomment %}
+        {% endfor %}
         </div>
       </div>
     </div>
