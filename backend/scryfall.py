@@ -67,7 +67,7 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
 
     # Return dictionary with card information
     return {'name': name, 'image_urls': choose_image(scryfall_card_data),
-            'released': scryfall_card_data[0]['released_at'],
+            'released': posix_time(scryfall_card_data[0]['released_at']),
             'color_identities': ''.join(scryfall_card_data[0]['color_identity']),
             'legal_in_mainboard': legal_in_main(scryfall_card_data),
             'legal_as_commander': legal_as_commander(scryfall_card_data),
@@ -257,7 +257,7 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ["Muddle the Mixture"]
+    test_cards = ["Opaline Sliver"]
     for test_card in test_cards:
         time.sleep(100 / 1000)
         # test_card_request = requests.get(

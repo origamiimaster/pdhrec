@@ -71,9 +71,13 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
             print(f"Error adding decks from {source.__class__.__name__}")
 
     # Step 2: Update cards that have been added / modified in the latest set
-    newest_card = database.cards.find_one(sort=[('updated', -1)])
-    if 'updated' in newest_card:  # If no cards in database, skip this
-        new_cards_to_add = get_card_names_needing_update(newest_card['updated'])
+    newest_card = database.cards.find_one({"$or": [
+        {"legal_as_commmander": True}, {"legal_in_mainboard": True}]
+                                           },
+                                          sort=[('released', -1)])
+    if 'released' in newest_card:  # If no cards in database, skip this
+        new_cards_to_add = get_card_names_needing_update(
+            newest_card['released'])
         for card in new_cards_to_add:
             database.insert_card({'name': card, 'needsUpdate': True})
 
@@ -109,7 +113,8 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
                 print(
                     f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
             elif deck['source'] == 'archidekt':
-                print(f"Illegal deck: https://archidekt.com/decks/{deck['_id'][10:]}")
+                print(
+                    f"Illegal deck: https://archidekt.com/decks/{deck['_id'][10:]}")
             else:
                 print(f"Illegal deck from unknown source. ID = {deck['_id']}")
 
