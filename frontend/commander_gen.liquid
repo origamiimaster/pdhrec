@@ -1,9 +1,12 @@
----
-pagination:
-    data: commanders
-    size: 1
-    alias: mycommander
-permalink: "commander/{{ mycommander.commanderstring }}/"
+---js
+{
+  pagination: {
+    data: "commanders",
+    size: 1,
+    alias: "mycommander",
+  },
+  permalink: "commander/{{ mycommander.commanderstring }}/"
+}
 ---
 <!DOCTYPE html>
 <html>
@@ -33,6 +36,7 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#063953">
     <meta name="msapplication-TileColor" content="#2b5797">
     <meta name="theme-color" content="#063953">
+    <script src="/js/sort.js"></script>
 
   </head>
   {% include 'components/google.liquid' %}
@@ -55,33 +59,45 @@ permalink: "commander/{{ mycommander.commanderstring }}/"
               </div>
             </div>
           </div>
-          <script>
-            function sortSynergy(){ 
-              let itemsToSort = $(".gallery-item:not(:first-child)").get()
-              itemsToSort.sort((a, b) => {
-                return parseFloat(a.getAttribute("synergy")) < parseFloat(b.getAttribute("synergy")) ? 1: -1
-              })
-              $(".sort-button:first-child").addClass("active")
-              $(".sort-button:last-child").removeClass("active")
-              let $sortedDivs = $(itemsToSort);
-              $("#gallery").append($sortedDivs)
-            }
-
-            function sortPopularity() {
-              let itemsToSort = $(".gallery-item:not(:first-child)").get()
-              itemsToSort.sort((a, b) => {
-                return parseFloat(a.getAttribute("popularity")) < parseFloat(b.getAttribute("popularity")) ? 1: -1
-              })
-              $(".sort-button:last-child").addClass("active")
-              $(".sort-button:first-child").removeClass("active")
-              let $sortedDivs = $(itemsToSort);
-              $("#gallery").append($sortedDivs)
-            }
-          </script>
-          {% for card_data in mycommander.carddata %}
+          {% for card_data in mycommander.carddata limit:100 %}
           {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
-            {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy:card_data[1], popularity: card_data[3] %}
-          {% endfor %}
+            <a
+            class="gallery-item"
+            synergy="{{card_data[1]}}"
+            popularity="{{card_data[3]}}">
+          {% if card_data[2].length == 1 %}
+            <img
+            loading="lazy"
+            alt="{{card_data[0] | escape}}"
+            src="{{card_data[2][0]}}">
+            <div class="info">{{ innerText }}</div>
+          {% else %}
+          <div class="partners">
+          <div style="position: relative;">
+
+          <img
+          alt="spacer"
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASoAAAGfCAQAAABCNFdiAAAC4UlEQVR42u3SQREAAAzCsOHf9EzwI5HQaw7KIgGmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpwFSYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmAlNhKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVBJgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYCkyFqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKjAVpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTgakwFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTCUBpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqcBUmApTYSowFabCVGAqTIWpwFSYClOBqTAVpgJTYSpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFZgKU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVGAqTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlQSYCpMhanAVJgKU4GpMBWmAlNhKkwFpsJUmApMhakwFaYCU2EqTAWmwlSYCkyFqTAVmApTYSowFabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU4GpMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTAWmwlSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwlAabCVJgKTIWpMBWYClNhKjAVpsJUYCpMhanAVJgKU2EqMBWmwlRgKkyFqcBUmApTgakwFaYCU2EqTIWpwFSYClOBqTAVpgJTYSpMBabCVJgKTIWpMBWYClNhKkwFpsJUmApMhakwFZgKU2EqMBWmwlRgKkyFqRj2SwUBoCOf66IAAAAASUVORK5CYII="
+          class="partner3"
+          style="position: relative;">
+          <img
+          loading="lazy"
+          alt="{{card_data[0] | escape }}"
+          class="partner1"
+          src="{{card_data[2][0]}}"
+          data-src="{{card_data[2][0]}}">
+          <img
+          loading="lazy"
+          alt="{{card_data[0] | escape }}"
+          class="partner2"
+          src="{{card_data[2][1]}}"
+          data-src="{{card_data[2][1]}}">
+          </div>
+          <div class="info" style="position: relative;">{{ innerText }}</div>
+          </div>
+        {% endif %}
+        </a>
+        {% endfor %}
         </div>
       </div>
     </div>
