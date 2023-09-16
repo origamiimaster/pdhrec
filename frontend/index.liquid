@@ -5,6 +5,10 @@ pagination:
   data: commanders
   size: 24
 ---
+<script>
+  gtag('event', 'page-view', {name: "index"});
+</script>
+
 <div id="gallery" class="gallery">
   {% for commanderdata in pagination.items %}
     {% include 'components/commander_image.liquid', commander: commanderdata %}
