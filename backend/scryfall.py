@@ -71,6 +71,8 @@ def get_card_from_scryfall(name: str, scryfall_cache: dict) -> dict:
             'color_identities': ''.join(scryfall_card_data[0]['color_identity']),
             'legal_in_mainboard': legal_in_main(scryfall_card_data),
             'legal_as_commander': legal_as_commander(scryfall_card_data),
+            'type_line': scryfall_card_data[0]['type_line'],
+            'mana_value': scryfall_card_data[0]['cmc'],
             'needsUpdate': False}
 
 
