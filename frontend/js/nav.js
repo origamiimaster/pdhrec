@@ -35,6 +35,7 @@ $(document).ready(() => {
                         inp.value = this.getElementsByTagName("input")[0].value;
                         closeAllLists();
                         // $('form').submit()
+                        gtag('event', 'search_used', {name: inp.value});
                         window.location.href = "/commander/"+ inp.value.replaceAll(" // ", "--").replaceAll(" ", "-").replaceAll(".", "").toLowerCase().replaceAll(",", "").replaceAll("'", "")
                     });
                     a.appendChild(b);
