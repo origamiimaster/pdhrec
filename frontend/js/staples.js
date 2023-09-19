@@ -1,4 +1,5 @@
 let colors = "WBURG";
+gtag('event', 'page-view', {name: "staples"});
 window.onload = () => {
     $(".symbolW").parent()[0].addEventListener("click", (e)=>{
         if (e.currentTarget.className == "active") {
