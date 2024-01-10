@@ -49,7 +49,7 @@ class MongoDatabase:
         :param card_data: Card to insert, as a dictionary from a Card object
         """
         assert 'name' in card_data
-        # if card_data['name'] not in self.cards_cache:  # Update if not cached.
+
         self.cards.update_one(filter={'name': card_data['name']},
                               update={'$set': card_data}, upsert=True)
         if not card_data['needsUpdate']:
