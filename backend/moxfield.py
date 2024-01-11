@@ -104,7 +104,7 @@ class MoxfieldDeckSource(_DeckSource):
 
 if __name__ == '__main__':
     expected = {
-        '_id': 'yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
-        'commanders': [], 'cards': []}
+        '_id': 'moxfield:yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
+        'commanders': [], 'cards': [], 'source': 'moxfield'}
     source = MoxfieldDeckSource()
     print(source.get_deck('yH7w5QHvCEKJSjdnrzr1EQ') == expected)

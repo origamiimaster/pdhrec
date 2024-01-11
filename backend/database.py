@@ -44,7 +44,6 @@ class MongoDatabase:
     def insert_card(self, card_data: dict) -> None:
         """
         Insert a card into the database.
-        If the card is already present in card_cache, do nothing.
 
         :param card_data: Card to insert, as a dictionary from a Card object
         """
