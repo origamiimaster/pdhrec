@@ -76,10 +76,10 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
                                            },
                                           sort=[('released', -1)])
     if 'released' in newest_card:  # If no cards in database, skip this
-        new_cards_to_add = get_card_names_needing_update(
-            newest_card['released'])
+        new_cards_to_add = get_card_names_needing_update(newest_card['released'])
         for card in new_cards_to_add:
-            database.insert_card({'name': card, 'needsUpdate': True})
+            # database.insert_card({'name': card, 'needsUpdate': True})
+            database.update_card({'name': card, 'needsUpdate': True})
 
     # Step 3: Update cards in need of an update
     # Then have the database update any cards in need of an update:
@@ -92,7 +92,8 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
         print(f'Updating card {card}')
         start_time = time.time()
         card_data = get_card_from_scryfall(card, scryfall_cache)
-        database.insert_card(card_data)
+        # database.insert_card(card_data)
+        database.update_card(card_data)
         print(f'Processing time: {time.time() - start_time}')
 
     # Step 4: Check each deck for illegal cards
