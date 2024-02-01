@@ -11,10 +11,5 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addPassthroughCopy("safari-pinned-tab.svg");
     eleventyConfig.addPassthroughCopy("site.webmanifest");
 
-    eleventyConfig.addFilter("commandernamefix", function(value) {
-        console.log(value)
-        return value;
-    });
-
 };
   
