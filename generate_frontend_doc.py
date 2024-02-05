@@ -92,8 +92,10 @@ if __name__ == '__main__':
             else:
                 raise Exception(f'{card} not in image_lookup')
             card_popularity = commander_card_counts[tuple(commander[
-                                                              'commanders'])][card]
-            card_info = [card, synergy_scores[card], card_image, card_popularity]
+                                                              'commanders'])][
+                card]
+            card_info = [card, synergy_scores[card], card_image,
+                         card_popularity]
             commander['carddata'].append(card_info)
         # Sort cards by decreasing synergy scores
         commander['carddata'].sort(key=lambda info: -info[1])
