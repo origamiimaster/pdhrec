@@ -10,6 +10,7 @@ from backend.archidekt import ArchidektDeckSource
 from backend.prices import save_price_dictionary
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
+import tqdm
 
 if __name__ == '__main__':
     # Create a connection to the database
@@ -36,7 +37,7 @@ if __name__ == '__main__':
         image_lookup[card['name']] = card['image_urls']
     lands = set()
     double_faced = set()
-    for card in all_card_data:
+    for card in tqdm.tqdm(all_card_data):
         if 'type_line' not in card:
             continue
         if 'Land' in card['type_line']:
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     # Store all updated commander data
     commander_data = []
     # Record commander names and image URLs
-    for commanders in commanders_list:
+    for commanders in tqdm.tqdm(commanders_list):
         urls = []
         for card in commanders:
             urls.extend(database.cards.find_one({'name': card})['image_urls'])
@@ -76,8 +77,8 @@ if __name__ == '__main__':
 
     processed = 0  # Number of commanders processed
     commander_names = []
-    for commander in commander_data:
-        print(f'Updating: {commander}')
+    for commander in tqdm.tqdm(commander_data):
+        tqdm.tqdm.write(f'Updating: {commander}')
         # Store commander name
         commander_names.append(" ".join(commander['commanders']))
         # Store count of decks with commander
@@ -122,9 +123,9 @@ if __name__ == '__main__':
                 "-".join(sorted(normalize_cardnames(commander['commanders'])))
 
         # Update user on processing status
-        print(commander['commanderstring'])
+        tqdm.tqdm.write(commander['commanderstring'])
         processed += 1
-        print(f"{processed} / {len(commander_data)}")
+        tqdm.tqdm.write(f"{processed} / {len(commander_data)}")
 
     # Save commander names to file
     with open('frontend/commandernames.json', 'w') as commandernames_file:
