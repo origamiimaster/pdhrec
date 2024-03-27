@@ -6,7 +6,7 @@ import time
 import requests
 from urllib.parse import quote
 from backend.utils import posix_time
-
+import tqdm
 
 def make_scryfall_request(name) -> list:
     print('Searching')
@@ -259,16 +259,20 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
 
 if __name__ == '__main__':
     # Test if the image function is working:
-    test_cards = ["Opaline Sliver"]
-    for test_card in test_cards:
-        time.sleep(100 / 1000)
-        # test_card_request = requests.get(
-        #     f"https://api.scryfall.com/cards/search?q=\""
-        #     f"{quote(test_card)}\"&order=released&dir=asc&unique=prints")
-        # if test_card_request.status_code != requests.codes.ok:
-        #     exit(1)
-        test_card_data = make_scryfall_request(test_card)
-        # test_card_data = test_card_request.json()['data']
-        print(choose_image(test_card_data))
-        for data in test_card_data:
-            print(card_sort_key(data), data['scryfall_uri'])
+    # test_cards = ["Opaline Sliver"]
+    # for test_card in test_cards:
+    #     time.sleep(100 / 1000)
+    #     # test_card_request = requests.get(
+    #     #     f"https://api.scryfall.com/cards/search?q=\""
+    #     #     f"{quote(test_card)}\"&order=released&dir=asc&unique=prints")
+    #     # if test_card_request.status_code != requests.codes.ok:
+    #     #     exit(1)
+    #     test_card_data = make_scryfall_request(test_card)
+    #     # test_card_data = test_card_request.json()['data']
+    #     print(choose_image(test_card_data))
+    #     for data in test_card_data:
+    #         print(card_sort_key(data), data['scryfall_uri'])
+
+    # Test Sets to Update function:
+
+    result = get_card_names_needing_update(1690993022.126658)

@@ -13,6 +13,7 @@ from backend.moxfield import MoxfieldDeckSource
 from backend.scryfall import get_card_from_scryfall, \
     get_card_names_needing_update
 from backend.legality import is_legal
+import tqdm
 
 
 def get_latest_bulk_file(directory: str = '../scryfall_data',
@@ -73,27 +74,29 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     # Step 2: Update cards that have been added / modified in the latest set
     newest_card = database.cards.find_one({"$or": [
         {"legal_as_commmander": True}, {"legal_in_mainboard": True}]
-                                           },
-                                          sort=[('released', -1)])
+    },
+        sort=[('released', -1)])
     if 'released' in newest_card:  # If no cards in database, skip this
         new_cards_to_add = get_card_names_needing_update(
             newest_card['released'])
-        for card in new_cards_to_add:
-            database.insert_card({'name': card, 'needsUpdate': True})
+        for card in tqdm.tqdm(new_cards_to_add):
+            # database.insert_card({'name': card, 'needsUpdate': True})
+            database.update_card({'name': card, 'needsUpdate': True})
 
     # Step 3: Update cards in need of an update
     # Then have the database update any cards in need of an update:
     scryfall_cache = {}
     # Save all names to close cursor
     cards_needing_update = []
-    for card in database.cards.find({'needsUpdate': True}):
+    for card in tqdm.tqdm(database.cards.find({'needsUpdate': True})):
         cards_needing_update.append(card['name'])
-    for card in cards_needing_update:
-        print(f'Updating card {card}')
+    for card in tqdm.tqdm(cards_needing_update):
+        tqdm.tqdm.write(f'Updating card {card}')
         start_time = time.time()
         card_data = get_card_from_scryfall(card, scryfall_cache)
-        database.insert_card(card_data)
-        print(f'Processing time: {time.time() - start_time}')
+        # database.insert_card(card_data)
+        database.update_card(card_data)
+        tqdm.tqdm.write(f'Processing time: {time.time() - start_time}')
 
     # Step 4: Check each deck for illegal cards
     cards_cache = {}
@@ -101,7 +104,8 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     decks_needing_check = []
     for deck in database.decks.find({'needsLegalityCheck': True}):
         decks_needing_check.append(deck)
-    for deck in decks_needing_check:
+
+    for deck in tqdm.tqdm(decks_needing_check):
         # print(deck)
         legal = is_legal(deck, cards_cache, database)
         deck['needsLegalityCheck'] = False
@@ -110,13 +114,14 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
         database.insert_deck(deck)
         if not legal:
             if deck['source'] == "moxfield":
-                print(
+                tqdm.tqdm.write(
                     f"Illegal deck: https://moxfield.com/decks/{deck['_id'][9:]}")
             elif deck['source'] == 'archidekt':
-                print(
+                tqdm.tqdm.write(
                     f"Illegal deck: https://archidekt.com/decks/{deck['_id'][10:]}")
             else:
-                print(f"Illegal deck from unknown source. ID = {deck['_id']}")
+                tqdm.tqdm.write(f"Illegal deck from unknown source. ID ="
+                                f" {deck['_id']}")
 
 
 def add_source_to_database(source: _DeckSource, database) -> bool:
@@ -128,7 +133,7 @@ def add_source_to_database(source: _DeckSource, database) -> bool:
     :param database: A Database object to insert decks into.
     :return: True if all decks updated, False if an error occurred.
     """
-    print(f"Inserting decks from {source.__class__.__name__} into"
+    tqdm.tqdm.write(f"Inserting decks from {source.__class__.__name__} into"
           f" {database.__class__.__name__}")
     latest_updated_deck = database.decks.find_one(
         {'source': source.name}, sort=[('update_date', -1)]
@@ -141,11 +146,10 @@ def add_source_to_database(source: _DeckSource, database) -> bool:
 
     decks_to_update = source.get_new_decks(latest_updated_time)
 
-    for deck in decks_to_update:
-        print(f"Inserting {deck['_id']}")
+    for deck in tqdm.tqdm(decks_to_update):
+        tqdm.tqdm.write(f"Inserting {deck['_id']}")
         deck['needsLegalityCheck'] = True
         database.insert_deck(deck)
-
     return True
 
 

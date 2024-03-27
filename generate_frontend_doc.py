@@ -7,8 +7,10 @@ from backend.aggregator import get_all_scores, get_card_color_identities
 from backend.database import MongoDatabase
 from backend.moxfield import MoxfieldDeckSource
 from backend.archidekt import ArchidektDeckSource
+from backend.prices import save_price_dictionary
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
+import tqdm
 
 if __name__ == '__main__':
     # Create a connection to the database
@@ -35,7 +37,7 @@ if __name__ == '__main__':
         image_lookup[card['name']] = card['image_urls']
     lands = set()
     double_faced = set()
-    for card in all_card_data:
+    for card in tqdm.tqdm(all_card_data):
         if 'type_line' not in card:
             continue
         if 'Land' in card['type_line']:
@@ -60,7 +62,7 @@ if __name__ == '__main__':
     # Store all updated commander data
     commander_data = []
     # Record commander names and image URLs
-    for commanders in commanders_list:
+    for commanders in tqdm.tqdm(commanders_list):
         urls = []
         for card in commanders:
             urls.extend(database.cards.find_one({'name': card})['image_urls'])
@@ -75,8 +77,8 @@ if __name__ == '__main__':
 
     processed = 0  # Number of commanders processed
     commander_names = []
-    for commander in commander_data:
-        print(f'Updating: {commander}')
+    for commander in tqdm.tqdm(commander_data):
+        tqdm.tqdm.write(f'Updating: {commander}')
         # Store commander name
         commander_names.append(" ".join(commander['commanders']))
         # Store count of decks with commander
@@ -91,8 +93,10 @@ if __name__ == '__main__':
             else:
                 raise Exception(f'{card} not in image_lookup')
             card_popularity = commander_card_counts[tuple(commander[
-                                                              'commanders'])][card]
-            card_info = [card, synergy_scores[card], card_image, card_popularity]
+                                                              'commanders'])][
+                card]
+            card_info = [card, synergy_scores[card], card_image,
+                         card_popularity]
             commander['carddata'].append(card_info)
         # Sort cards by decreasing synergy scores
         commander['carddata'].sort(key=lambda info: -info[1])
@@ -119,9 +123,9 @@ if __name__ == '__main__':
                 "-".join(sorted(normalize_cardnames(commander['commanders'])))
 
         # Update user on processing status
-        print(commander['commanderstring'])
+        tqdm.tqdm.write(commander['commanderstring'])
         processed += 1
-        print(f"{processed} / {len(commander_data)}")
+        tqdm.tqdm.write(f"{processed} / {len(commander_data)}")
 
     # Save commander names to file
     with open('frontend/commandernames.json', 'w') as commandernames_file:
@@ -141,3 +145,5 @@ if __name__ == '__main__':
     # Save color popularity to file
     with open('frontend/_data/staples.json', 'w') as staples_file:
         json.dump(staples, staples_file)
+
+    save_price_dictionary("frontend/_data/prices.json")

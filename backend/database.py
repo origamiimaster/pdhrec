@@ -41,20 +41,37 @@ class MongoDatabase:
         for card in data['commanders']:
             self.insert_card({'name': card, 'needsUpdate': True})
 
-    def insert_card(self, card_data: dict) -> None:
+    def update_card(self, card_data: dict, upsert: bool = True) -> None:
         """
-        Insert a card into the database.
-        If the card is already present in card_cache, do nothing.
+        Updates a card object into the database. If upsert is true, it will
+        insert the card. If not, the function will make no change
+        to the database.
 
-        :param card_data: Card to insert, as a dictionary from a Card object
+        :param card_data: The card to insert. Must have a name.
+        :param upsert: boolean flag if you want to insert as well.
         """
         assert 'name' in card_data
-        if card_data['name'] not in self.cards_cache:  # Update if not cached.
-            self.cards.update_one(filter={'name': card_data['name']},
-                                  update={'$set': card_data}, upsert=True)
-            if not card_data['needsUpdate']:
-                card_data['updated'] = time()
-                self.cards_cache.append(card_data['name'])
+        if "needsUpdate" in card_data and not card_data['needsUpdate']:
+            card_data['updated'] = time()
+            self.cards_cache.append(card_data['name'])
+
+        res = self.cards.update_one(filter={'name': card_data['name']},
+                                    update={'$set': card_data}, upsert=upsert)
+
+    def insert_card(self, card_data: dict) -> bool:
+        """
+        Insert a new card object into the "cards" collection.  Returns
+        success or failure.
+
+        :param card_data: The card to insert.
+        :return: if the value was inserted.
+        """
+        assert 'name' in card_data
+        try:
+            res = self.cards.insert_one(card_data)
+            return True
+        except pymongo.errors.DuplicateKeyError:
+            return False
 
     def get_card(self, card: str) -> dict:
         """

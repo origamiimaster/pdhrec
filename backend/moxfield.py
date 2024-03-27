@@ -16,10 +16,16 @@ class MoxfieldDeckSource(_DeckSource):
         """
         super().__init__('moxfield')
         self.api_url = 'https://api.moxfield.com/v2/'
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) "
+                          "AppleWebKit/537.36 (KHTML, like Gecko) "
+                          "Chrome/114.0.0.0 Mobile Safari/537.36",
+        }
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the moxfield decks API.
-        request = requests.get(self.api_url + f'decks/all/{identifier}')
+        request = requests.get(self.api_url + f'decks/all/{identifier}',
+                               headers=self.headers)
         # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             print(f"Request failed: Get deck from Moxfield with identifier "
@@ -75,7 +81,7 @@ class MoxfieldDeckSource(_DeckSource):
         :return: metadata on most recent decks, as list of dictionaries
         """
         url = f"""{self.api_url}decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
-        decks_request = requests.get(url)
+        decks_request = requests.get(url, headers=self.headers)
         if decks_request.status_code != requests.codes.ok:
             print(f'Request failed: Get new decks: page {page}')
             return None
@@ -104,7 +110,7 @@ class MoxfieldDeckSource(_DeckSource):
 
 if __name__ == '__main__':
     expected = {
-        '_id': 'yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
-        'commanders': [], 'cards': []}
+        '_id': 'moxfield:yH7w5QHvCEKJSjdnrzr1EQ', 'update_date': 1691549744.723,
+        'commanders': [], 'cards': [], 'source': 'moxfield'}
     source = MoxfieldDeckSource()
     print(source.get_deck('yH7w5QHvCEKJSjdnrzr1EQ') == expected)

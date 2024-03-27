@@ -4,6 +4,8 @@ important statistics.
 """
 import json
 from bson.son import SON
+from tqdm import tqdm
+
 from backend.database import MongoDatabase
 from backend.utils import color_identities
 
@@ -84,7 +86,7 @@ def aggregate_counts(database: MongoDatabase) -> tuple[dict, dict, dict, dict]:
     # Initial aggregation of deck counts by color
     aggregate_pipeline = [{'$match': {'isLegal': True}}]
 
-    for deck in database.decks.aggregate(pipeline=aggregate_pipeline):
+    for deck in tqdm(database.decks.aggregate(pipeline=aggregate_pipeline)):
         # Obtain deck ID and commanders
         deck_id = deck['_id']
         commanders = tuple(sorted(deck['commanders']))
