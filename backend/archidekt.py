@@ -56,11 +56,15 @@ class ArchidektDeckSource(_DeckSource):
         mainboard = []
         commanders = []
         for card in deck_data['cards']:
-            if "Commander" in card['categories']:
+            if card['categories'] is not None and "Commander" in card[\
+                    'categories']:
                 for _ in range(card['quantity']):
                     commanders.append(card['card']['oracleCard']['name'])
             else:
-                if len(card['categories']) == 0 or category_included_lookup[card['categories'][0]]:
+                if card['categories'] is None:
+                    # Skip this, we don't know what's up for now.
+                    pass
+                elif len(card['categories']) == 0 or category_included_lookup[card['categories'][0]]:
                     for _ in range(card['quantity']):
                         mainboard.append(card['card']['oracleCard']['name'])
         return {
