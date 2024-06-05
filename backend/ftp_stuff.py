@@ -5,18 +5,21 @@ frontent/build/* into the hosting service.
 import os
 import json
 from ftplib import error_perm, FTP
+from time import sleep
 
 
-def placeFiles(ftp, path, verbose=False):
+def placeFiles(ftp, path, verbose=False, delay=0.0):
     for name in os.listdir(path):
         localpath = os.path.join(path, name)
         if os.path.isfile(localpath):
             print("STOR", name, localpath) if verbose else None
             ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
+            sleep(delay)
         elif os.path.isdir(localpath):
             print("MKD", name) if verbose else None
             try:
                 ftp.mkd(name)
+                sleep(delay)
             except error_perm as e:
                 if not e.args[0].startswith('550'):
                     raise
@@ -36,4 +39,4 @@ if __name__ == "__main__":
     ftp.login(user=data['ftp_username'], passwd=data['ftp_password'])
     ftp.cwd("/pdhrec.com/public_html")
 
-    placeFiles(ftp, "../frontend/build", verbose=True)
+    placeFiles(ftp, "../frontend/build", verbose=True, delay=0.2)
