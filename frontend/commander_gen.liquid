@@ -64,9 +64,9 @@
               </div>
             </div>
           </div>
-          {% for card_data in mycommander.carddata limit:100 %}
+          {% for card_data in mycommander.carddata limit:60 %}
           {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
-        {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], price: prices[card_data[0]][0], sku: prices[card_data[0]][1] %}
+        {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3] %}
         {% endfor %}
         </div>
       </div>

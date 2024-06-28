@@ -13,6 +13,6 @@ The synergy score for a card is a measure of how popular a card is in decks with
 Pauper Dragon Highlander, PDH, PEDH, Pauper Commander are all names for a format of Magic: the Gathering which is a cross between the Commander and Pauper formats. Just like in Commander, you pick a creature to act as your commander, and then choose cards in the same color identity to build a 100 card deck. But like in Pauper, the restriction is that all of the cards in your deck must be common rarity. The only key difference is that your commander is any uncommon creature, not a common and not necessarily legendary.  Check out the <a href="https://www.pdhhomebase.com/" target="_blanj">PDH Homebase</a> for details.  
 
 ## Support
-If you like the website and want to support, you can donate <a href="https://ko-fi.com/origamiimaster" target="_blank">here</a>.
+If you like the website and want to support, you can donate <a href="https://ko-fi.com/origamiimaster" target="_blank">here</a>. I also use affiliate links, so if you click on the price of a card here and buy it, a portion of the sale goes to running this website. 
 
 <!-- Website last updated at {{ "now" | date: "%Y-%m-%d %H:%M" }}. -->
