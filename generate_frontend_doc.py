@@ -11,11 +11,16 @@ from backend.prices import save_price_dictionary
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 import tqdm
+import os
 
 if __name__ == '__main__':
     # Create a connection to the database
-    with open('server-token.json') as server_token_file:
-        connection_string = json.load(server_token_file)['connection']
+    # with open('server-token.json') as server_token_file:
+    #     connection_string = json.load(server_token_file)['connection']
+    print(os.environ['DATABASE_VALUES'])
+    connection_string = json.loads(os.environ['DATABASE_VALUES'])['connection']
+    print(connection_string)
+
     database = MongoDatabase(connection_string)
     sources = [ArchidektDeckSource()]# , MoxfieldDeckSource()]
 
