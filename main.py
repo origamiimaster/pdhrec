@@ -1,3 +1,3 @@
 if __name__ == "__main__":
     print("Running")
-    exit(2)
+    exit()
