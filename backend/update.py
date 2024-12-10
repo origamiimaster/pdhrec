@@ -70,7 +70,6 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     for source in deck_sources:
         if not add_source_to_database(source, database):
             print(f"Error adding decks from {source.__class__.__name__}")
-
     # Step 2: Update cards that have been added / modified in the latest set
     newest_card = database.cards.find_one({"$or": [
         {"legal_as_commmander": True}, {"legal_in_mainboard": True}]

@@ -9,7 +9,7 @@ from backend.utils import posix_time
 import tqdm
 
 def make_scryfall_request(name) -> list:
-    print('Searching')
+    tqdm.tqdm.write('Searching')
     scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
     card_request = requests.get(scryfall_card_url)
     if card_request.status_code != requests.codes.ok:
@@ -241,17 +241,25 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
     :return: Card legality as commander
     """
     try:
-        if scryfall_data[0]['legalities']['paupercommander'] == 'restricted':
-            return True
-        elif scryfall_data[0]['legalities']['paupercommander'] == 'not_legal':
-            return False
-        else:  # Check if a creature printed as uncommon then downshifted
-            for printing in scryfall_data:
-                if ('paper' in printing['games'] and
-                        'Creature' in printing['type_line'] and
-                        printing['rarity'] == 'uncommon'):
-                    return True
-            return False
+        # New Logic:
+        for printing in scryfall_data:
+            # Bad sets:
+            bad_sets = ["REN", "RIN", "PSAL"]
+            # Bad Cards:
+            bad_cards = ['Blightbelly Rat', 'Dryad Arbor', 'Phyrexian Rager', 'Self Assembler']
+            if printing['set'] not in bad_sets and printing['name'] not in bad_cards:
+                if 'paper' in printing['games'] and ('Creature' in printing['type_line'] or 'Background' in printing['type_line']) and printing['rarity'] == 'uncommon' and printing['set_type'] != 'funny':
+                    if 'security_stamp' in printing and 'acorn' in printing['security_stamp']:
+                        continue
+                    if "//" in printing['type_line']:
+                        # Double sided cards:
+                        # Only check first half type line.
+                        temp_type_line = printing['type_line'].split("//")[0]
+                        if "Creature" in temp_type_line:
+                            return True
+                    else:
+                        return True
+        return False
     except IndexError:
         print(f'Card Error: {scryfall_data}')
         return False
