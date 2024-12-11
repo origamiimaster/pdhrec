@@ -20,7 +20,7 @@ if __name__ == '__main__':
     connection_string = json.loads(os.environ['DATABASE_VALUES'])['connection']
 
     database = MongoDatabase(connection_string)
-    sources = [ArchidektDeckSource()]# , MoxfieldDeckSource()]
+    sources = [ArchidektDeckSource(), MoxfieldDeckSource()]
 
     # Commit updates to the database
     print('Updating database')
