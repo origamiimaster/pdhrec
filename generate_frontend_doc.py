@@ -3,6 +3,9 @@ Generates files to build the frontend.
 """
 
 import json
+
+import requests
+
 from backend.aggregator import get_all_scores, get_card_color_identities
 from backend.database import MongoDatabase
 from backend.moxfield import MoxfieldDeckSource
@@ -18,7 +21,7 @@ if __name__ == '__main__':
     # with open('server-token.json') as server_token_file:
     #     connection_string = json.load(server_token_file)['connection']
     connection_string = json.loads(os.environ['DATABASE_VALUES'])['connection']
-
+    print(f'IP: {requests.get("https://api.ipify.org/?format=json").json()["ip"]}')
     database = MongoDatabase(connection_string)
     sources = [ArchidektDeckSource(), MoxfieldDeckSource()]
 
