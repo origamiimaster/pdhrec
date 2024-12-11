@@ -17,9 +17,7 @@ if __name__ == '__main__':
     # Create a connection to the database
     # with open('server-token.json') as server_token_file:
     #     connection_string = json.load(server_token_file)['connection']
-    print(os.environ['DATABASE_VALUES'])
     connection_string = json.loads(os.environ['DATABASE_VALUES'])['connection']
-    print(connection_string)
 
     database = MongoDatabase(connection_string)
     sources = [ArchidektDeckSource()]# , MoxfieldDeckSource()]
