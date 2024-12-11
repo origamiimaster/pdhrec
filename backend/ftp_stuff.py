@@ -29,8 +29,9 @@ def placeFiles(ftp, path, verbose=False):
 
 
 if __name__ == "__main__":
-    with open('../server-token.json') as server_token_file:
-        data = json.load(server_token_file)
+    # with open('../server-token.json') as server_token_file:
+    #     data = json.load(server_token_file)
+    data = json.loads(os.environ['DATABASE_VALUES'])
 
     ftp = FTP(data['ftp_domain'])
     ftp.login(user=data['ftp_username'], passwd=data['ftp_password'])
