@@ -10,6 +10,7 @@ import re
 from backend.database import MongoDatabase
 from backend.decksource import _DeckSource
 from backend.moxfield import MoxfieldDeckSource
+from backend.archidekt import ArchidektDeckSource
 from backend.scryfall import get_card_from_scryfall, \
     get_card_names_needing_update
 from backend.legality import is_legal
@@ -159,5 +160,5 @@ if __name__ == '__main__':
     with open('../server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     test_database = MongoDatabase(connection_string)
-    test_source = MoxfieldDeckSource()
+    test_source = ArchidektDeckSource()
     perform_update(test_database, [test_source])
