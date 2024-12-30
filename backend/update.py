@@ -143,13 +143,16 @@ def add_source_to_database(source: _DeckSource, database) -> bool:
     else:
         latest_updated_time = latest_updated_deck['update_date']
 
-    decks_to_update = source.get_new_decks(latest_updated_time)
+    try:
+        decks_to_update = source.get_new_decks(latest_updated_time)
 
-    for deck in tqdm.tqdm(decks_to_update):
-        tqdm.tqdm.write(f"Inserting {deck['_id']}")
-        deck['needsLegalityCheck'] = True
-        database.insert_deck(deck)
-    return True
+        for deck in tqdm.tqdm(decks_to_update):
+            tqdm.tqdm.write(f"Inserting {deck['_id']}")
+            deck['needsLegalityCheck'] = True
+            database.insert_deck(deck)
+        return True
+    except ValueError:
+        return False
 
 
 if __name__ == '__main__':
