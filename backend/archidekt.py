@@ -4,9 +4,11 @@ Access moxfield and query decks for inclusion in the database.
 from typing import Optional
 
 import requests
-from time import sleep
+from time import sleep, time
 from backend.decksource import _DeckSource
 from backend.utils import posix_time
+from bs4 import BeautifulSoup
+
 
 
 class ArchidektDeckSource(_DeckSource):
@@ -84,7 +86,7 @@ class ArchidektDeckSource(_DeckSource):
         if paged_decks is None:
             raise ValueError
 
-        while (all(posix_time(deck['updatedAt']) > newest_deck_time
+        while (all(deck['updatedAt'] > newest_deck_time
                    for deck in paged_decks['results']) and
                paged_decks['next'] is not None):
             for deck in paged_decks["results"]:
@@ -98,7 +100,7 @@ class ArchidektDeckSource(_DeckSource):
             sleep(0.5)
 
         for deck in paged_decks['results']:
-            if posix_time(deck['updatedAt']) <= newest_deck_time:
+            if deck['updatedAt'] <= newest_deck_time:
                 break
             collected_deck_ids.append(deck['id'])
 
@@ -117,7 +119,8 @@ class ArchidektDeckSource(_DeckSource):
         :param page: Page of the list of new decks to return
         :return: metadata on most recent decks, as list of dictionaries
         """
-        url = self.api_url + f'?formats=17&orderBy=-updatedAt&page={page}'
+        url = f"https://archidekt.com/search/decks?deckFormat=17&orderBy=-updatedAt&page={page}"
+
         decks_request = requests.get(url)
         if decks_request.status_code != requests.codes.ok:
             if decks_request.status_code == requests.codes.too_many_requests:
@@ -128,13 +131,62 @@ class ArchidektDeckSource(_DeckSource):
                 return self.get_new_decks_paginated(page)
             print(f'Request failed: Get new decks: page {page}')
             return None
-        return decks_request.json()
+
+        # Process decks.
+        html_page = decks_request.text
+
+        # print(html_page)
+
+        soup = BeautifulSoup(html_page, 'html.parser')
+
+        results = soup.find_all(class_=lambda value: value and 'decks_deck' in value)[0].children
+
+        page_info = soup.find_all(class_=lambda value: value and 'decks_pageControls' in value)[0].find_all('a')[1]
+
+
+        to_return = {
+            "results": [],
+            "next": None if page_info.has_attr('disabled') else page + 1
+        }
+
+        for deck in results:
+            long_ago_text = deck.find_all(class_=lambda value: value and "deckLink_view" in value)[0].text.split(" • ")[1][:-4]
+            long_ago_unit = long_ago_text.split(" ")[1]
+            long_ago_val  = int(long_ago_text.split(" ")[0])
+            cur_time = time()
+            unit_lookup = {
+                "secs": 1,
+                "mins": 60,
+                "hrs": 60 * 60,
+                "days": 60 * 60 * 24
+            }
+            deck_time = cur_time - long_ago_val * unit_lookup[long_ago_unit]
+            print(deck_time)
+
+            id_data_text = deck.find_all(class_=lambda value: value and "deckLink_header" in value)[0]
+            url = id_data_text.a.get("href")
+            deck_id = url.split("/")[2]
+            print(deck_id)
+            new_deck_obj = {
+                "updatedAt": deck_time,
+                "id": deck_id
+            }
+            print(new_deck_obj)
+            to_return["results"].append(new_deck_obj)
+
+
+
+        return to_return
 
 
 if __name__ == "__main__":
     source = ArchidektDeckSource()
-    temp = source.get_deck('5045556')
+    # temp = source.get_deck('5045556')
+    # print(temp)
+    temp = source.get_new_decks_paginated(1)
     print(temp)
+
+
     # temp = source.get_new_decks(newest_deck_time=1691750188.0)
     # print(len(temp))
-
+    #
