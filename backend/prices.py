@@ -8,7 +8,7 @@ from backend.utils import normalize_cardname
 
 ILLEGAL_SETS = ["Collectors Ed", 'Magic 30th Anniversary Edition', 'World Championships']
 
-TCGPLAYER_AFFILIATE_LINK = "https://tcgplayer.pxf.io/c/5127700/1830156/21018"
+TCGPLAYER_AFFILIATE_LINK = "https://partner.tcgplayer.com/c/5127700/1830156/21018"
 TCGPLAYER_ALL_PRICES_LINK = "https://mtgjson.com/api/v5/AllPricesToday.json.gz"
 
 CARDKINGDOM_AFFILIATE_LINK = "?partner=PDHREC&partner_args="
