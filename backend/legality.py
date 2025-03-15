@@ -95,3 +95,16 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
 
     # If commanders and cards are legal, the deck is legal
     return True
+
+
+if __name__ == "__main__":
+    card_name = "Phyrexian Rager"
+    import json
+    with open('../server-token.json') as server_token_file:
+        test_connection_string = json.load(server_token_file)['connection']
+    database = MongoDatabase(test_connection_string)
+    from backend.scryfall import get_card_from_scryfall
+    card_data = get_card_from_scryfall(card_name, {})
+    print(card_data['legal_as_commander'])
+
+    # database.insert_card({'name': card_name, 'needsUpdate': True})
