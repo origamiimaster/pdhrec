@@ -7,6 +7,7 @@ import requests
 from time import sleep
 from backend.utils import posix_time
 from backend.decksource import _DeckSource
+import cloudscraper
 
 
 class MoxfieldDeckSource(_DeckSource):
@@ -21,11 +22,11 @@ class MoxfieldDeckSource(_DeckSource):
                           "AppleWebKit/537.36 (KHTML, like Gecko) "
                           "Chrome/114.0.0.0 Mobile Safari/537.36",
         }
+        self.scraper = cloudscraper.create_scraper()
 
     def get_deck(self, identifier) -> Optional[dict]:
         # Send a get request to the moxfield decks API.
-        request = requests.get(self.api_url + f'decks/all/{identifier}',
-                               headers=self.headers)
+        request = self.scraper.get(self.api_url + f'decks/all/{identifier}')
         # Check if the API responded successfully
         if request.status_code != requests.codes.ok:
             print(f"Request failed: Get deck from Moxfield with identifier "
@@ -81,7 +82,7 @@ class MoxfieldDeckSource(_DeckSource):
         :return: metadata on most recent decks, as list of dictionaries
         """
         url = f"""{self.api_url}decks/search?pageNumber={page}&pageSize=64&sortType=updated&sortDirection=Descending&fmt=pauperEdh&board=mainboard"""
-        decks_request = requests.get(url, headers=self.headers)
+        decks_request = self.scraper.get(url, headers=self.headers)
         if decks_request.status_code != requests.codes.ok:
             print(f'Request failed: Get new decks: page {page}')
             return None
