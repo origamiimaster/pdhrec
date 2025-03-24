@@ -8,6 +8,9 @@ from urllib.parse import quote
 from backend.utils import posix_time
 import tqdm
 
+ALL_PAUPER_COMMANDERS = None
+
+
 def make_scryfall_request(name) -> list:
     tqdm.tqdm.write('Searching')
     scryfall_card_url = f"https://api.scryfall.com/cards/search?q=\"{quote(name)}\"&order=released&dir=asc&unique=prints"
@@ -103,7 +106,8 @@ def card_sort_key(printing: dict) -> tuple:
     :return: A tuple of integers and floats, with smaller numbers
     representing preferred printings.
     """
-    content_warning = int('content_warning' in printing and printing['content_warning'])
+    content_warning = int(
+        'content_warning' in printing and printing['content_warning'])
     language = int(not ('lang' in printing and printing['lang'] == 'en'))
     digital = int(printing['digital'])
 
@@ -195,7 +199,8 @@ def get_card_names_needing_update(most_recent_update: float) -> Optional[list]:
 
     query = ' or '.join([f"e:{card_set['code']}" for card_set in set_data])
     query = f'(game:paper or game:mtgo)({query})'
-    sets_request = requests.get(f'https://api.scryfall.com/cards/search?q={query}')
+    sets_request = requests.get(
+        f'https://api.scryfall.com/cards/search?q={query}')
     if sets_request.status_code != requests.codes.ok:
         print('Request failed: Get cards needing update')
         return None
@@ -240,32 +245,67 @@ def legal_as_commander(scryfall_data: list[dict]) -> bool:
         each describing one printing
     :return: Card legality as commander
     """
-    try:
-        # New Logic:
-        for printing in scryfall_data:
-            # Bad sets:
-            bad_sets = ["REN", "RIN", "PSAL"]
-            # Bad Cards:
-            bad_cards = ['Blightbelly Rat', 'Dryad Arbor', 'Phyrexian Rager', 'Self Assembler']
-            if printing['set'] not in bad_sets and printing['name'] not in bad_cards:
-                if 'paper' in printing['games'] and ('Creature' in printing['type_line'] or 'Background' in printing['type_line']) and printing['rarity'] == 'uncommon' and printing['set_type'] != 'funny':
-                    if 'security_stamp' in printing and 'acorn' in printing['security_stamp']:
-                        continue
-                    if "//" in printing['type_line']:
-                        # Double sided cards:
-                        # Only check first half type line.
-                        temp_type_line = printing['type_line'].split("//")[0]
-                        if "Creature" in temp_type_line:
-                            return True
-                    else:
-                        return True
-        return False
-    except IndexError:
-        print(f'Card Error: {scryfall_data}')
-        return False
+    name = scryfall_data[0]['name']
+    global ALL_PAUPER_COMMANDERS
+    if ALL_PAUPER_COMMANDERS is None:
+        ALL_PAUPER_COMMANDERS = get_all_paupercommanders()
+
+    return name in ALL_PAUPER_COMMANDERS
+
+    # try:
+    #     # New Logic:
+    #     for printing in scryfall_data:
+    #         # Bad sets:
+    #         bad_sets = ["REN", "RIN", "PSAL"]
+    #         # Bad Cards:
+    #         bad_cards = ['Blightbelly Rat', 'Dryad Arbor',
+    #                      'Phyrexian Rager', 'Self Assembler']
+    #         if printing['set'] not in bad_sets and printing['name'] not in bad_cards:
+    #             if 'paper' in printing['games'] and ('Creature' in printing['type_line'] or 'Background' in printing['type_line']) and printing['rarity'] == 'uncommon' and printing['set_type'] != 'funny':
+    #                 if 'security_stamp' in printing and 'acorn' in printing['security_stamp']:
+    #                     continue
+    #                 if "//" in printing['type_line']:
+    #                     # Double sided cards:
+    #                     # Only check first half type line.
+    #                     temp_type_line = printing['type_line'].split("//")[0]
+    #                     if "Creature" in temp_type_line:
+    #                         return True
+    #                 else:
+    #                     return True
+    #     return False
+    # except IndexError:
+    #     print(f'Card Error: {scryfall_data}')
+    #     return False
+
+
+# def search_legal_as_commander(scryfall_data: list[dict]) -> bool:
+#     if len(scryfall_data) == 0:
+#         return False
+
+#     card_name = scryfall_data[0]['name']
+#     scryfall_card_url = f'https://api.scryfall.com/cards/search?q={card_name} is:pauperCommander&order=released&dir=asc&unique=prints'
+#     card_request = requests.get(scryfall_card_url)
+
+def get_all_paupercommanders():
+    print("Called get_all_paupercommanders")
+    r = requests.get(f'https://api.scryfall.com/cards/search?q=is:pauperCommander')
+    if r.status_code != 200:
+        print("Error pulling")
+        return None
+    names = [x['name'] for x in r.json()['data']]
+    while r.json()['has_more']:
+        time.sleep(0.1)
+        # print("next page", r.json()['next_page'])
+        r = requests.get(r.json()['next_page'])
+        names += [x['name'] for x in r.json()['data']]
+    return names
 
 
 if __name__ == '__main__':
+    test_card = "Fynn, the Fangbearer"
+    test_card_data = make_scryfall_request(test_card)
+    print(test_card_data)
+
     # Test if the image function is working:
     # test_cards = ["Opaline Sliver"]
     # for test_card in test_cards:
