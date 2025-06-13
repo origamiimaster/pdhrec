@@ -49,9 +49,9 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
         if delete_older:  # Delete older data files
             data_files = os.listdir(f'{directory}')
             for file in data_files:
-                if file.startswith('oracle-data') and file != newest_filename:
+                if file.startswith('oracle-cards') and file != newest_filename:
                     print(f'Deleting {file}')
-                    os.remove(f'{directory}/{file}')
+                    os.remove(os.path.join(directory, file))
         return newest_filepath
 
     # If file is already downloaded, no update needed
