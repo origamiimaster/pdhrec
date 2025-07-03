@@ -12,7 +12,7 @@ from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 import tqdm
 
-if __name__ == '__main__':
+def main():
     # Create a connection to the database
     with open('server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
@@ -147,3 +147,6 @@ if __name__ == '__main__':
         json.dump(staples, staples_file)
 
     save_price_dictionary("frontend/_data/prices.json")
+
+if __name__ == '__main__':
+    main()
