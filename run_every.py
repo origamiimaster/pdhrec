@@ -20,13 +20,14 @@ SMTP_USER = 'you@example.com'
 SMTP_PASS = 'your-email-password'
 # ===================================
 
+
 def run_eleventy_build(target_directory):
     command = [
         "npx", "@11ty/eleventy",
         "--formats=html,css,js,liquid,md",
         "--output=build"
     ]
-    
+
     try:
         result = subprocess.run(
             command,
@@ -39,6 +40,7 @@ def run_eleventy_build(target_directory):
     except subprocess.CalledProcessError as e:
         print("Eleventy build failed:\n", e.stderr)
         raise  # re-raise for retry or error handling
+
 
 def run_ftp_stuff():
     with open('./server-token.json') as server_token_file:
@@ -63,12 +65,13 @@ def send_failure_email(error_msg):
     msg['From'] = EMAIL_FROM
     msg['To'] = EMAIL_TO
     msg.set_content(f"The process failed after one retry.\n\nError:\n{error_msg}")
-    
+
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
         server.starttls()
         server.login(SMTP_USER, SMTP_PASS)
         server.send_message(msg)
     print("Failure email sent.")
+
 
 def attempt_process():
     try:
@@ -83,14 +86,11 @@ def attempt_process():
             print("Second attempt failed:", e2)
             send_failure_email(traceback.format_exc())
 
+
 # Schedule the job every N days
 schedule.every(N_DAYS).days.do(attempt_process)
 
-# print(f"Scheduler started. Running every {N_DAYS} days.")
-# while True:
-#     schedule.run_pending()
-#     time.sleep(60)
-
-
-print("Running process now")
-run_ftp_stuff()
+print(f"Scheduler started. Running every {N_DAYS} days.")
+while True:
+    schedule.run_pending()
+    time.sleep(60)
