@@ -41,7 +41,7 @@ def run_eleventy_build(target_directory):
         raise  # re-raise for retry or error handling
 
 def run_ftp_stuff():
-    with open('../server-token.json') as server_token_file:
+    with open('./server-token.json') as server_token_file:
         data = json.load(server_token_file)
 
     ftp = FTP(data['ftp_domain'])
@@ -86,11 +86,11 @@ def attempt_process():
 # Schedule the job every N days
 schedule.every(N_DAYS).days.do(attempt_process)
 
-print(f"Scheduler started. Running every {N_DAYS} days.")
-while True:
-    schedule.run_pending()
-    time.sleep(60)
+# print(f"Scheduler started. Running every {N_DAYS} days.")
+# while True:
+#     schedule.run_pending()
+#     time.sleep(60)
 
 
-# print("Running process now")
-# run_process()
+print("Running process now")
+run_ftp_stuff()
