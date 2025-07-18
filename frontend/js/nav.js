@@ -13,6 +13,11 @@ $(document).ready(() => {
 
     function autocomplete(inp, arr) {
         var currentFocus;
+
+        const convertInputToHREF = (inp_value) => {
+            return "/commander/" + inp_value.replaceAll(" // ", "--").replaceAll(" ", "-").replaceAll(".", "").toLowerCase().replaceAll(",", "").replaceAll("'", "").replaceAll(":", "").replaceAll('"', "").replaceAll("&#34;", "")
+        }
+
         inp.addEventListener("input", function (e) {
             var a, b, i, val = this.value;
             closeAllLists();
@@ -34,14 +39,13 @@ $(document).ready(() => {
                         console.log("Clicked", this.getElementsByTagName("input")[0].value)
                         inp.value = this.getElementsByTagName("input")[0].value;
                         closeAllLists();
-                        // $('form').submit()
-                        gtag('event', 'search_used', {name: inp.value});
-                        window.location.href = "/commander/"+ inp.value.replaceAll(" // ", "--").replaceAll(" ", "-").replaceAll(".", "").toLowerCase().replaceAll(",", "").replaceAll("'", "")
+                        gtag('event', 'search_used', { name: inp.value });
+                        window.location.href = convertInputToHREF(inp.value)
                     });
                     a.appendChild(b);
                 }
             }
-            
+
         });
         inp.addEventListener("keydown", function (e) {
             var x = document.getElementById(this.id + "-autocomplete-list");
@@ -59,7 +63,7 @@ $(document).ready(() => {
                     currentFocus = -1;
                 }
                 if (arr.indexOf(inp.value) != -1) {
-                    window.location.href = "/commander/"+ inp.value.replaceAll(" // ", "--").replaceAll(" ", "-").replaceAll(".", "").toLowerCase().replaceAll(",", "").replaceAll("'", "")
+                    window.location.href = convertInputToHREF(inp.value)
                 } else {
                     e.preventDefault();
                 }
@@ -94,11 +98,8 @@ $(document).ready(() => {
         let commanderNames = []
         // data = JSON.parse(data)
         data.forEach((obj) => {
-            commanderNames.push(obj)
+            commanderNames.push(obj.replaceAll('"', '&#34;'))
         })
         autocomplete(document.getElementById("nav-search-field"), commanderNames)
     })
-    // $.get("/counter", (data) => {
-    //      $('#footer-flex').append($(`<p>Site visited ${data["count"]} times.</p>`))
-    // })
 })
