@@ -41,7 +41,7 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
     # Verify deck size
     if (len(deck['commanders']) + len(deck['cards'])) != 100:
         tqdm.tqdm.write(f"Illegal deck size:"
-            f" {len(deck['commanders']) + len(deck['cards'])}")
+                        f" {len(deck['commanders']) + len(deck['cards'])}")
         return False
 
     # Verify number of commanders
@@ -75,7 +75,7 @@ def is_legal(deck: dict, cards_cache: dict, database: MongoDatabase) -> bool:
             not pair_legal_as_commander(deck['commanders'][0],
                                         deck['commanders'][1])):
         tqdm.tqdm.write(f"Illegal Commander pair: {deck['commanders'][0]} with"
-                      f" {deck['commanders'][1]}")
+                        f" {deck['commanders'][1]}")
         return False
 
     # Determine legality of mainboard cards

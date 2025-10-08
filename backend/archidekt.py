@@ -161,17 +161,17 @@ class ArchidektDeckSource(_DeckSource):
                 "days": 60 * 60 * 24
             }
             deck_time = cur_time - long_ago_val * unit_lookup[long_ago_unit]
-            print(deck_time)
+            # print(deck_time)
 
             id_data_text = deck.find_all(class_=lambda value: value and "deckLink_header" in value)[0]
             url = id_data_text.a.get("href")
             deck_id = url.split("/")[2]
-            print(deck_id)
+            # print(deck_id)
             new_deck_obj = {
                 "updatedAt": deck_time,
                 "id": deck_id
             }
-            print(new_deck_obj)
+            # print(new_deck_obj)
             to_return["results"].append(new_deck_obj)
 
 

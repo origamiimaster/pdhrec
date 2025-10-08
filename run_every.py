@@ -88,9 +88,11 @@ def attempt_process():
 
 
 # Schedule the job every N days
-schedule.every(N_DAYS).days.do(attempt_process)
+# schedule.every(N_DAYS).days.do(attempt_process)
 
-print(f"Scheduler started. Running every {N_DAYS} days.")
-while True:
-    schedule.run_pending()
-    time.sleep(60)
+# print(f"Scheduler started. Running every {N_DAYS} days.")
+# while True:
+#     schedule.run_pending()
+#     time.sleep(60)
+
+attempt_process()
