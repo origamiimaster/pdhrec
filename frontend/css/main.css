@@ -45,6 +45,7 @@ p {
   .gallery-item {
     width: 32.75%;
   }
+
   .big-gallery-item {
     width: 65.5%;
   }
@@ -54,10 +55,36 @@ p {
   .gallery-item {
     width: 24.5%;
   }
+
   .big-gallery-item {
     width: 75%;
   }
+}
 
+.gallery-item.type-header {
+  display: block;
+  margin: 0 0 9px 0;
+  width: 99%;
+  padding-top: 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+@media screen and (min-width: 660px) {
+  .gallery-item.type-header {
+    width: 98.25%;
+  }
+}
+
+@media screen and (min-width: 920px) {
+  .gallery-item.typeheader {
+    width: 99.5%;
+  }
+}
+
+
+.gallery-item img {
+  border-radius: 10px;
 }
 
 img {
@@ -123,7 +150,7 @@ img {
   float: left;
   padding: 8px 16px;
   /* min-width: 48px; */
-  width: 44px;
+  /* width: 44px; */
   text-align: center;
   text-decoration: none;
   transition: background-color .3s;
@@ -175,7 +202,7 @@ img {
   background-image: url("https://svgs.scryfall.io/card-symbols/C.svg");
 }
 
-.symbols > a {
+.symbols>a {
   height: auto;
   min-width: auto;
   width: 20%;
@@ -183,11 +210,11 @@ img {
   padding: 5% 3%;
 }
 
-.symbols > a:hover:is(.active) {
+.symbols>a:hover:is(.active) {
   background-color: rgb(63, 177, 255);
 }
 
-.symbols > .guild {
+.symbols>.guild {
   padding: 1%;
 }
 

@@ -6,22 +6,15 @@
   - text: The text to include with the images.
   - synergy: The score to put in the attribute synergy.
   - popularity: The score to put in the attribute popularity.
+  - typeline: the types
 {% endcomment %}
-<!-- {{ imgs }} -->
-<!-- {{ names }} -->
-<!-- {{ text }} -->
-<!-- {{ synergy }} -->
-<!-- {{ popularity }} -->
-<!-- {{ tcgprice }} -->
-<!-- {{ sku }} -->
-<!-- {{ ckprice }} -->
-<!-- {{ ckurl }}-->
-
 {% if imgs.length == 1 %}
   <a
     class="gallery-item"
     synergy="{{synergy}}"
-    popularity="{{popularity}}">
+    popularity="{{popularity}}"
+    typeline="{{typeline}}"
+    >
     <img
       loading="lazy"
       alt="{{names | escape}}"
@@ -51,7 +44,9 @@
   <a
     class="gallery-item"
     synergy="{{synergy}}"
-    popularity="{{popularity}}">
+    popularity="{{popularity}}"
+    typeline="{{typeline}}"
+    >
     <div class="partners">
       <div style="position: relative;">
         <img

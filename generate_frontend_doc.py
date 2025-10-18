@@ -1,7 +1,6 @@
 """
 Generates files to build the frontend.
 """
-
 import json
 from backend.aggregator import get_all_scores, get_card_color_identities
 from backend.database import MongoDatabase
@@ -11,6 +10,7 @@ from backend.prices import save_price_dictionary
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
 import tqdm
+
 
 def main():
     # Create a connection to the database
@@ -37,7 +37,7 @@ def main():
         image_lookup[card['name']] = card['image_urls']
     lands = set()
     double_faced = set()
-    for card in tqdm.tqdm(all_card_data):
+    for card in tqdm.tqdm(all_card_data, desc='Determine double faced cards'):
         if 'type_line' not in card:
             continue
         if 'Land' in card['type_line']:
@@ -49,7 +49,7 @@ def main():
         if 'image_uris' not in card and 'card_faces' in card:
             double_faced.add(card['name'])
 
-    # Generate a list of the commanders / commander pairs, along with their 
+    # Generate a list of the commanders / commander pairs, along with their
     # image urls and cleaned names
     commander_pipeline = [{'$match': {'isLegal': True}},
                           {'$project': {'_id': 0, 'commanders': 1}}]
@@ -62,7 +62,8 @@ def main():
     # Store all updated commander data
     commander_data = []
     # Record commander names and image URLs
-    for commanders in tqdm.tqdm(commanders_list):
+    for commanders in tqdm.tqdm(commanders_list, desc="Commander Loop"):
+        # TODO: Use the image lookup, don't bother directly querying the machine
         urls = []
         for card in commanders:
             urls.extend(database.cards.find_one({'name': card})['image_urls'])
@@ -77,7 +78,7 @@ def main():
 
     processed = 0  # Number of commanders processed
     commander_names = []
-    for commander in tqdm.tqdm(commander_data):
+    for commander in tqdm.tqdm(commander_data, desc="Process the Commanders"):
         tqdm.tqdm.write(f'Updating: {commander}')
         # Store commander name
         commander_names.append(" ".join(commander['commanders']))
@@ -93,7 +94,7 @@ def main():
             else:
                 raise Exception(f'{card} not in image_lookup')
             card_popularity = commander_card_counts[tuple(commander[
-                                                              'commanders'])][
+                'commanders'])][
                 card]
             card_info = [card, synergy_scores[card], card_image,
                          card_popularity]
@@ -147,6 +148,27 @@ def main():
         json.dump(staples, staples_file)
 
     save_price_dictionary("frontend/_data/prices.json")
+
+    add_types_to_price_dictionary("frontend/_data/prices.json", all_card_data)
+
+
+def add_types_to_price_dictionary(path, all_card_data):
+    with open(path, "r") as f:
+        price_data = json.load(f)
+        for card in all_card_data:
+            card_name = card['name']
+            card_type_line = card['type_line']
+
+            if " — " in card_type_line:
+                card_type_line = card_type_line.split(" — ")[0]
+
+            if card_name not in price_data:
+                continue
+            price_data[card_name].append(card_type_line)
+
+    with open(path, "w") as f:
+        json.dump(price_data, f)
+
 
 if __name__ == '__main__':
     main()

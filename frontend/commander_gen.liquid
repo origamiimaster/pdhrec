@@ -59,15 +59,78 @@
               {{mycommander.commanders[0] | escape}} <br> In {{mycommander.count}} decks.
             {% endif %}
               <div style="position: absolute; bottom: 0px; right: 0px; display: flex; flex-direction: row;">
-                <div class="sort-button active" onclick="sortSynergy()">Synergy</div>
-                <div class="sort-button" onclick="sortPopularity()">Popularity</div>
+                <div class="sort-button synergy active" onclick="sortSynergy()">Synergy</div>
+                <div class="sort-button popularity" onclick="sortPopularity()">Popularity</div>
+                <div class="sort-button types" onclick="sortTopNTypes()">Types</div>
               </div>
             </div>
           </div>
-          {% for card_data in mycommander.carddata limit:60 %}
-          {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
-        {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3] %}
-        {% endfor %}
+          {% assign count = 0 %}
+          {% assign creatures = 0 %}
+          {% assign instants = 0 %}
+          {% assign sorceries = 0 %}
+          {% assign enchantments = 0 %}
+          {% assign artifacts = 0 %}
+          {% assign lands = 0 %}
+          {% for card_data in mycommander.carddata %}
+            {% assign count = count | plus: 1 %}
+            {% if count <= 60 %}
+              {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+              {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+              {% if prices[card_data[0]][4] contains "Creature" %}
+                  {% assign creatures = creatures | plus: 1 %}
+              {% elsif prices[card_data[0]][4] contains "Instant" %}
+                  {% assign instants = instants | plus: 1 %}
+              {% elsif prices[card_data[0]][4] contains "Sorcery" %}
+                  {% assign sorceries = sorceries | plus: 1 %}
+              {% elsif prices[card_data[0]][4] contains "Land" %}
+                  {% assign lands = lands | plus: 1 %}
+              {% elsif prices[card_data[0]][4] contains "Enchantment" %}
+                  {% assign enchantments = enchantments | plus: 1 %}
+              {% elsif prices[card_data[0]][4] contains "Artifact" %}
+                  {% assign artifacts = artifacts | plus: 1 %}
+              {% endif %}
+            {% else %}
+              {% if prices[card_data[0]][4] contains "Creature" %}
+                {% if creatures < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign creatures = creatures | plus: 1 %}
+                {% endif %}
+              {% elsif prices[card_data[0]][4] contains "Instant" %}
+                {% if instants < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign instants = instants | plus: 1 %}
+                {% endif %}
+              {% elsif prices[card_data[0]][4] contains "Sorcery" %}
+                {% if sorceries < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign sorceries = sorceries | plus: 1 %}
+                {% endif %}
+              {% elsif prices[card_data[0]][4] contains "Land" %}
+                {% if lands < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign lands = lands | plus: 1 %}
+                {% endif %}
+              {% elsif prices[card_data[0]][4] contains "Enchantment" %}
+                {% if enchantments < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign enchantments = enchantments | plus: 1 %}
+                {% endif %}
+              {% elsif prices[card_data[0]][4] contains "Artifact" %}
+                {% if artifacts < 8 %}
+                  {% capture innerText %}{{card_data[0] | escape }} <br /> In {{card_data[3] | divided_by: mycommander.count | times: 100 | round: 1}}% of {{mycommander.count}} decks <br /> {% if card_data[1] > 0 %} +{% endif %}{{card_data[1] | times: 100 | round: 1}}% synergy{% endcapture %}
+                  {% include 'components/card_image.liquid', imgs: card_data[2], names: card_data[0], text: innerText, synergy: card_data[1], popularity: card_data[3], tcgprice: prices[card_data[0]][0], sku: prices[card_data[0]][1], ckprice: prices[card_data[0]][2], ckurl: prices[card_data[0]][3], typeline: prices[card_data[0]][4] %}
+                  {% assign artifacts = artifacts | plus: 1 %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+          
         </div>
       </div>
     </div>
