@@ -150,7 +150,7 @@ class ArchidektDeckSource(_DeckSource):
         }
 
         for deck in results:
-            long_ago_text = deck.find_all(class_=lambda value: value and "deckLink_view" in value)[0].text.split(" • ")[1][:-4]
+            long_ago_text = deck.find_all(class_=lambda value: value and "deckLink_view" in value)[0].text.split(" • ")[-1][:-4]
             long_ago_unit = long_ago_text.split(" ")[1]
             long_ago_val  = int(long_ago_text.split(" ")[0])
             cur_time = time()
