@@ -28,18 +28,27 @@ class MongoDatabase:
         self.cards_cache = [card['name'] for card in
                             self.cards.aggregate(pipeline=cache_pipeline)]
 
-    def insert_deck(self, data: dict) -> None:
+    def insert_deck(self, data: dict, card_cache: dict | None = None) -> None:
         """
         Insert the data for a deck into the database.
 
         :param data: Data for a deck, as a dictionary from a Deck object
+        :param card_cache: Optional dictionary cache of card names to avoid duplicate inserts
         """
         self.decks.update_one(filter={'_id': data['_id']},
                               update={'$set': data}, upsert=True)
+
+        # Create blank cache if none provided
+        if card_cache is None:
+            card_cache = {}
+
         for card in set(data['cards']):
-            self.insert_card({'name': card, 'needsUpdate': True})
+            if card not in card_cache:
+                self.insert_card({'name': card, 'needsUpdate': True})
+
         for card in data['commanders']:
-            self.insert_card({'name': card, 'needsUpdate': True})
+            if card not in card_cache:
+                self.insert_card({'name': card, 'needsUpdate': True})
 
     def update_card(self, card_data: dict, upsert: bool = True) -> None:
         """

@@ -18,7 +18,7 @@ import tqdm
 
 
 def get_latest_bulk_file(directory: str = '../scryfall_data',
-                         delete_older: bool = True) -> Optional[str]:
+                         delete_older: bool = True) -> str:
     """
     Download the latest "oracle-data" cards and then saves them to a file labeled
     "oracle-data-X.json".
@@ -43,7 +43,7 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
         newest_data_requests = requests.get(newest_version['download_uri'])
         if newest_data_requests.status_code != requests.codes.ok:
             print('Request failed: Downloading bulk data')
-            return None
+            raise ValueError('Request failed: Downloading bulk data')
         with open(newest_filepath, 'wb') as newest_file:
             newest_file.write(newest_data_requests.content)
         if delete_older:  # Delete older data files
@@ -105,13 +105,21 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     for deck in database.decks.find({'needsLegalityCheck': True}):
         decks_needing_check.append(deck)
 
+    all_card_names = set()
+    for deck in database.decks.find({'needsLegalityCheck': True}):
+        all_card_names.update(deck['commanders'])
+        all_card_names.update(deck['cards'])
+
+    for card_doc in database.cards.find({'name': {'$in': list(all_card_names)}}):
+        cards_cache[card_doc['name']] = card_doc
+
     for deck in tqdm.tqdm(decks_needing_check):
         # print(deck)
         legal = is_legal(deck, cards_cache, database)
         deck['needsLegalityCheck'] = False
         deck['isLegal'] = legal
         # Always insert so future checks can see if future downshifts make legal
-        database.insert_deck(deck)
+        database.insert_deck(deck, cards_cache)
         if not legal:
             if deck['source'] == "moxfield":
                 tqdm.tqdm.write(
@@ -134,7 +142,7 @@ def add_source_to_database(source: _DeckSource, database) -> bool:
     :return: True if all decks updated, False if an error occurred.
     """
     tqdm.tqdm.write(f"Inserting decks from {source.__class__.__name__} into"
-          f" {database.__class__.__name__}")
+                    f" {database.__class__.__name__}")
     latest_updated_deck = database.decks.find_one(
         {'source': source.name}, sort=[('update_date', -1)]
     )
