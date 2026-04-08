@@ -185,8 +185,3 @@ if __name__ == "__main__":
     # print(temp)
     temp = source.get_new_decks_paginated(1)
     print(temp)
-
-
-    # temp = source.get_new_decks(newest_deck_time=1691750188.0)
-    # print(len(temp))
-    #

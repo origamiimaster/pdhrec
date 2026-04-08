@@ -17,7 +17,10 @@ def main():
     with open('server-token.json') as server_token_file:
         connection_string = json.load(server_token_file)['connection']
     database = MongoDatabase(connection_string)
-    sources = [ArchidektDeckSource(), MoxfieldDeckSource()]
+    sources = [
+        # ArchidektDeckSource(),
+        MoxfieldDeckSource()
+    ]
 
     # Commit updates to the database
     print('Updating database')
