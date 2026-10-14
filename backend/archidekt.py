@@ -4,10 +4,13 @@ Access moxfield and query decks for inclusion in the database.
 from typing import Optional
 
 import requests
-from time import sleep, time
+from time import sleep
 from backend.decksource import _DeckSource
 from backend.utils import posix_time
-from bs4 import BeautifulSoup
+
+# Identify ourselves; Archidekt's API is friendlier to requests with a
+# descriptive User-Agent.
+HEADERS = {'User-Agent': 'pdhrec (https://pdhrec.com)'}
 
 
 
@@ -113,15 +116,23 @@ class ArchidektDeckSource(_DeckSource):
 
     def get_new_decks_paginated(self, page: int = 1) -> Optional[dict]:
         """
-        Query the given page in the moxfield list of new decks (in reverse
-        chronological order). If page not given, return the first page.
+        Query the given page in the Archidekt list of new PDH decks (in
+        reverse chronological order). If page not given, return the first page.
+
+        This uses Archidekt's public JSON search API (``/api/decks/v3/``)
+        rather than scraping the rendered HTML search page, which is far more
+        stable. See https://archidekt.com/forum/thread/3476605/1 for details.
 
         :param page: Page of the list of new decks to return
         :return: metadata on most recent decks, as list of dictionaries
         """
-        url = f"https://archidekt.com/search/decks?deckFormat=17&orderBy=-updatedAt&page={page}"
+        # deckFormat=17 is Pauper EDH (PDH).
+        url = (
+            "https://archidekt.com/api/decks/v3/"
+            f"?deckFormat=17&orderBy=-updatedAt&size=100&page={page}"
+        )
 
-        decks_request = requests.get(url)
+        decks_request = requests.get(url, headers=HEADERS)
         if decks_request.status_code != requests.codes.ok:
             if decks_request.status_code == requests.codes.too_many_requests:
                 delay = 30
@@ -132,49 +143,22 @@ class ArchidektDeckSource(_DeckSource):
             print(f'Request failed: Get new decks: page {page}')
             return None
 
-        # Process decks.
-        html_page = decks_request.text
-
-        # print(html_page)
-
-        soup = BeautifulSoup(html_page, 'html.parser')
-
-        results = soup.find_all(class_=lambda value: value and 'decks_deck' in value)[0].children
-
-        page_info = soup.find_all(class_=lambda value: value and 'decks_pageControls' in value)[0].find_all('a')[1]
-
+        envelope = decks_request.json()
 
         to_return = {
             "results": [],
-            "next": None if page_info.has_attr('disabled') else page + 1
+            # The API returns a full URL (or null) for the next page; we only
+            # need to know whether another page exists.
+            "next": page + 1 if envelope.get("next") else None,
         }
 
-        for deck in results:
-            long_ago_text = deck.find_all(class_=lambda value: value and "deckLink_view" in value)[0].text.split(" • ")[-1][:-4]
-            long_ago_unit = long_ago_text.split(" ")[1]
-            long_ago_val  = int(long_ago_text.split(" ")[0])
-            cur_time = time()
-            unit_lookup = {
-                "secs": 1,
-                "mins": 60,
-                "hrs": 60 * 60,
-                "days": 60 * 60 * 24
-            }
-            deck_time = cur_time - long_ago_val * unit_lookup[long_ago_unit]
-            # print(deck_time)
-
-            id_data_text = deck.find_all(class_=lambda value: value and "deckLink_header" in value)[0]
-            url = id_data_text.a.get("href")
-            deck_id = url.split("/")[2]
-            # print(deck_id)
-            new_deck_obj = {
-                "updatedAt": deck_time,
-                "id": deck_id
-            }
-            # print(new_deck_obj)
-            to_return["results"].append(new_deck_obj)
-
-
+        for deck in envelope.get("results", []):
+            to_return["results"].append({
+                # Store the update time as a POSIX timestamp so it can be
+                # compared against newest_deck_time in get_new_decks.
+                "updatedAt": posix_time(deck["updatedAt"]),
+                "id": str(deck["id"]),
+            })
 
         return to_return
 

@@ -6,13 +6,14 @@ import json
 import os
 import time
 import requests
+from pathlib import Path
 import re
 from backend.database import MongoDatabase
 from backend.decksource import _DeckSource
 from backend.moxfield import MoxfieldDeckSource
 from backend.archidekt import ArchidektDeckSource
 from backend.scryfall import get_card_from_scryfall, \
-    get_card_names_needing_update
+    get_card_names_needing_update, build_scryfall_index
 from backend.legality import is_legal
 import tqdm
 
@@ -27,20 +28,31 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
     :param delete_older: if True, delete older oracle-data files. Default True
     :return: the filepath of the newly downloaded oracle data
     """
-    bulk_data_requests = requests.get('https://api.scryfall.com/bulk-data')
+    bulk_data_requests = requests.get('https://api.scryfall.com/bulk-data', headers={
+        "User-Agent": "PDHREC/1.0",
+        "Accept": "*/*"
+    }
+    )
+
+    BASE_DIR = Path(__file__).resolve().parent
+    directory = os.path.join(BASE_DIR, directory)
+
     if bulk_data_requests.status_code != requests.codes.ok:
         print('Request failed: Querying bulk data')
         return None
     bulk_data_json = bulk_data_requests.json()
     newest_version = [card_data for card_data in bulk_data_json['data']
                       if card_data['type'] == 'oracle_cards'][0]
-    newest_filename = newest_version['download_uri'].split('/')[-1]
+    newest_filename = newest_version['jsonl_download_uri'].split('/')[-1]
     newest_filepath = f'{directory}/{newest_filename}'
     print('Checking bulk file version')
     # If the latest data is not downloaded, save it
     if not os.path.isfile(newest_filepath):
         print('New bulk file found')
-        newest_data_requests = requests.get(newest_version['download_uri'])
+        newest_data_requests = requests.get(newest_version['jsonl_download_uri'], headers={
+            "User-Agent": "PDHREC/1.0",
+            "Accept": "*/*"
+        })
         if newest_data_requests.status_code != requests.codes.ok:
             print('Request failed: Downloading bulk data')
             raise ValueError('Request failed: Downloading bulk data')
@@ -50,6 +62,68 @@ def get_latest_bulk_file(directory: str = '../scryfall_data',
             data_files = os.listdir(f'{directory}')
             for file in data_files:
                 if file.startswith('oracle-cards') and file != newest_filename:
+                    print(f'Deleting {file}')
+                    os.remove(os.path.join(directory, file))
+        return newest_filepath
+
+    # If file is already downloaded, no update needed
+    return newest_filepath
+
+
+def get_latest_full_bulk_file(directory: str = '../scryfall_data',
+                              delete_older: bool = True) -> str:
+    """
+    Download the latest "full" (default_cards) bulk data and save it to a
+    file labeled "default-cards-X.json".
+
+    default_cards contains every printing of every card (one language per
+    card), unlike oracle_cards which collapses each card down to a single
+    printing. This is the file backend.scryfall.build_scryfall_index expects,
+    since choose_image needs multiple printings per card to pick the best
+    image from.
+
+    This function is independent of get_latest_bulk_file (oracle_cards) --
+    it downloads to the same directory but tracks its own "default-cards"
+    filename prefix for version checking / cleanup, so it does not interact
+    with or affect the oracle data file in any way.
+
+    :param directory: Directory to save the full bulk data
+    :param delete_older: if True, delete older default-cards files. Default True
+    :return: the filepath of the newly downloaded full bulk data
+    """
+    bulk_data_requests = requests.get('https://api.scryfall.com/bulk-data', headers={
+        "User-Agent": "PDHREC/1.0",
+        "Accept": "*/*"
+    }
+    )
+    BASE_DIR = Path(__file__).resolve().parent
+    directory = os.path.join(BASE_DIR, directory)
+
+    if bulk_data_requests.status_code != requests.codes.ok:
+        print('Request failed: Querying bulk data')
+        return None
+    bulk_data_json = bulk_data_requests.json()
+    newest_version = [card_data for card_data in bulk_data_json['data']
+                      if card_data['type'] == 'default_cards'][0]
+    newest_filename = newest_version['jsonl_download_uri'].split('/')[-1]
+    newest_filepath = f'{directory}/{newest_filename}'
+    print('Checking full bulk file version')
+    # If the latest data is not downloaded, save it
+    if not os.path.isfile(newest_filepath):
+        print('New full bulk file found')
+        newest_data_requests = requests.get(newest_version['jsonl_download_uri'], headers={
+            "User-Agent": "PDHREC/1.0",
+            "Accept": "*/*"
+        })
+        if newest_data_requests.status_code != requests.codes.ok:
+            print('Request failed: Downloading full bulk data')
+            raise ValueError('Request failed: Downloading full bulk data')
+        with open(newest_filepath, 'wb') as newest_file:
+            newest_file.write(newest_data_requests.content)
+        if delete_older:  # Delete older data files
+            data_files = os.listdir(f'{directory}')
+            for file in data_files:
+                if file.startswith('default-cards') and file != newest_filename:
                     print(f'Deleting {file}')
                     os.remove(os.path.join(directory, file))
         return newest_filepath
@@ -71,6 +145,16 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
     for source in deck_sources:
         if not add_source_to_database(source, database):
             print(f"Error adding decks from {source.__class__.__name__}")
+
+    # Download bulk data. The oracle_cards file is downloaded here to
+    # preserve existing behavior for anything else in the codebase that
+    # depends on get_latest_bulk_file; its return value is otherwise unused
+    # in this function. The default_cards ("full") file is used to build
+    # the card_index used for card lookups below.
+    oracle_bulk_filepath = get_latest_bulk_file()
+    full_bulk_filepath = get_latest_full_bulk_file()
+    card_index = build_scryfall_index(full_bulk_filepath) if full_bulk_filepath else {}
+
     # Step 2: Update cards that have been added / modified in the latest set
     newest_card = database.cards.find_one({"$or": [
         {"legal_as_commmander": True}, {"legal_in_mainboard": True}]
@@ -92,11 +176,11 @@ def perform_update(database: MongoDatabase, deck_sources: list[_DeckSource]) -> 
         cards_needing_update.append(card['name'])
     for card in tqdm.tqdm(cards_needing_update):
         tqdm.tqdm.write(f'Updating card {card}')
-        start_time = time.time()
-        card_data = get_card_from_scryfall(card, scryfall_cache)
+        # start_time = time.time()
+        card_data = get_card_from_scryfall(card, card_index, scryfall_cache)
         # database.insert_card(card_data)
         database.update_card(card_data)
-        tqdm.tqdm.write(f'Processing time: {time.time() - start_time}')
+        # tqdm.tqdm.write(f'Processing time: {time.time() - start_time}')
 
     # Step 4: Check each deck for illegal cards
     cards_cache = {}

@@ -1,6 +1,7 @@
 """
 Generates files to build the frontend.
 """
+import gzip
 import json
 from backend.aggregator import get_all_scores, get_card_color_identities
 from backend.database import MongoDatabase
@@ -9,6 +10,7 @@ from backend.archidekt import ArchidektDeckSource
 from backend.prices import save_price_dictionary
 from backend.utils import normalize_cardnames
 from backend.update import perform_update, get_latest_bulk_file
+from backend.scryfall import normalize_name
 import tqdm
 
 
@@ -18,7 +20,7 @@ def main():
         connection_string = json.load(server_token_file)['connection']
     database = MongoDatabase(connection_string)
     sources = [
-        # ArchidektDeckSource(),
+        ArchidektDeckSource(),
         MoxfieldDeckSource()
     ]
 
@@ -27,9 +29,10 @@ def main():
     perform_update(database, sources)
 
     # Load all cards from bulk json in database
-    bulk_filepath = get_latest_bulk_file(directory='scryfall_data')
-    with open(bulk_filepath, 'r') as bulk_file:
-        all_card_data = json.load(bulk_file)
+    bulk_filepath = get_latest_bulk_file()
+    with gzip.open(bulk_filepath, 'r') as bulk_file:
+        # all_card_data = json.load(bulk_file)
+        all_card_data = [json.loads(line) for line in bulk_file if line.strip()]
 
     # Create lookup of card images by name, alongside sets of lands and DFCs
     image_lookup = {}
@@ -37,7 +40,7 @@ def main():
                                           {'legal_as_commander': True}]}},
                       {'$project': {'_id': 0, 'image_urls': 1, 'name': 1}}]
     for card in database.cards.aggregate(image_pipeline):
-        image_lookup[card['name']] = card['image_urls']
+        image_lookup[normalize_name(card['name'])] = card['image_urls']
     lands = set()
     double_faced = set()
     for card in tqdm.tqdm(all_card_data, desc='Determine double faced cards'):
@@ -92,8 +95,8 @@ def main():
         commander['carddata'] = []
         synergy_scores = all_synergy_scores[tuple(commander['commanders'])]
         for card in synergy_scores:
-            if card in image_lookup:
-                card_image = image_lookup[card]
+            if normalize_name(card) in image_lookup:
+                card_image = image_lookup[normalize_name(card)]
             else:
                 raise Exception(f'{card} not in image_lookup')
             card_popularity = commander_card_counts[tuple(commander[
@@ -145,7 +148,7 @@ def main():
     for card in color_popularity:
         if card not in lands:  # Skip lands
             staples.append([card, color_popularity[card][0],
-                            image_lookup[card], color_popularity[card][1]])
+                            image_lookup[normalize_name(card)], color_popularity[card][1]])
     # Save color popularity to file
     with open('frontend/_data/staples.json', 'w') as staples_file:
         json.dump(staples, staples_file)
@@ -175,3 +178,5 @@ def add_types_to_price_dictionary(path, all_card_data):
 
 if __name__ == '__main__':
     main()
+    # from backend.update import get_card_from_scryfall
+    # print(get_card_from_scryfall("_____ Goblin"))
